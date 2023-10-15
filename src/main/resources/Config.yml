@@ -1,0 +1,51 @@
+#配置文件版本号,用于更新配置文件，请勿修改
+version: 1
+#可以在lang文件夹查看已有的语言文件
+lang: chinese
+#单端可以不用管,使用db即可，bungee群组需要使用mysql
+Database: db
+#如果你不知道数据库对应的配置，那么只需要改host,port,database,user,passwd即可
+Mysql:
+  host: 127.0.0.1
+  port: 3306
+  database: PixelWorldPro
+  user: Adear
+  passwd: '123456'
+  ssl: false
+  HikariCP: true
+#redis数据库配置,Bungee为false可以不管
+redis:
+  host: 127.0.0.1
+  port: 6379
+  password: ""
+#世界存放位置，填写绝对路径,禁止出现空格,请将所有的斜杠或反斜杠替换成/
+#WorldPath: "D:/PixelWorldPro/worldData"
+WorldPath: ""
+#世界模板存放位置，填写绝对路径,禁止出现空格,请将所有的斜杠或反斜杠替换成/
+#WorldTemplatePath: "D:/PixelWorldPro/template"
+WorldTemplatePath: ""
+#PWP主命令
+mainCommand: "pwp"
+#PWP变量开头
+mainPapi: "pixelworldpro"
+#异步设置，自行斟酌选择
+#true为异步，false为同步
+async:
+  #数据库异步设置
+  database:
+    #写入数据库
+    write: true
+    #连接数据库
+    connect: true
+  #世界操作异步设置
+  world:
+    #加载世界/创建世界
+    load: false
+    #卸载世界
+    unload: false
+    #设置边界
+    barrier: false
+#开启后控制台会输出更多debug信息，有助于错误排查
+debug: false
+
+

@@ -1,0 +1,51 @@
+name: PixelWorldProV2
+main: com.mcyzj.pixelworldpro.PixelWorldPro
+version: '${version}'
+author: mcyzj&dong
+softdepend: [ Vault, PlaceholderAPI, PlayerPoints, PixelPlayerWorld, jiangfriends, ShadowLevels]
+api-version: 1.13
+folia-supported: true
+
+permissions:
+  pixelworldpro.command.*:
+    description: Grants all PixelWorldPro permissions
+    children:
+      pixelworldpro.command.gui: true
+      pixelworldpro.command.dimension: true
+  pixelworldpro.command.gui:
+    description: Can open PixelWorldPro menu
+    default: not op
+  pixelworldpro.command.dimension:
+    description: Can Use PixelWorldPro dimension
+    default: not op
+runtime-libraries:
+  libraries-folder: '@Server:libraries'  # 存放依赖的位置
+  libraries:
+    gson:
+      groupId: com.google.code.gson
+      artifactId: gson
+      version: "2.10"
+    slf4j-api:
+      groupId: org.slf4j
+      artifactId: slf4j-api
+      version: "1.7.22"
+    slf4j-simple:
+      groupId: org.slf4j
+      artifactId: slf4j-simple
+      version: "1.7.22"
+    jedis:
+      groupId: redis.clients
+      artifactId: jedis
+      version: "3.7.0"
+    bcprov-lts8on:
+      groupId: org.bouncycastle
+      artifactId: bcprov-lts8on
+      version: "2.73.3"
+    commons-pool:
+      groupId: org.apache.commons
+      artifactId: commons-pool2
+      version: "2.11.1"
+    oshi-core:
+      groupId: com.github.oshi
+      artifactId: oshi-core
+      version: "3.12.2"

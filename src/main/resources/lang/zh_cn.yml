@@ -1,0 +1,17 @@
+eula: "PixelWorldProV2遵循《用户协议-付费插件》，您需要同意eula，否则插件将禁用"
+system:
+  unKnowArch: "PixelWorldProV2只在amd64架构的服务器中经过测试，您使用的架构："
+config:
+  load: "加载配置文件"
+lang:
+  load: "初始化语言文件"
+gui:
+  load: "初始化gui文件"
+database:
+  warning:
+    world:
+      worldIsNULL: "加载世界数据失败，世界数据损坏：世界名为null"
+      permissionIsNULL: "加载世界数据失败，世界数据损坏：世界权限组为null"
+world:
+  warning:
+    templatePathNotSet: "创建世界失败：Config中没有指定"
