@@ -1,0 +1,19 @@
+#版本设置，请勿修改
+Version: 1
+#模板设置
+Template:
+  #世界模板存放位置，填写绝对路径,禁止出现空格,请将所有的斜杠或反斜杠替换成/
+  #Path: "D:/PixelWorldPro/template"
+  Path: ""
+World:
+  #世界存放位置，填写绝对路径,禁止出现空格,请将所有的斜杠或反斜杠替换成/
+  #Path: "D:/PixelWorldPro/worldData"
+  Path: ""
+  #服务器加载/存放文件的地址
+  #一般服务器填选./PixelWorldPro即可，catServer和Mohist1.12填写./world/PixelWorldPro
+  Server: "./PixelWorldPro"
+  #世界压缩设置
+  Compress:
+    #压缩方式
+    #None[不压缩]，Zip
+    Method: None

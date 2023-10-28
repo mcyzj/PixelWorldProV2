@@ -6,18 +6,6 @@ softdepend: [ Vault, PlaceholderAPI, PlayerPoints, PixelPlayerWorld, jiangfriend
 api-version: 1.13
 folia-supported: true
 
-permissions:
-  pixelworldpro.command.*:
-    description: Grants all PixelWorldPro permissions
-    children:
-      pixelworldpro.command.gui: true
-      pixelworldpro.command.dimension: true
-  pixelworldpro.command.gui:
-    description: Can open PixelWorldPro menu
-    default: not op
-  pixelworldpro.command.dimension:
-    description: Can Use PixelWorldPro dimension
-    default: not op
 runtime-libraries:
   libraries-folder: '@Server:libraries'  # 存放依赖的位置
   libraries:

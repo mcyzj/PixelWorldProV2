@@ -14,4 +14,30 @@ database:
       permissionIsNULL: "加载世界数据失败，世界数据损坏：世界权限组为null"
 world:
   warning:
-    templatePathNotSet: "创建世界失败：Config中没有指定"
+    template:
+      pathNotSet: "检查模板错误：File中没有指定模板路径"
+      pathNotFound: "检查模板错误：无法找到模板目录"
+      worldInMain: "无效模板：主世界应放于 模板存放路径/模板名称/world"
+      noWorld: "无效模板：没有指定的主世界[world]文件夹主世界应放于 模板存放路径/模板名称/world"
+      uidInWorld: "无效模板：主世界文件[world]不应包含uid.dat文件"
+    create:
+      created: "无法创建世界：对象已经有一个世界了"
+    load:
+      noWorldData: "无法加载世界：数据库中没有找到世界数据"
+    unload:
+      unloaded: "无法卸载世界：对象没有世界"
+      noWorldData: "无法卸载世界：数据库中没有找到世界数据"
+      notId: "无法卸载世界：输入值不是一个有效的数字id"
+compress:
+  info:
+    success: "成功压缩世界 "
+command:
+  warning:
+    noPermission: "你没有权限执行这个命令"
+    formatError: "命令格式错误"
+  prompt:
+    admin:
+      create1: "/[pwp主命令] admin create | 为您自身创建一个随机模板的世界"
+      create2: "/[pwp主命令] admin create [模板名称] | 为您自身创建一个指定模板的世界"
+      create3: "/[pwp主命令] admin create [玩家名/玩家uuid] auto | 为指定玩家创建一个随机模板的世界"
+      create4: "/[pwp主命令] admin create [玩家名/玩家uuid] [模板名称] | 为指定玩家创建一个指定模板的世界"

@@ -7,6 +7,7 @@ import com.j256.ormlite.dao.Dao
 import com.mcyzj.pixelworldpro.PixelWorldPro
 import com.mcyzj.pixelworldpro.api.interfaces.DatabaseApi
 import com.mcyzj.pixelworldpro.dataclass.PlayerData
+import com.mcyzj.pixelworldpro.dataclass.WorldCreateData
 import com.mcyzj.pixelworldpro.dataclass.WorldData
 import com.xbaimiao.easylib.module.database.Ormlite
 import com.xbaimiao.easylib.module.utils.submit
@@ -22,6 +23,23 @@ abstract class DatabaseImpl(ormlite: Ormlite) : DatabaseApi {
     private val lang = PixelWorldPro.instance.lang
 
     private val asyncWrite = PixelWorldPro.instance.config.getBoolean("async.database.write")
+    override fun createWorldData(worldData: WorldCreateData): WorldData {
+        val json = createJoinToJson(worldData)
+        val queryBuilder = worldTable.queryBuilder()
+        queryBuilder.where().eq("owner", worldData.owner)
+        var worldDao = queryBuilder.queryForFirst()
+        if (worldDao == null) {
+            worldDao = WorldDao()
+            worldDao.owner = worldData.owner
+            worldDao.data = json.toString()
+            worldTable.create(worldDao)
+        } else {
+            worldDao.owner = worldData.owner
+            worldDao.data = json.toString()
+            worldTable.update(worldDao)
+        }
+        return getWorldData(worldData.owner)!!
+    }
     override fun setWorldData(worldData: WorldData) {
         submit(async = asyncWrite) {
             val json = joinToJson(worldData)
@@ -100,6 +118,19 @@ abstract class DatabaseImpl(ormlite: Ormlite) : DatabaseApi {
     }
     private fun joinToJson(worldData: WorldData): JSONObject {
         val json = JSONObject()
+        json["name"] = worldData.name
+        json["world"] = worldData.world
+        val permission = JSONObject(worldData.permission)
+        json["permission"] = permission
+        val player = JSONObject(worldData.player)
+        json["player"] = player
+        val dimension = JSONObject(worldData.player)
+        json["dimension"] = dimension
+        return json
+    }
+    private fun createJoinToJson(worldData: WorldCreateData): JSONObject {
+        val json = JSONObject()
+        json["name"] = worldData.name
         json["world"] = worldData.world
         val permission = JSONObject(worldData.permission)
         json["permission"] = permission
@@ -116,6 +147,7 @@ abstract class DatabaseImpl(ormlite: Ormlite) : DatabaseApi {
         val dataString = worldDao.data
         val gson = Gson()
         val dataJson = gson.fromJson(dataString, JsonObject::class.java)
+        val name = dataJson["name"].asString
         val world = dataJson["world"].asString
         if (world == null){
             logger.warning("§aPixelWorldPro ${lang.getString("database.warning.world.worldIsNULL")}")
@@ -139,6 +171,7 @@ abstract class DatabaseImpl(ormlite: Ormlite) : DatabaseApi {
         return WorldData(
             id,
             owner,
+            name,
             world,
             permission as HashMap<String, String>,
             player as HashMap<UUID, String>,

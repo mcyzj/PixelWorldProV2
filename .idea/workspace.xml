@@ -4,54 +4,34 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e356bffb-3091-47d8-b0cd-d15642372130" name="更改" comment="">
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/kotlinc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build.gradle.kts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/gradle.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/gradlew" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/gradlew.bat" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/mcyzj/libs/JiangLib.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/mcyzj/libs/Metrics.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/PixelWorldPro.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/api/interfaces/BungeeAPI.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/api/interfaces/DatabaseApi.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/api/interfaces/WorldAPI.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/database/DatabaseDao.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/database/DatabaseImpl.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/database/MysqlDatabaseApi.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/database/SQLiteDatabaseApi.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/dataclass/Player.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/dataclass/World.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/server/World.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/world/WorldImpl.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/AdvancedWorldSettings.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/BungeeSet.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/Config.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/Dimension.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/Eula.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/Expansion.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/Level.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/Permission.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/World.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/WorldBorder.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/gui/BanEdit.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/gui/MembersEdit.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/gui/WorldCreate.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/gui/WorldEdit.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/gui/WorldList.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/gui/WorldRestart.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/gui/custom/customGui.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/lang/zh_cn.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/plugin.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/structure/Hellgate.yml" afterDir="false" />
+    <list default="true" id="e356bffb-3091-47d8-b0cd-d15642372130" name="更改" comment="2023.10.28 更新内容">
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/command/Admin.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/command/Register.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/command/User.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/compress/Zip.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/config/Config.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/server/Player.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/world/Local.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Bukkit/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Bukkit/build.gradle.kts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/PixelWorldPro.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/PixelWorldPro.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/api/interfaces/DatabaseApi.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/api/interfaces/DatabaseApi.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/api/interfaces/WorldAPI.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/api/interfaces/WorldAPI.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/database/DatabaseImpl.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/database/DatabaseImpl.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/dataclass/World.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/dataclass/World.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/server/World.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/server/World.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/world/WorldImpl.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/world/WorldImpl.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/AdvancedWorldSettings.yml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/BungeeSet.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/File.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/Config.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/Config.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/Dimension.yml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/Expansion.yml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/Level.yml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/World.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/World.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/WorldBorder.yml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/lang/zh_cn.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/lang/zh_cn.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/plugin.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/plugin.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -107,6 +87,19 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">
+    <option name="selectedUrlAndAccountId">
+      <UrlAndAccount>
+        <option name="accountId" value="2b83ce9e-12f9-4b32-8d43-89d9742f0e75" />
+        <option name="url" value="https://github.com/mcyzj/PixelWorldProV2.git" />
+      </UrlAndAccount>
+    </option>
+  </component>
   <component name="ProjectId" id="2Wdf7hUVjXXOFxQHi2IvCazbEv3" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <ConfirmationsSetting value="2" id="Add" />
@@ -115,19 +108,19 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ASKED_ADD_EXTERNAL_FILES": "true",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "jdk.selected.JAVA_MODULE": "1.8",
-    "last_opened_file_path": "D:/项目/PixelWorldProV2/src/bukkit",
-    "project.structure.last.edited": "模块",
-    "project.structure.proportion": "0.099609375",
-    "project.structure.side.proportion": "0.24851191"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;jdk.selected.JAVA_MODULE&quot;: &quot;1.8&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/项目/PixelWorldProV2/src/bukkit&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;模块&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.099609375&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.24851191&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="D:\项目\PixelWorldProV2\src\bukkit" />
@@ -141,10 +134,33 @@
       <recent name="D:\项目\PixelWorldProV2\src" />
     </key>
     <key name="MoveKotlinTopLevelDeclarationsDialog.RECENTS_KEY">
+      <recent name="com.mcyzj.pixelworldpro.compress" />
       <recent name="com.mcyzj.pixelworldpro.api.interfaces" />
     </key>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Gradle.PixelWorldProV2 [shadowJar]">
+    <configuration name="PixelWorldProV2 [knows]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="knows" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <ForceTestExec>false</ForceTestExec>
+      <method v="2" />
+    </configuration>
     <configuration name="PixelWorldProV2 [shadowJar]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -247,6 +263,7 @@
     <recent_temporary>
       <list>
         <item itemvalue="Gradle.PixelWorldProV2 [shadowJar]" />
+        <item itemvalue="Gradle.PixelWorldProV2 [knows]" />
       </list>
     </recent_temporary>
   </component>
@@ -260,5 +277,9 @@
       <updated>1697067215764</updated>
     </task>
     <servers />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="2023.10.28 更新内容" />
+    <option name="LAST_COMMIT_MESSAGE" value="2023.10.28 更新内容" />
   </component>
 </project>

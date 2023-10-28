@@ -3,6 +3,7 @@ package com.mcyzj.pixelworldpro
 import com.mcyzj.libs.JiangLib
 import com.mcyzj.libs.Metrics
 import com.mcyzj.pixelworldpro.api.interfaces.DatabaseApi
+import com.mcyzj.pixelworldpro.command.Register
 import com.mcyzj.pixelworldpro.database.MysqlDatabaseApi
 import com.mcyzj.pixelworldpro.database.SQLiteDatabaseApi
 import com.xbaimiao.easylib.EasyPlugin
@@ -20,9 +21,9 @@ class PixelWorldPro : EasyPlugin(){
         lateinit var jedisPool: JedisPool
     }
 
-    var eula = BuiltInConfiguration("Eula.yml")
+    private var eula = BuiltInConfiguration("Eula.yml")
     var config = BuiltInConfiguration("Config.yml")
-    var language = config.getString("lang")?:"zh_cn"
+    private var language = config.getString("lang")?:"zh_cn"
     var lang = BuiltInConfiguration("lang/${language}.yml")
     var pwpDebug = config.getBoolean("debug")
     override fun enable() {
@@ -46,7 +47,7 @@ class PixelWorldPro : EasyPlugin(){
         instance = this
         //加载默认配置文件
         logger.info("§aPixelWorldPro ${lang.getString("config.load")}")
-        saveDefaultConfig()
+        saveOtherConfig()
         //加载语言文件
         saveLang()
         //检查系统信息
@@ -79,6 +80,8 @@ class PixelWorldPro : EasyPlugin(){
                 }
                 databaseApi = MysqlDatabaseApi()
             }
+            //注册命令
+            Register().command.register()
         }
     }
 
@@ -113,6 +116,18 @@ class PixelWorldPro : EasyPlugin(){
     }
     private fun reloadLang() {
         lang = BuiltInConfiguration("lang/${language}.yml")
+    }
+
+    private fun saveOtherConfig() {
+        //遍历插件需要释放的yml配置文件,并保存在生成的插件文件夹中
+        //主配置文件
+        if (!File(dataFolder, "Config.yml").exists()) {
+            saveResource("Config.yml", false)
+        }
+        //存储配置文件
+        if (!File(dataFolder, "File.yml").exists()) {
+            saveResource("File.yml", false)
+        }
     }
     private fun saveGui() {
         logger.info("§aPixelWorldPro ${lang.getString("gui.load")}")

@@ -1,0 +1,22 @@
+#版本设置，请勿更改
+Version: 1
+#创建设置
+Create:
+  #创建使用
+  Use:
+    #默认使用
+    Default:
+      #需要的权限
+      permission: "pwp.create"
+      #Vault井壁
+      money: 0.0
+      #PlayerPoints点券
+      point: 100.0
+    #自定义权限组购买，优先级从上到下
+    Vip:
+      #需要的权限
+      permission: "group.vip"
+      #Vault井壁
+      money: 0.0
+      #PlayerPoints点券
+      point: 0.0

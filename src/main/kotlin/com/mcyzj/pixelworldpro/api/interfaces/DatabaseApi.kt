@@ -2,14 +2,19 @@ package com.mcyzj.pixelworldpro.api.interfaces
 
 import com.mcyzj.pixelworldpro.PixelWorldPro
 import com.mcyzj.pixelworldpro.dataclass.PlayerData
+import com.mcyzj.pixelworldpro.dataclass.WorldCreateData
 import com.mcyzj.pixelworldpro.dataclass.WorldData
 import java.util.*
 import kotlin.collections.HashMap
 
 interface DatabaseApi {
+    /**
+     * 创建一个世界记录
+     */
+    fun createWorldData(worldData: WorldCreateData): WorldData
 
     /**
-     * 创建或覆盖一个世界记录
+     * 覆盖一个世界记录
      */
     fun setWorldData(worldData: WorldData)
     /**
