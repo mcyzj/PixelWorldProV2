@@ -7,16 +7,16 @@ Create:
     #默认使用
     Default:
       #需要的权限
-      permission: "pwp.create"
+      Permission: "pwp.user.create"
       #Vault井壁
-      money: 0.0
+      Money: 0.0
       #PlayerPoints点券
-      point: 100.0
+      Point: 100.0
     #自定义权限组购买，优先级从上到下
     Vip:
       #需要的权限
-      permission: "group.vip"
+      Permission: "group.vip"
       #Vault井壁
-      money: 0.0
+      Money: 0.0
       #PlayerPoints点券
-      point: 0.0
+      Point: 0.0

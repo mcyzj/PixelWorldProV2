@@ -1,3 +1,118 @@
 #配置文件版本号,用于更新配置文件，请勿修改
 #Configuration file version number, used to update the configuration file, please do not modify
 version: 1
+#世界内权限设置
+World:
+  #可以更具相同的格式添加新的用户组，但不会同步到已经创建的世界中，只有后面创建的世界会依据此用户组
+  #拥有者权限，不得删除
+  Owner:
+    #游戏模式
+    GameMode: SURVIVAL
+    #是否能右击方块[与方块交互]
+    BlockRightClick: True
+    #是否能更改方块状态
+    BlockDamage: True
+    #是否能右击实体[与实体交互]
+    RightClickEntity: True
+    #是否能攻击实体[包括动物/怪物/矿车等]
+    AttackEntity: True
+    #是否能攻击玩家
+    AttackPlayer: True
+    #是否能被实体锁定
+    EntityLock: True
+    #是否能传送到指定世界[当然这一项对于拥有者肯定没有用]
+    Teleport: True
+    #是否能更改游戏模式
+    ChangeGameMode: False
+    #是否能更改世界内玩家的游戏模式
+    ChangePlayerGameMode: False
+    #能否飞行
+    Fly: False
+    #更改独立世界的设置[当然这一项对于拥有者肯定没有用]
+    ChangeWorld: True
+    #更改独立世界的权限
+    ChangePermission: False
+  #信任者权限，可删除
+  Member:
+    #游戏模式
+    GameMode: SURVIVAL
+    #是否能右击方块[与方块交互]
+    BlockRightClick: True
+    #是否能更改方块状态
+    BlockDamage: True
+    #是否能右击实体[与实体交互]
+    RightClickEntity: True
+    #是否能攻击实体[包括动物/怪物/矿车等]
+    AttackEntity: True
+    #是否能攻击玩家
+    AttackPlayer: True
+    #是否能被实体锁定
+    EntityLock: True
+    #是否能传送到指定世界
+    Teleport: True
+    #是否能更改游戏模式
+    ChangeGameMode: False
+    #是否能更改世界内玩家的游戏模式
+    ChangePlayerGameMode: False
+    #能否飞行
+    Fly: False
+    #更改独立世界的设置
+    ChangeWorld: False
+    #更改独立世界的权限
+    ChangePermission: False
+  #游客权限，可不删除
+  Visitor:
+    #游戏模式
+    GameMode: ADVENTURE
+    #是否能右击方块[与方块交互]
+    BlockRightClick: False
+    #是否能更改方块状态
+    BlockDamage: False
+    #是否能右击实体[与实体交互]
+    RightClickEntity: False
+    #是否能攻击实体[包括动物/怪物/矿车等]
+    AttackEntity: False
+    #是否能攻击玩家
+    AttackPlayer: False
+    #是否能被实体锁定
+    EntityLock: False
+    #是否能传送到指定世界
+    Teleport: True
+    #是否能更改游戏模式
+    ChangeGameMode: False
+    #是否能更改世界内玩家的游戏模式
+    ChangePlayerGameMode: False
+    #能否飞行
+    Fly: False
+    #更改独立世界的设置
+    ChangeWorld: False
+    #更改独立世界的权限
+    ChangePermission: False
+  #黑名单用户权限，可不删除
+  BlackList:
+    #游戏模式
+    GameMode: ADVENTURE
+    #是否能右击方块[与方块交互]
+    BlockRightClick: False
+    #是否能更改方块状态
+    BlockDamage: False
+    #是否能右击实体[与实体交互]
+    RightClickEntity: False
+    #是否能攻击实体[包括动物/怪物/矿车等]
+    AttackEntity: False
+    #是否能攻击玩家
+    AttackPlayer: False
+    #是否能被实体锁定
+    EntityLock: False
+    #是否能传送到指定世界
+    Teleport: False
+    #是否能更改游戏模式
+    ChangeGameMode: False
+    #是否能更改世界内玩家的游戏模式
+    ChangePlayerGameMode: False
+    #能否飞行
+    Fly: False
+    #更改独立世界的设置
+    ChangeWorld: False
+    #更改独立世界的权限
+    ChangePermission: False

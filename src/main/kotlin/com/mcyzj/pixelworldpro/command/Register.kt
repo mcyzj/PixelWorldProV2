@@ -11,5 +11,6 @@ class Register {
     private val mainCommand = config.getString("mainCommand") ?:"pwp"
     val command = command<CommandSender>(mainCommand) {
         sub(Admin().admin)
+        sub(User().user)
     }
 }

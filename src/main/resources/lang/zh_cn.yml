@@ -22,12 +22,17 @@ world:
       uidInWorld: "无效模板：主世界文件[world]不应包含uid.dat文件"
     create:
       created: "无法创建世界：对象已经有一个世界了"
+      notEnough: "无法创建世界：所需的资源不足"
     load:
       noWorldData: "无法加载世界：数据库中没有找到世界数据"
     unload:
       unloaded: "无法卸载世界：对象没有世界"
       noWorldData: "无法卸载世界：数据库中没有找到世界数据"
       notId: "无法卸载世界：输入值不是一个有效的数字id"
+    tp:
+      noWorld: "无法传送至世界：对象没有世界"
+      worldNotLoad: "无法传送至世界：世界未加载"
+      notId: "无法传送至世界：输入值不是一个有效的数字id"
 compress:
   info:
     success: "成功压缩世界 "
@@ -41,3 +46,6 @@ command:
       create2: "/[pwp主命令] admin create [模板名称] | 为您自身创建一个指定模板的世界"
       create3: "/[pwp主命令] admin create [玩家名/玩家uuid] auto | 为指定玩家创建一个随机模板的世界"
       create4: "/[pwp主命令] admin create [玩家名/玩家uuid] [模板名称] | 为指定玩家创建一个指定模板的世界"
+    user:
+      create1: "/[pwp主命令] create | 为您自身创建一个随机模板的世界"
+      create2: "/[pwp主命令] create [模板名称] | 为您自身创建一个指定模板的世界"

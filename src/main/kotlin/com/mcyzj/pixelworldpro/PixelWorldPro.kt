@@ -6,6 +6,7 @@ import com.mcyzj.pixelworldpro.api.interfaces.DatabaseApi
 import com.mcyzj.pixelworldpro.command.Register
 import com.mcyzj.pixelworldpro.database.MysqlDatabaseApi
 import com.mcyzj.pixelworldpro.database.SQLiteDatabaseApi
+import com.mcyzj.pixelworldpro.listener.World
 import com.xbaimiao.easylib.EasyPlugin
 import com.xbaimiao.easylib.module.chat.BuiltInConfiguration
 import com.xbaimiao.easylib.module.utils.submit
@@ -80,8 +81,12 @@ class PixelWorldPro : EasyPlugin(){
                 }
                 databaseApi = MysqlDatabaseApi()
             }
-            //注册命令
-            Register().command.register()
+            submit {
+                //注册命令
+                Register().command.register()
+                //注册监听
+                Bukkit.getPluginManager().registerEvents(World(), this@PixelWorldPro)
+            }
         }
     }
 

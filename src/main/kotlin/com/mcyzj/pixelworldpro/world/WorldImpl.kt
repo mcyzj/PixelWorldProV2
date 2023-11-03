@@ -1,6 +1,7 @@
 package com.mcyzj.pixelworldpro.world
 
 import com.mcyzj.pixelworldpro.PixelWorldPro
+import com.mcyzj.pixelworldpro.api.interfaces.Permission
 import com.mcyzj.pixelworldpro.api.interfaces.WorldAPI
 import com.mcyzj.pixelworldpro.compress.Zip
 import com.mcyzj.pixelworldpro.config.Config
@@ -60,7 +61,7 @@ object WorldImpl : WorldAPI {
                 owner,
                 owner.toString(),
                 worldName,
-                HashMap<String, String>(),
+                Permission.Factory.get().getConfigWorldPermission(),
                 HashMap<UUID, String>(),
                 HashMap<String, Boolean>()
             )

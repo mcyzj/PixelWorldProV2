@@ -5,31 +5,22 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e356bffb-3091-47d8-b0cd-d15642372130" name="更改" comment="2023.10.28 更新内容">
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/command/Admin.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/command/Register.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/command/User.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/compress/Zip.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/config/Config.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/server/Player.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/world/Local.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/api/interfaces/Permission.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/listener/World.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/permission/PermissionImpl.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Bukkit/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Bukkit/build.gradle.kts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/PixelWorldPro.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/PixelWorldPro.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/api/interfaces/DatabaseApi.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/api/interfaces/DatabaseApi.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/api/interfaces/WorldAPI.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/api/interfaces/WorldAPI.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/command/Admin.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/command/Admin.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/command/Register.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/command/Register.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/command/User.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/command/User.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/config/Config.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/config/Config.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/database/DatabaseImpl.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/database/DatabaseImpl.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/dataclass/World.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/dataclass/World.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/server/World.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/server/World.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/world/Local.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/world/Local.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/world/WorldImpl.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/world/WorldImpl.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/AdvancedWorldSettings.yml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/BungeeSet.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/File.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/Config.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/Config.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/Dimension.yml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/Expansion.yml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/Level.yml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/Permission.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/Permission.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/World.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/World.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/WorldBorder.yml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/lang/zh_cn.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/lang/zh_cn.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/plugin.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/plugin.yml" afterDir="false" />
     </list>
@@ -78,9 +69,9 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Kotlin File" />
-        <option value="Kotlin Interface" />
-        <option value="Kotlin Class" />
         <option value="Kotlin Object" />
+        <option value="Kotlin Class" />
+        <option value="Kotlin Interface" />
       </list>
     </option>
   </component>
@@ -99,6 +90,9 @@
         <option name="url" value="https://github.com/mcyzj/PixelWorldProV2.git" />
       </UrlAndAccount>
     </option>
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
   </component>
   <component name="ProjectId" id="2Wdf7hUVjXXOFxQHi2IvCazbEv3" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
@@ -276,6 +270,15 @@
       <option name="presentableId" value="Default" />
       <updated>1697067215764</updated>
     </task>
+    <task id="LOCAL-00001" summary="2023.10.28 更新内容">
+      <option name="closed" value="true" />
+      <created>1698488756217</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1698488756217</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">

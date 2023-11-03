@@ -14,7 +14,7 @@ class Admin {
     private val create = command<CommandSender>("create") {
         permission = "pwp.admin.create"
         exec{
-            if (!sender.hasPermission("pwp.command.admin.create")){
+            if (!sender.hasPermission("pwp.admin.create")){
                 sender.sendMessage(lang.getString("command.warning.noPermission")?:"你没有权限执行这个命令")
                 return@exec
             }
@@ -57,9 +57,9 @@ class Admin {
     }
 
     private val loadPlayer = command<CommandSender>("player") {
-        permission = "pwp.admin.unload"
+        permission = "pwp.admin.load"
         exec{
-            if (!sender.hasPermission("pwp.command.admin.load")){
+            if (!sender.hasPermission("pwp.admin.load")){
                 sender.sendMessage(lang.getString("command.warning.noPermission")?:"你没有权限执行这个命令")
                 return@exec
             }
@@ -90,9 +90,9 @@ class Admin {
         }
     }
     private val loadId = command<CommandSender>("Id") {
-        permission = "pwp.admin.unload"
+        permission = "pwp.admin.load"
         exec{
-            if (!sender.hasPermission("pwp.command.admin.load")){
+            if (!sender.hasPermission("pwp.admin.load")){
                 sender.sendMessage(lang.getString("command.warning.noPermission")?:"你没有权限执行这个命令")
                 return@exec
             }
@@ -128,6 +128,7 @@ class Admin {
         }
     }
     private val load = command<CommandSender>("load") {
+        permission = "pwp.admin.load"
         sub(loadId)
         sub(loadPlayer)
     }
@@ -135,7 +136,7 @@ class Admin {
     private val unloadPlayer = command<CommandSender>("player") {
         permission = "pwp.admin.unload"
         exec{
-            if (!sender.hasPermission("pwp.command.admin.unload")){
+            if (!sender.hasPermission("pwp.admin.unload")){
                 sender.sendMessage(lang.getString("command.warning.noPermission")?:"你没有权限执行这个命令")
                 return@exec
             }
@@ -168,7 +169,7 @@ class Admin {
     private val unloadId = command<CommandSender>("Id") {
         permission = "pwp.admin.unload"
         exec{
-            if (!sender.hasPermission("pwp.command.admin.unload")){
+            if (!sender.hasPermission("pwp.admin.unload")){
                 sender.sendMessage(lang.getString("command.warning.noPermission")?:"你没有权限执行这个命令")
                 return@exec
             }
@@ -204,8 +205,106 @@ class Admin {
         }
     }
     private val unload = command<CommandSender>("unload") {
+        permission = "pwp.admin.unload"
         sub(unloadId)
         sub(unloadPlayer)
+    }
+
+    private val tpPlayer = command<CommandSender>("player") {
+        permission = "pwp.admin.tp"
+        exec{
+            if (!sender.hasPermission("pwp.admin.tp")){
+                sender.sendMessage(lang.getString("command.warning.noPermission")?:"你没有权限执行这个命令")
+                return@exec
+            }
+            when(args.size){
+                0 -> {
+                    if (database.getWorldData((sender as Player).uniqueId) == null){
+                        sender.sendMessage(lang.getString("world.warning.unload.unloaded")?:"无法卸载世界：对象没有世界")
+                        return@exec
+                    }
+                    WorldAPI.Factory.get().unloadWorld((sender as Player).uniqueId)
+                }
+                1 -> {
+                    val player = com.mcyzj.pixelworldpro.server.Player.getOfflinePlayer(args[0])
+                    if (database.getWorldData(player.uniqueId) == null){
+                        sender.sendMessage(lang.getString("world.warning.unload.unloaded")?:"无法卸载世界：对象没有世界")
+                        return@exec
+                    }
+                    Local.adminUnloadWorld(player.uniqueId)
+                }
+                else -> {
+                    sender.sendMessage(lang.getString("command.warning.formatError")?:"命令格式错误")
+                    sender.sendMessage(lang.getString("command.prompt.admin.create1")?:"???")
+                    sender.sendMessage(lang.getString("command.prompt.admin.create2")?:"???")
+                    sender.sendMessage(lang.getString("command.prompt.admin.create3")?:"???")
+                    sender.sendMessage(lang.getString("command.prompt.admin.create4")?:"???")
+                }
+            }
+        }
+    }
+    private val tpId = command<CommandSender>("Id") {
+        permission = "pwp.admin.tp"
+        exec{
+            if (!sender.hasPermission("pwp.admin.tp")){
+                sender.sendMessage(lang.getString("command.warning.noPermission")?:"你没有权限执行这个命令")
+                return@exec
+            }
+            when(args.size){
+                0 -> {
+                    if (database.getWorldData((sender as Player).uniqueId) == null){
+                        sender.sendMessage(lang.getString("world.warning.tp.noWorld")?:"无法传送至世界：对象没有世界")
+                        return@exec
+                    }
+                    Local.adminTpWorldId(sender as Player, database.getWorldData((sender as Player).uniqueId)!!.id)
+                }
+                1 -> {
+                    val id = try {
+                        args[0].toInt()
+                    }catch (_:Exception){
+                        sender.sendMessage(lang.getString("world.warning.unload.notID")?:"无法卸载世界：输入值不是一个有效的数字id")
+                        return@exec
+                    }
+                    if (database.getWorldData(id) == null){
+                        sender.sendMessage(lang.getString("world.warning.tp.noWorld")?:"无法传送至世界：对象没有世界")
+                        return@exec
+                    }
+                    Local.adminTpWorldId(sender as Player, id)
+                }
+                2 -> {
+                    val player = com.mcyzj.pixelworldpro.server.Player.getOfflinePlayer(args[0])
+                    if (database.getWorldData(player.uniqueId) == null){
+                        sender.sendMessage(lang.getString("world.warning.tp.noWorld")?:"无法传送至世界：对象没有世界")
+                        return@exec
+                    }
+                    val id = try {
+                        args[0].toInt()
+                    }catch (_:Exception){
+                        sender.sendMessage(lang.getString("world.warning.unload.notID")?:"无法卸载世界：输入值不是一个有效的数字id")
+                        return@exec
+                    }
+                    if (database.getWorldData(id) == null){
+                        sender.sendMessage(lang.getString("world.warning.tp.noWorld")?:"无法传送至世界：对象没有世界")
+                        return@exec
+                    }
+                    if (player.isOnline){
+                        Local.adminTpWorldId(player as Player, id)
+                    }
+                }
+                else -> {
+                    sender.sendMessage(lang.getString("command.warning.formatError")?:"命令格式错误")
+                    sender.sendMessage(lang.getString("command.prompt.admin.create1")?:"???")
+                    sender.sendMessage(lang.getString("command.prompt.admin.create2")?:"???")
+                    sender.sendMessage(lang.getString("command.prompt.admin.create3")?:"???")
+                    sender.sendMessage(lang.getString("command.prompt.admin.create4")?:"???")
+                }
+            }
+        }
+    }
+    private val tp = command<CommandSender>("tp") {
+        permission = "pwp.admin.tp"
+        sub(tpId)
+        sub(tpPlayer)
     }
 
     val admin = command<CommandSender>("admin") {

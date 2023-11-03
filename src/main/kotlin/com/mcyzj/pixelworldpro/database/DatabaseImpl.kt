@@ -120,8 +120,13 @@ abstract class DatabaseImpl(ormlite: Ormlite) : DatabaseApi {
         val json = JSONObject()
         json["name"] = worldData.name
         json["world"] = worldData.world
-        val permission = JSONObject(worldData.permission)
-        json["permission"] = permission
+        val permissionData = JSONObject()
+        val permissionList = worldData.permission.keys
+        for (key in permissionList){
+            val permissionJson = JSONObject(worldData.permission[key])
+            permissionData[key] = permissionJson
+        }
+        json["permission"] = permissionData
         val player = JSONObject(worldData.player)
         json["player"] = player
         val dimension = JSONObject(worldData.player)
@@ -132,8 +137,13 @@ abstract class DatabaseImpl(ormlite: Ormlite) : DatabaseApi {
         val json = JSONObject()
         json["name"] = worldData.name
         json["world"] = worldData.world
-        val permission = JSONObject(worldData.permission)
-        json["permission"] = permission
+        val permissionData = JSONObject()
+        val permissionList = worldData.permission.keys
+        for (key in permissionList){
+            val permissionJson = JSONObject(worldData.permission[key])
+            permissionData[key] = permissionJson
+        }
+        json["permission"] = permissionData
         val player = JSONObject(worldData.player)
         json["player"] = player
         val dimension = JSONObject(worldData.player)
@@ -153,10 +163,15 @@ abstract class DatabaseImpl(ormlite: Ormlite) : DatabaseApi {
             logger.warning("§aPixelWorldPro ${lang.getString("database.warning.world.worldIsNULL")}")
             return null
         }
-        val permission = gson.fromJson(dataJson["permission"].asJsonObject, HashMap::class.java)
+        val permission = gson.fromJson(dataJson["permission"].asJsonObject, JsonObject::class.java)
         if (permission == null){
             logger.warning("§aPixelWorldPro ${lang.getString("database.warning.world.permissionIsNULL")}")
             return null
+        }
+        val permissionMap = HashMap<String, HashMap<String, String>>()
+        for (key in permission.asMap().keys){
+            val permissionData = gson.fromJson(permission.asMap()[key], HashMap::class.java)
+            permissionMap[key] = permissionData as HashMap<String, String>
         }
         val player = gson.fromJson(dataJson["player"].asJsonObject, HashMap::class.java)
         if (player == null){
@@ -173,7 +188,7 @@ abstract class DatabaseImpl(ormlite: Ormlite) : DatabaseApi {
             owner,
             name,
             world,
-            permission as HashMap<String, String>,
+            permissionMap,
             player as HashMap<UUID, String>,
             dimension as HashMap<String, Boolean>
         )

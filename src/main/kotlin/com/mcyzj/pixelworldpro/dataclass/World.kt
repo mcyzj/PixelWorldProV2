@@ -12,7 +12,7 @@ data class WorldData(
     //世界文件名
     var world: String,
     //世界权限表
-    var permission: HashMap<String, String>,
+    var permission: HashMap<String, HashMap<String, String>>,
     //玩家权限表
     var player: HashMap<UUID, String>,
     //世界维度表
@@ -26,7 +26,7 @@ data class WorldCreateData(
     //世界文件名
     var world: String,
     //世界权限表
-    var permission: HashMap<String, String>,
+    var permission: HashMap<String, HashMap<String, String>>,
     //玩家权限表
     var player: HashMap<UUID, String>,
     //世界维度表
