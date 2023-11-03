@@ -2,6 +2,7 @@ package com.mcyzj.pixelworldpro.command
 
 import com.mcyzj.pixelworldpro.PixelWorldPro
 import com.mcyzj.pixelworldpro.api.interfaces.WorldAPI
+import com.mcyzj.pixelworldpro.config.Config
 import com.mcyzj.pixelworldpro.world.Local
 import com.xbaimiao.easylib.module.command.command
 import org.bukkit.command.CommandSender
@@ -220,18 +221,27 @@ class Admin {
             when(args.size){
                 0 -> {
                     if (database.getWorldData((sender as Player).uniqueId) == null){
-                        sender.sendMessage(lang.getString("world.warning.unload.unloaded")?:"无法卸载世界：对象没有世界")
+                        sender.sendMessage(lang.getString("world.warning.tp.noWorld")?:"无法传送至世界：对象没有世界")
                         return@exec
                     }
-                    WorldAPI.Factory.get().unloadWorld((sender as Player).uniqueId)
+                    Local.adminTpWorldId(sender as Player, database.getWorldData((sender as Player).uniqueId)!!.id)
                 }
                 1 -> {
                     val player = com.mcyzj.pixelworldpro.server.Player.getOfflinePlayer(args[0])
                     if (database.getWorldData(player.uniqueId) == null){
-                        sender.sendMessage(lang.getString("world.warning.unload.unloaded")?:"无法卸载世界：对象没有世界")
+                        sender.sendMessage(lang.getString("world.warning.tp.noWorld")?:"无法传送至世界：对象没有世界")
                         return@exec
                     }
-                    Local.adminUnloadWorld(player.uniqueId)
+                    Local.adminTpWorldId(sender as Player, database.getWorldData(player.uniqueId)!!.id)
+                }
+                2 -> {
+                    val player = com.mcyzj.pixelworldpro.server.Player.getOfflinePlayer(args[1])
+                    if (database.getWorldData(player.uniqueId) == null){
+                        sender.sendMessage(lang.getString("world.warning.tp.noWorld")?:"无法传送至世界：对象没有世界")
+                        return@exec
+                    }
+                    val player2 = com.mcyzj.pixelworldpro.server.Player.getOfflinePlayer(args[0])
+                    Local.adminTpWorldId(player2 as Player, database.getWorldData(player.uniqueId)!!.id)
                 }
                 else -> {
                     sender.sendMessage(lang.getString("command.warning.formatError")?:"命令格式错误")
@@ -262,7 +272,7 @@ class Admin {
                     val id = try {
                         args[0].toInt()
                     }catch (_:Exception){
-                        sender.sendMessage(lang.getString("world.warning.unload.notID")?:"无法卸载世界：输入值不是一个有效的数字id")
+                        sender.sendMessage(lang.getString("world.warning.tp.notID")?:"无法传送至世界：输入值不是一个有效的数字id")
                         return@exec
                     }
                     if (database.getWorldData(id) == null){
@@ -272,15 +282,11 @@ class Admin {
                     Local.adminTpWorldId(sender as Player, id)
                 }
                 2 -> {
-                    val player = com.mcyzj.pixelworldpro.server.Player.getOfflinePlayer(args[0])
-                    if (database.getWorldData(player.uniqueId) == null){
-                        sender.sendMessage(lang.getString("world.warning.tp.noWorld")?:"无法传送至世界：对象没有世界")
-                        return@exec
-                    }
+                    val player = com.mcyzj.pixelworldpro.server.Player.getOfflinePlayer(args[1])
                     val id = try {
                         args[0].toInt()
                     }catch (_:Exception){
-                        sender.sendMessage(lang.getString("world.warning.unload.notID")?:"无法卸载世界：输入值不是一个有效的数字id")
+                        sender.sendMessage(lang.getString("world.warning.tp.notID")?:"无法传送至世界：输入值不是一个有效的数字id")
                         return@exec
                     }
                     if (database.getWorldData(id) == null){
@@ -307,10 +313,16 @@ class Admin {
         sub(tpPlayer)
     }
 
+    private val reload = command<CommandSender>("reload") {
+        Config.reload()
+    }
+
     val admin = command<CommandSender>("admin") {
         permission = "pwp.admin"
         sub(create)
         sub(load)
         sub(unload)
+        sub(tp)
+        sub(reload)
     }
 }

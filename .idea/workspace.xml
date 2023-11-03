@@ -4,25 +4,29 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e356bffb-3091-47d8-b0cd-d15642372130" name="更改" comment="2023.10.28 更新内容">
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/api/interfaces/Permission.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/listener/World.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/permission/PermissionImpl.kt" afterDir="false" />
+    <list default="true" id="e356bffb-3091-47d8-b0cd-d15642372130" name="更改" comment="2023.11.3 更新内容">
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/dataclass/Gui.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/gui/Core.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/gui/Open.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/gui/WorldCreate.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle.kts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/PixelWorldPro.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/PixelWorldPro.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/command/Admin.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/command/Admin.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/command/Register.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/command/Register.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/command/User.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/command/User.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/config/Config.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/config/Config.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/database/DatabaseImpl.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/database/DatabaseImpl.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/dataclass/World.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/dataclass/World.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/listener/World.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/listener/World.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/world/Local.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/world/Local.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/world/WorldImpl.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/world/WorldImpl.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/Permission.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/Permission.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/World.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/World.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/gui/BanEdit.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/gui/BanEdit.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/gui/MembersEdit.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/gui/MembersEdit.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/gui/WorldCreate.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/gui/WorldCreate.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/gui/WorldEdit.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/gui/WorldEdit.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/gui/WorldList.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/gui/WorldList.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/gui/WorldRestart.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/gui/WorldRestart.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/gui/custom/customGui.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/gui/custom/customGui.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/lang/zh_cn.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/lang/zh_cn.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/plugin.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/plugin.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -68,10 +72,10 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Kotlin File" />
-        <option value="Kotlin Object" />
-        <option value="Kotlin Class" />
         <option value="Kotlin Interface" />
+        <option value="Kotlin File" />
+        <option value="Kotlin Class" />
+        <option value="Kotlin Object" />
       </list>
     </option>
   </component>
@@ -102,25 +106,26 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;jdk.selected.JAVA_MODULE&quot;: &quot;1.8&quot;,
-    &quot;last_opened_file_path&quot;: &quot;D:/项目/PixelWorldProV2/src/bukkit&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;模块&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.099609375&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.24851191&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_ADD_EXTERNAL_FILES": "true",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "jdk.selected.JAVA_MODULE": "1.8",
+    "last_opened_file_path": "D:/项目/PixelWorldProV2/src/main/resources",
+    "project.structure.last.edited": "模块",
+    "project.structure.proportion": "0.099609375",
+    "project.structure.side.proportion": "0.24851191"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\项目\PixelWorldProV2\src\main\resources" />
+      <recent name="D:\项目\PixelWorldProV2\src\main\kotlin\com\mcyzj\pixelworldpro" />
       <recent name="D:\项目\PixelWorldProV2\src\bukkit" />
       <recent name="D:\项目\PixelWorldProV2\src\main\kotlin\com\mcyzj\pixelworldpro\database" />
       <recent name="D:\项目\PixelWorldProV2\src\main\kotlin" />
-      <recent name="D:\项目\PixelWorldProV2\src\main" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="D:\项目\PixelWorldProV2" />
@@ -130,6 +135,9 @@
     <key name="MoveKotlinTopLevelDeclarationsDialog.RECENTS_KEY">
       <recent name="com.mcyzj.pixelworldpro.compress" />
       <recent name="com.mcyzj.pixelworldpro.api.interfaces" />
+    </key>
+    <key name="CopyKotlinDeclarationDialog.RECENTS_KEY">
+      <recent name="com.mcyzj.pixelworldpro.gui" />
     </key>
   </component>
   <component name="RunManager" selected="Gradle.PixelWorldProV2 [shadowJar]">
@@ -278,11 +286,43 @@
       <option name="project" value="LOCAL" />
       <updated>1698488756217</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="2023.11.3 更新内容">
+      <option name="closed" value="true" />
+      <created>1698990119984</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1698990119984</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="beta" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="2023.10.28 更新内容" />
-    <option name="LAST_COMMIT_MESSAGE" value="2023.10.28 更新内容" />
+    <MESSAGE value="2023.11.3 更新内容" />
+    <option name="LAST_COMMIT_MESSAGE" value="2023.11.3 更新内容" />
   </component>
 </project>

@@ -1,0 +1,43 @@
+#填写自定义GUI的类型，比如WorldCreate,WorldEdit,这样你就可以使用对应菜单的按钮type了
+#填写null的话就是当作菜单插件来用了，只会执行对应命令
+guiType: WorldCreate
+title: "创建世界2"
+
+slots:
+  - 'NNNNNNNNN'
+  - 'A        '
+  - '    C    '
+  - 'E        '
+  - 'NNNNXNNNN'
+
+items:
+  N:
+    material: GLASS_PANE
+  X:
+    material: BARRIER
+    name: '&c&l关闭'
+    lore:
+      - '&f点击关闭'
+    commands:
+      - '[close]'
+  A:
+    type: Template
+    #模板文件夹名,点击后点击创建世界按钮就会创建对应模板的世界
+    value: desert
+    material: PAPER
+    name: '&a&l沙漠模板'
+    lore:
+      - '&f选择此模板'
+  C:
+    type: CreateWorld
+    #写模板文件夹名就是创建对应模板的世界，写random就是随机创建世界
+    value: random
+    material: GRASS_BLOCK
+    name: '&a&l创建世界'
+    lore:
+      - '&f当前选择的模板为: %template%'
+  E:
+    material: GRASS_BLOCK
+    name: '&a&l上一页'
+    commands:
+      - '[player] pixelworldpro gui WorldCreate.yml'

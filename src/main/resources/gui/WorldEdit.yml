@@ -1,0 +1,58 @@
+title: "世界设置"
+
+slots:
+  - 'NNNNNNNNN'
+  - 'ABCDEF   '
+  - 'NNNNXNNNN'
+
+items:
+  N:
+    material: GLASS_PANE
+  A:
+    type: LevelUp
+    #both/money/points/none
+    value: both
+    material: PAPER
+    name: '&a&l世界升级'
+    lore:
+      - '&f当前世界等级为: %pixelworldpro_worldlevel%'
+      - '&f点击升级'
+  B:
+    type: Restart
+    value: restart
+    material: PAPER
+    name: '&4&l重置世界'
+    lore:
+      - '&f危险操作'
+  C:
+    type: Member
+    value: member
+    material: GRASS_BLOCK
+    name: '&a&l管理成员'
+  D:
+    type: Ban
+    value: ban
+    material: GRASS_BLOCK
+    name: '&a&l管理黑名单'
+  E:
+    type: Mode
+    value: mode
+    material: GRASS_BLOCK
+    name: '&a&l世界模式'
+    lore:
+      - '&f当前世界模式为: %pixelworldpro_state%'
+  F:
+    type: Delete
+    value: delete
+    material: BARRIER
+    name: '&a&l删除世界'
+  X:
+    material: BARRIER
+    name: '&c&l关闭'
+    lore:
+      - '&f点击关闭'
+    commands:
+      - '[close]'
+LevelUp:
+  Money: 100.0
+  Points: 100.0

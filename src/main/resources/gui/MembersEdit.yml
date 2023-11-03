@@ -1,0 +1,50 @@
+title: "成员管理"
+
+slots:
+  - 'NNNNNNNNN'
+  - '         '
+  - 'BBBBBBBBB'
+  - 'BBBBBBBBB'
+  - 'BBBBBBBBB'
+  - 'NNNNXNNNN'
+
+items:
+  N:
+    material: GLASS_PANE
+  B:
+    type: MemberList
+    #both/money/points/none/permission
+    value: both
+  X:
+    material: BARRIER
+    name: '&c&l关闭'
+    lore:
+      - '&f点击关闭'
+    commands:
+      - '[close]'
+Owner:
+  material: PLAYER_HEAD
+  name: '&a&l%player_name%'
+  skull: '%player_name%'
+  lore:
+    - '&f这是你自己。删除不了的'
+Member:
+  material: PLAYER_HEAD
+  name: '&a&l%player_name%'
+  skull: '%player_name%'
+  lore:
+    - '&f点击删除并拉黑'
+UnMember:
+  material: BARREL
+  name: '&c&l解锁槽位'
+  lore:
+    - '&f点击解锁'
+    - '需要花钱或者权限或者点券'
+#玩家世界默认可以有的成员数
+#Player world default members number
+DefaultMembersNumber: 5
+Money: 100.0
+Points: 100.0
+Permission:
+  pixelworldpro.vip: 10
+  pixelworldpro.svip: 20

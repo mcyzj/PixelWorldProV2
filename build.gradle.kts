@@ -12,7 +12,7 @@ plugins {
 }
 
 group = "com.mcyzj"
-version = "2.0.0-b1"
+version = "2.0.0-a1"
 
 easylib {
     version = "2.3.9"

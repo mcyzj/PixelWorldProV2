@@ -1,5 +1,6 @@
 package com.mcyzj.pixelworldpro.config
 
+import com.mcyzj.pixelworldpro.PixelWorldPro
 import com.xbaimiao.easylib.module.chat.BuiltInConfiguration
 
 object Config {
@@ -12,5 +13,6 @@ object Config {
         file = BuiltInConfiguration("File.yml")
         world = BuiltInConfiguration("World.yml")
         permission = BuiltInConfiguration("Permission.yml")
+        PixelWorldPro.instance.reloadAll()
     }
 }

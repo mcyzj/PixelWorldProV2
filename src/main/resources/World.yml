@@ -20,3 +20,6 @@ Create:
       Money: 0.0
       #PlayerPoints点券
       Point: 0.0
+Unload:
+  #当玩家世界卸载时传送世界剩余玩家至的世界
+  world: "world"

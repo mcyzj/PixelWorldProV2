@@ -31,7 +31,7 @@ world:
       notId: "无法卸载世界：输入值不是一个有效的数字id"
     tp:
       noWorld: "无法传送至世界：对象没有世界"
-      worldNotLoad: "无法传送至世界：世界未加载"
+      notLoad: "无法传送至世界：世界未加载"
       notId: "无法传送至世界：输入值不是一个有效的数字id"
 compress:
   info:

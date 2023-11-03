@@ -1,0 +1,76 @@
+title: "世界列表"
+
+slots:
+  - 'BNNNONNNN'
+  - 'AAAAAAAAA'
+  - 'AAAAAAAAA'
+  - 'AAAAAAAAA'
+  - 'UNNNXNNND'
+
+items:
+  B:
+    material: GRASS_BLOCK
+    name: '&a&l我的世界'
+    lore:
+      - '返回%player_name%的世界'
+    commands:
+      - '[player] pwp tp'
+  N:
+    material: GLASS_PANE
+  X:
+    material: BARRIER
+    name: '&c&l关闭'
+    lore:
+      - '&f点击关闭'
+    commands:
+      - '[close]'
+  O:
+    type: ChangeList
+    #value: public/trust
+    value: public
+  A:
+    type: List
+    material: PLAYER_HEAD
+    skull: '%player_name%'
+    name: '&a&l进入该世界'
+    lore:
+      - '&f你在该世界的身份为'
+      - '&f{role}'
+      - '&f该世界主人%player_name%'
+      - '&f该世界创建时间%pixelworldpro_createtime%'
+      - '&f该世界等级%pixelworldpro_worldlevel%'
+  U:
+    type: Page
+    value: back
+    material: GRASS_BLOCK
+    name: '&a&l上一页'
+    lore:
+      - '第{page}页'
+  D:
+    type: Page
+    value: next
+    material: GRASS_BLOCK
+    name: '&a&l下一页'
+    lore:
+      - '第{page}页'
+ChangeList:
+  public:
+    material: GRASS_BLOCK
+    name: '&a&l公开列表'
+    lore:
+      - '点击切换列表'
+      - '当前列表为公开列表'
+      - '下一个列表为信任列表'
+  trust:
+    material: GRASS_BLOCK
+    name: '&a&l信任列表'
+    lore:
+      - '点击切换列表'
+      - '当前列表为信任列表'
+      - '下一个列表为公开列表'
+List:
+  role:
+    owner: '&c&l世界主人'
+    member: '&a&l世界成员'
+    visitor: '&7&l世界访客'
+    ban: '&7&l黑名单'

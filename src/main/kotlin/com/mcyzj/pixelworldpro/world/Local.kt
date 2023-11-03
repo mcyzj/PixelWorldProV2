@@ -55,6 +55,12 @@ object Local {
         return worldApi.unloadWorld(id)
     }
 
+    fun unloadAllWorld(){
+        for (key in localWorld.keys){
+            adminUnloadWorld(key)
+        }
+    }
+
     fun createWorld(owner: UUID, template: String?){
         val player = Bukkit.getPlayer(owner)!!
         if (!checkCreateMoney(owner)){
@@ -167,7 +173,21 @@ object Local {
     }
 
     fun adminTpWorldId(player: Player, id: Int){
-        val world = localWorld[id] ?:return
+        val world = localWorld[id]
+        if (world == null){
+            player.sendMessage(lang.getString("world.warning.tp.notLoad")?:"无法传送至世界：世界未加载")
+            return
+        }
+        val location = world.spawnLocation
+        player.teleport(location)
+    }
+
+    fun tpWorldId(player: Player, id: Int){
+        var world = localWorld[id]
+        if (world == null){
+            adminLoadWorld(id)
+        }
+        world = localWorld[id]?:return
         val location = world.spawnLocation
         player.teleport(location)
     }

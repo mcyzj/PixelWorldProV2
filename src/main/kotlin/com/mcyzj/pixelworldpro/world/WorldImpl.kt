@@ -23,6 +23,7 @@ object WorldImpl : WorldAPI {
     private var config = Config.config
     private val database = PixelWorldPro.databaseApi
     private var file = Config.file
+    private var worldConfig = Config.world
 
     private val asyncLoad = config.getBoolean("async.world.load")
     override fun createWorld(owner: UUID, template: String): CompletableFuture<Boolean> {
@@ -139,6 +140,9 @@ object WorldImpl : WorldAPI {
                 future.complete(true)
                 return@submit
             }
+            for (player in world.players){
+                player.teleport(Bukkit.getWorld(worldConfig.getString("Unload.world")?: "world")!!.spawnLocation)
+            }
             if (Bukkit.unloadWorld(world, true)){
                 localWorld.remove(worldData.id)
                 Zip.toZip(worldData.world, worldData.world)
@@ -168,6 +172,9 @@ object WorldImpl : WorldAPI {
                 localWorld.remove(worldData.id)
                 future.complete(true)
                 return@submit
+            }
+            for (player in world.players){
+                player.teleport(Bukkit.getWorld(worldConfig.getString("Unload.world")?: "world")!!.spawnLocation)
             }
             if (Bukkit.unloadWorld(world, true)){
                 localWorld.remove(worldData.id)

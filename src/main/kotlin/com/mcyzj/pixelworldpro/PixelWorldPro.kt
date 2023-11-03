@@ -7,6 +7,7 @@ import com.mcyzj.pixelworldpro.command.Register
 import com.mcyzj.pixelworldpro.database.MysqlDatabaseApi
 import com.mcyzj.pixelworldpro.database.SQLiteDatabaseApi
 import com.mcyzj.pixelworldpro.listener.World
+import com.mcyzj.pixelworldpro.world.Local
 import com.xbaimiao.easylib.EasyPlugin
 import com.xbaimiao.easylib.module.chat.BuiltInConfiguration
 import com.xbaimiao.easylib.module.utils.submit
@@ -88,6 +89,53 @@ class PixelWorldPro : EasyPlugin(){
                 Bukkit.getPluginManager().registerEvents(World(), this@PixelWorldPro)
             }
         }
+    }
+
+    fun reloadAll(){
+        //开始插件加载
+        val jdkVersion = System.getProperty("java.version") // jdk 版本
+        logger.info("§aPixelWorldPro 开始重载于JDK${jdkVersion}上")
+        instance = this
+        //加载默认配置文件
+        logger.info("§aPixelWorldPro ${lang.getString("config.load")}")
+        saveOtherConfig()
+        //加载语言文件
+        saveLang()
+        //检查系统信息
+        checkServer()
+        //同意eula
+        if (!eula.getBoolean("eula")){
+            if (eula()){
+                eula.set("eula", true)
+                eula.saveToFile()
+            }else{
+                return
+            }
+        }
+        //加载gui界面
+        saveGui()
+        //加载数据库
+        submit(async = config.getBoolean("async.database.connect")) {
+            if (config.getBoolean("debug")) {
+                Bukkit.getConsoleSender().sendMessage("§aPixelWorldPro 加载数据")
+            }
+            if (config.getString("Database").equals("db", true)) {
+                if (config.getBoolean("debug")) {
+                    Bukkit.getConsoleSender().sendMessage("§aPixelWorldPro 加载sqlite数据库")
+                }
+                databaseApi = SQLiteDatabaseApi()
+            }
+            if (config.getString("Database").equals("mysql", true)) {
+                if (config.getBoolean("debug")) {
+                    Bukkit.getConsoleSender().sendMessage("§aPixelWorldPro 加载MySQL数据库")
+                }
+                databaseApi = MysqlDatabaseApi()
+            }
+        }
+    }
+
+    override fun onDisable() {
+        Local.unloadAllWorld()
     }
 
     private fun eula(): Boolean{
