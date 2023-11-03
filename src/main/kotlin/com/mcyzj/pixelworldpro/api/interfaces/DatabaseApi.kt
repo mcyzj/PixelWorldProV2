@@ -4,6 +4,7 @@ import com.mcyzj.pixelworldpro.PixelWorldPro
 import com.mcyzj.pixelworldpro.dataclass.PlayerData
 import com.mcyzj.pixelworldpro.dataclass.WorldCreateData
 import com.mcyzj.pixelworldpro.dataclass.WorldData
+import org.json.simple.JSONObject
 import java.util.*
 import kotlin.collections.HashMap
 
@@ -38,13 +39,17 @@ interface DatabaseApi {
      */
     fun deleteWorldData(owner: UUID)
     /**
-     * 获取所有世界id map,按照在线人数排序
+     * 获取所有世界id map
      */
     fun getWorldIdMap(): HashMap<Int, WorldData>
     /**
-     * 获取所有世界的uuid map,按照在线人数排序
+     * 获取所有世界的uuid map
      */
     fun getWorldUUIDMap(): HashMap<UUID,WorldData>
+    /**
+     * 获取所有世界的uuid list
+     */
+    fun getWorldUUIDList(start:Int,number: Int): List<UUID>
     /**
      * 创建或覆盖一个玩家记录,此操作为同步数据库操作
      */
@@ -53,6 +58,8 @@ interface DatabaseApi {
      * 获取一个玩家记录，此操作为同步数据库操作
      */
     fun getPlayerData(uuid: UUID): PlayerData?
+
+    fun joinToJson(worldData: WorldData): JSONObject
     fun getInstance(): DatabaseApi {
         return PixelWorldPro.databaseApi
     }

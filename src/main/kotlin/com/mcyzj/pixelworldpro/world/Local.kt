@@ -2,6 +2,7 @@ package com.mcyzj.pixelworldpro.world
 
 import com.mcyzj.pixelworldpro.PixelWorldPro
 import com.mcyzj.pixelworldpro.api.interfaces.WorldAPI
+import com.mcyzj.pixelworldpro.compress.Zip
 import com.mcyzj.pixelworldpro.config.Config
 import com.mcyzj.pixelworldpro.server.World.localWorld
 import com.xbaimiao.easylib.bridge.economy.PlayerPoints
@@ -18,13 +19,13 @@ object Local {
     private val lang = PixelWorldPro.instance.lang
     private val database = PixelWorldPro.databaseApi
     private var file = Config.file
-    private var world = Config.world
+    private var worldConfig = Config.world
     fun adminCreateWorld(owner: UUID, template: String?): CompletableFuture<Boolean>{
         val future = CompletableFuture<Boolean>()
         val temp = if (template == null){
             val templatePath = file.getString("Template.Path")
             if (templatePath == null){
-                logger.warning("§aPixelWorldPro ${lang.getString("world.warning.template.pathNotSet")}")
+                logger.warning("§aPixelWorldPro ${lang.getString("worldConfig.warning.template.pathNotSet")}")
                 future.complete(false)
                 return future
             } else {
@@ -57,19 +58,40 @@ object Local {
 
     fun unloadAllWorld(){
         for (key in localWorld.keys){
-            adminUnloadWorld(key)
+            logger.info("§aPixelWorldPro 使用线程：${Thread.currentThread().name} 进行世界卸载操作")
+            //拉取世界数据
+            val worldData = database.getWorldData(key)
+            if (worldData == null){
+                logger.warning("§aPixelWorldPro $key ${lang.getString("worldConfig.warning.unload.noWorldData")}")
+                return
+            }
+            //获取世界
+            val world = localWorld[worldData.id]
+            if (world == null) {
+                localWorld.remove(worldData.id)
+                return
+            }
+            if (Bukkit.unloadWorld(world, true)){
+                localWorld.remove(worldData.id)
+                Zip.toZip(worldData.world, worldData.world)
+                File(file.getString("World.Server"), worldData.world).deleteRecursively()
+            }
         }
     }
 
     fun createWorld(owner: UUID, template: String?){
+        if (database.getWorldData(owner) != null){
+            Bukkit.getPlayer(owner)?.sendMessage(lang.getString("worldConfig.warning.create.created")?:"无法创建世界：对象已经有一个世界了")
+            return
+        }
         val player = Bukkit.getPlayer(owner)!!
         if (!checkCreateMoney(owner)){
-            player.sendMessage(lang.getString("world.warning.create.notEnough")?: "无法创建世界：所需的资源不足")
+            player.sendMessage(lang.getString("worldConfig.warning.create.notEnough")?: "无法创建世界：所需的资源不足")
         }
         val temp = if (template == null){
             val templatePath = file.getString("Template.Path")
             if (templatePath == null){
-                logger.warning("§aPixelWorldPro ${lang.getString("world.warning.template.pathNotSet")}")
+                logger.warning("§aPixelWorldPro ${lang.getString("worldConfig.warning.template.pathNotSet")}")
                 return
             } else {
                 val templateFile = File(templatePath)
@@ -83,45 +105,45 @@ object Local {
         val future = worldApi.createWorld(owner, temp)
         future.thenApply {
             if (!takeCreateMoney(owner)){
-                player.sendMessage(lang.getString("world.warning.create.notEnough")?: "无法创建世界：所需的资源不足")
+                player.sendMessage(lang.getString("worldConfig.warning.create.notEnough")?: "无法创建世界：所需的资源不足")
             }
         }
     }
 
     private fun checkCreateMoney(user: UUID):Boolean{
         val player = Bukkit.getPlayer(user) ?: return false
-        val useList = world.getConfigurationSection("Create.Use")!!.getKeys(false)
+        val useList = worldConfig.getConfigurationSection("Create.Use")!!.getKeys(false)
         useList.remove("Default")
         if (useList.isNotEmpty()){
             for (use in useList){
-                val permission = world.getString("Create.Use.$use.Permission")!!
+                val permission = worldConfig.getString("Create.Use.$use.Permission")!!
                 if (!player.hasPermission(permission)){
                     return false
                 }
-                if (world.getDouble("Create.Use.$use.Money") > 0.0) {
-                    if (!Vault().has(player, world.getDouble("Create.Use.$use.Money"))) {
+                if (worldConfig.getDouble("Create.Use.$use.Money") > 0.0) {
+                    if (!Vault().has(player, worldConfig.getDouble("Create.Use.$use.Money"))) {
                         return false
                     }
                 }
-                if (world.getDouble("Create.Use.$use.Point") > 0.0) {
-                    if (!PlayerPoints().has(player, world.getDouble("Create.Use.$use.Point"))) {
+                if (worldConfig.getDouble("Create.Use.$use.Point") > 0.0) {
+                    if (!PlayerPoints().has(player, worldConfig.getDouble("Create.Use.$use.Point"))) {
                         return false
                     }
                 }
                 return true
             }
         }
-        val permission = world.getString("Create.Use.Default.Permission")!!
+        val permission = worldConfig.getString("Create.Use.Default.Permission")!!
         if (!player.hasPermission(permission)){
             return false
         }
-        if (world.getDouble("Create.Use.Default.Money") > 0.0) {
-            if (!Vault().has(player, world.getDouble("Create.Use.Default.Money"))) {
+        if (worldConfig.getDouble("Create.Use.Default.Money") > 0.0) {
+            if (!Vault().has(player, worldConfig.getDouble("Create.Use.Default.Money"))) {
                 return false
             }
         }
-        if (world.getDouble("Create.Use.Default.Point") > 0.0) {
-            if (!PlayerPoints().has(player, world.getDouble("Create.Use.Default.Point"))) {
+        if (worldConfig.getDouble("Create.Use.Default.Point") > 0.0) {
+            if (!PlayerPoints().has(player, worldConfig.getDouble("Create.Use.Default.Point"))) {
                 return false
             }
         }
@@ -130,44 +152,44 @@ object Local {
 
     private fun takeCreateMoney(user: UUID):Boolean{
         val player = Bukkit.getPlayer(user) ?: return false
-        val useList = world.getConfigurationSection("Create.Use")!!.getKeys(false)
+        val useList = worldConfig.getConfigurationSection("Create.Use")!!.getKeys(false)
         useList.remove("Default")
         if (useList.isNotEmpty()){
             for (use in useList){
-                val permission = world.getString("Create.Use.$use.Permission")!!
+                val permission = worldConfig.getString("Create.Use.$use.Permission")!!
                 if (!player.hasPermission(permission)){
                     return false
                 }
-                if (world.getDouble("Create.Use.$use.Money") > 0.0) {
-                    if (!Vault().has(player, world.getDouble("Create.Use.$use.Money"))) {
+                if (worldConfig.getDouble("Create.Use.$use.Money") > 0.0) {
+                    if (!Vault().has(player, worldConfig.getDouble("Create.Use.$use.Money"))) {
                         return false
                     }
-                    Vault().take(player, world.getDouble("Create.Use.$use.Money"))
+                    Vault().take(player, worldConfig.getDouble("Create.Use.$use.Money"))
                 }
-                if (world.getDouble("Create.Use.$use.Point") > 0.0) {
-                    if (!PlayerPoints().has(player, world.getDouble("Create.Use.$use.Point"))) {
+                if (worldConfig.getDouble("Create.Use.$use.Point") > 0.0) {
+                    if (!PlayerPoints().has(player, worldConfig.getDouble("Create.Use.$use.Point"))) {
                         return false
                     }
-                    PlayerPoints().take(player, world.getDouble("Create.Use.$use.Point"))
+                    PlayerPoints().take(player, worldConfig.getDouble("Create.Use.$use.Point"))
                 }
                 return true
             }
         }
-        val permission = world.getString("Create.Use.Default.Permission")!!
+        val permission = worldConfig.getString("Create.Use.Default.Permission")!!
         if (!player.hasPermission(permission)){
             return false
         }
-        if (world.getDouble("Create.Use.Default.Money") > 0.0) {
-            if (!Vault().has(player, world.getDouble("Create.Use.Default.Money"))) {
+        if (worldConfig.getDouble("Create.Use.Default.Money") > 0.0) {
+            if (!Vault().has(player, worldConfig.getDouble("Create.Use.Default.Money"))) {
                 return false
             }
-            Vault().take(player, world.getDouble("Create.Use.Default.Money"))
+            Vault().take(player, worldConfig.getDouble("Create.Use.Default.Money"))
         }
-        if (world.getDouble("Create.Use.Default.Point") > 0.0) {
-            if (!PlayerPoints().has(player, world.getDouble("Create.Use.Default.Point"))) {
+        if (worldConfig.getDouble("Create.Use.Default.Point") > 0.0) {
+            if (!PlayerPoints().has(player, worldConfig.getDouble("Create.Use.Default.Point"))) {
                 return false
             }
-            PlayerPoints().take(player, world.getDouble("Create.Use.Default.Point"))
+            PlayerPoints().take(player, worldConfig.getDouble("Create.Use.Default.Point"))
         }
         return true
     }
@@ -175,7 +197,7 @@ object Local {
     fun adminTpWorldId(player: Player, id: Int){
         val world = localWorld[id]
         if (world == null){
-            player.sendMessage(lang.getString("world.warning.tp.notLoad")?:"无法传送至世界：世界未加载")
+            player.sendMessage(lang.getString("worldConfig.warning.tp.notLoad")?:"无法传送至世界：世界未加载")
             return
         }
         val location = world.spawnLocation
@@ -185,7 +207,9 @@ object Local {
     fun tpWorldId(player: Player, id: Int){
         var world = localWorld[id]
         if (world == null){
-            adminLoadWorld(id)
+            adminLoadWorld(id).thenApply {
+                tpWorldId(player, id)
+            }
         }
         world = localWorld[id]?:return
         val location = world.spawnLocation

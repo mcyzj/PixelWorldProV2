@@ -32,6 +32,16 @@ interface WorldAPI {
      * @param owner 世界拥有者 UUID
      */
     fun unloadWorld(owner: UUID): CompletableFuture<Boolean>
+    /**
+     * 使用世界id备份本地服务器中的世界
+     * @param id 世界id Int
+     */
+    fun backupWorld(id: Int)
+    /**
+     * 使用拥有者uuid备份本地服务器中的世界
+     * @param owner 世界拥有者 UUID
+     */
+    fun backupWorld(owner: UUID)
     object Factory {
         fun get() : WorldAPI{
             return WorldImpl

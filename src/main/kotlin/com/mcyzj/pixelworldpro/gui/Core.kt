@@ -10,6 +10,7 @@ import com.xbaimiao.easylib.module.utils.colored
 import com.xbaimiao.easylib.xseries.XItemStack
 import org.bukkit.Bukkit
 import org.bukkit.OfflinePlayer
+import org.bukkit.configuration.ConfigurationSection
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import java.util.*
@@ -80,6 +81,25 @@ object Core {
         itemConfiguration.set("name",name)
         itemConfiguration.set("lore",lore)
         itemConfiguration.set("skull",skull)
+        return item
+    }
+
+    fun buildItem(configuration: ConfigurationSection, player: OfflinePlayer): ItemStack? {
+        val name = configuration.getString("name")
+        val lore = configuration.getStringList("lore")
+        val skull = configuration.getString("skull")
+        if (configuration.getString("material") == null)
+            return null
+        if (configuration.contains("name"))
+            configuration.set("name",configuration.getString("name")!!.replacePlaceholder(player).colored())
+        if (configuration.contains("lore"))
+            configuration.set("lore",configuration.getStringList("lore").replacePlaceholder(player).colored())
+        if (configuration.contains("skull"))
+            configuration.set("skull",configuration.getString("skull")!!.replacePlaceholder(player))
+        val item = XItemStack.deserialize(configuration)
+        configuration.set("name",name)
+        configuration.set("lore",lore)
+        configuration.set("skull",skull)
         return item
     }
 

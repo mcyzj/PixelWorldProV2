@@ -1,6 +1,7 @@
 package com.mcyzj.pixelworldpro.compress
 
 import com.mcyzj.pixelworldpro.PixelWorldPro
+import com.mcyzj.pixelworldpro.config.Config
 import com.xbaimiao.easylib.module.chat.BuiltInConfiguration
 import java.io.*
 import java.util.*
@@ -14,11 +15,12 @@ object Zip {
     private val logger = PixelWorldPro.instance.logger
     private val config = PixelWorldPro.instance.config
     private val lang = PixelWorldPro.instance.lang
-    private val file = BuiltInConfiguration("File.yml")
+    private val file = Config.file
     @JvmStatic
     fun toZip(from: String, to: String) {
         try {
-            val zipFIle = File(file.getString("World.Path"), "$to.zip")
+            Folder.create(file.getString("World.Path")!!, to)
+            val zipFIle = File(file.getString("World.Path"), "/$to/$to.zip")
             ZipOutputStream(FileOutputStream(zipFIle)).use { zipOutputStream ->
                 // 压缩文件夹
                 compressFolder(from, from, zipOutputStream)
@@ -40,8 +42,10 @@ object Zip {
                     // 压缩子文件夹
                     compressFolder(folderName + "/" + file.name, folderName + "/" + file.name, zipOutputStream)
                 } else {
-                    // 压缩文件
-                    addToZipFile(folderName + "/" + file.name, file.absolutePath, zipOutputStream)
+                    try {
+                        // 压缩文件
+                        addToZipFile(folderName + "/" + file.name, file.absolutePath, zipOutputStream)
+                    }catch (_:Exception){}
                 }
             }
         }
@@ -71,7 +75,7 @@ object Zip {
         }
         //sourcePath压缩包文件路径
         try {
-            ZipFile(File(file.getString("World.Path"), "$zip.zip")).use { zipFile ->
+            ZipFile(File(file.getString("World.Path"), "/$zip/$zip.zip")).use { zipFile ->
                 val enumeration: Enumeration<*> = zipFile.entries()
                 while (enumeration.hasMoreElements()) {
                     //依次获取压缩包内的文件实体对象

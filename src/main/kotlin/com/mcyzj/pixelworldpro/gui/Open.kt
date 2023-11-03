@@ -4,6 +4,13 @@ import org.bukkit.entity.Player
 
 object Open {
     fun open(player: Player, gui: String){
-        WorldCreate(player).open()
+        when (gui){
+            "create" -> {
+                WorldCreate(player).open()
+            }
+            "list" -> {
+                WorldList(player).open()
+            }
+        }
     }
 }

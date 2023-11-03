@@ -8,14 +8,16 @@ import com.mcyzj.pixelworldpro.config.Config
 import com.mcyzj.pixelworldpro.dataclass.WorldCreateData
 import com.mcyzj.pixelworldpro.server.World
 import com.mcyzj.pixelworldpro.server.World.localWorld
-import com.xbaimiao.easylib.module.chat.BuiltInConfiguration
 import com.xbaimiao.easylib.module.utils.submit
 import org.bukkit.Bukkit
 import org.bukkit.WorldCreator
+import java.io.BufferedWriter
 import java.io.File
+import java.io.FileWriter
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.CompletableFuture
+
 
 object WorldImpl : WorldAPI {
     private val logger = PixelWorldPro.instance.logger
@@ -143,9 +145,9 @@ object WorldImpl : WorldAPI {
             for (player in world.players){
                 player.teleport(Bukkit.getWorld(worldConfig.getString("Unload.world")?: "world")!!.spawnLocation)
             }
+            backupWorld(worldData.id)
             if (Bukkit.unloadWorld(world, true)){
                 localWorld.remove(worldData.id)
-                Zip.toZip(worldData.world, worldData.world)
                 File(file.getString("World.Server"), worldData.world).deleteRecursively()
                 future.complete(true)
             }else{
@@ -176,9 +178,9 @@ object WorldImpl : WorldAPI {
             for (player in world.players){
                 player.teleport(Bukkit.getWorld(worldConfig.getString("Unload.world")?: "world")!!.spawnLocation)
             }
+            backupWorld(worldData.id)
             if (Bukkit.unloadWorld(world, true)){
                 localWorld.remove(worldData.id)
-                Zip.toZip(worldData.world, worldData.world)
                 File(file.getString("World.Server"), worldData.world).deleteRecursively()
                 future.complete(true)
             }else{
@@ -186,5 +188,77 @@ object WorldImpl : WorldAPI {
             }
         }
         return future
+    }
+
+    override fun backupWorld(id: Int) {
+        //拉取世界数据
+        val worldData = database.getWorldData(id)
+        if (worldData == null){
+            logger.warning("§aPixelWorldPro $id ${lang.getString("world.warning.unload.noWorldData")}")
+            return
+        }
+        //备份世界文件
+        val world = localWorld[worldData.id]
+        if (world == null) {
+            localWorld.remove(worldData.id)
+            return
+        }
+        world.save()
+        val time = System.currentTimeMillis()
+        val date = Date(time)
+        //把time时间格式化
+        val formatter = SimpleDateFormat("yyyy_MM_dd_HH_mm_ss")
+        //把time时间格式化为字符串
+        val timeString = formatter.format(date)
+        Zip.toZip(worldData.world, worldData.world)
+        val zip = File(file.getString("World.Path"), "/${worldData.world}/${worldData.world}.zip")
+        val file = File(file.getString("World.Path")!!, worldData.world)
+        val backup = File(file, "backup/$timeString")
+        backup.mkdirs()
+        zip.copyTo(File(backup, "world.zip"))
+        //备份数据文件
+        File(file, "config").copyTo(File(backup, "config"))
+        val json = File(backup, "database.json")
+        json.createNewFile()
+        val fileWriter = FileWriter(json.absoluteFile, false)
+        val bw = BufferedWriter(fileWriter)
+        bw.write(database.joinToJson(worldData).toString())
+        bw.close()
+    }
+
+    override fun backupWorld(owner: UUID) {
+        //拉取世界数据
+        val worldData = database.getWorldData(owner)
+        if (worldData == null){
+            logger.warning("§aPixelWorldPro $owner ${lang.getString("world.warning.unload.noWorldData")}")
+            return
+        }
+        //备份世界文件
+        val world = localWorld[worldData.id]
+        if (world == null) {
+            localWorld.remove(worldData.id)
+            return
+        }
+        world.save()
+        val time = System.currentTimeMillis()
+        val date = Date(time)
+        //把time时间格式化
+        val formatter = SimpleDateFormat("yyyy_MM_dd_HH_mm_ss")
+        //把time时间格式化为字符串
+        val timeString = formatter.format(date)
+        Zip.toZip(worldData.world, worldData.world)
+        val zip = File(file.getString("World.Path"), "/${worldData.world}/${worldData.world}.zip")
+        val file = File(file.getString("World.Path")!!, worldData.world)
+        val backup = File(file, "backup/$timeString")
+        backup.mkdirs()
+        zip.copyTo(backup)
+        //备份数据文件
+        File(file, "config").copyTo(backup)
+        val json = File(backup, "database.json")
+        json.createNewFile()
+        val fileWriter = FileWriter(json.absoluteFile, false)
+        val bw = BufferedWriter(fileWriter)
+        bw.write(database.joinToJson(worldData).toString())
+        bw.close()
     }
 }

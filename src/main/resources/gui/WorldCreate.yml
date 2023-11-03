@@ -15,10 +15,6 @@ items:
     name: '&c&l关闭'
     lore:
       - '&f点击关闭'
-    commands:
-      - '[op] say 测试op指令功能'
-      - '[console] say 测试控制台指令功能'
-      - '[player] say 测试玩家指令功能'
   A:
     type: Template
     #模板文件夹名,点击后点击创建世界按钮就会创建对应模板的世界
@@ -26,7 +22,7 @@ items:
     material: PLAYER_HEAD
     #url
     skull: 'a35a50a3ab62e86ac1c1502f23ed17facd423c83fb7cc5ae532d78d542486f8'
-    name: '&a&l沙漠模板'
+    name: '&a&l沙漠模板 [注意，这个是没有配置模板的菜单范例]'
     lore:
       - '&f选择此模板'
   B:
@@ -37,7 +33,7 @@ items:
     skull: '%player_name%'
     #1.14+可以使用custom-model-data
     #custom-model-data: 10010
-    name: '&a&l平原模板'
+    name: '&a&l平原模板 [注意，这个是没有配置模板的菜单范例]'
     lore:
       - '&f选择此模板'
   C:

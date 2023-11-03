@@ -14,7 +14,7 @@ items:
     lore:
       - '返回%player_name%的世界'
     commands:
-      - '[player] pwp tp'
+      - '[player] pwp user tp id'
   N:
     material: GLASS_PANE
   X:

@@ -109,6 +109,22 @@ abstract class DatabaseImpl(ormlite: Ormlite) : DatabaseApi {
         return uuidMap
     }
 
+    override fun getWorldUUIDList(start:Int,number: Int): List<UUID> {
+        val list = mutableListOf<UUID>()
+        val dataMap = PixelWorldPro.databaseApi.getWorldUUIDMap()
+        for (data in dataMap) {
+            val uuid = data.key
+            list.add(uuid)
+        }
+        if (list.size < start) {
+            return listOf()
+        }
+        if (list.size < start + number) {
+            return list.subList(start, list.size)
+        }
+        return list.subList(start, start + number)
+    }
+
     override fun getPlayerData(uuid: UUID): PlayerData? {
         TODO("Not yet implemented")
     }
@@ -116,7 +132,7 @@ abstract class DatabaseImpl(ormlite: Ormlite) : DatabaseApi {
     override fun setPlayerData(uuid: UUID, playerData: PlayerData) {
         TODO("Not yet implemented")
     }
-    private fun joinToJson(worldData: WorldData): JSONObject {
+    override fun joinToJson(worldData: WorldData): JSONObject {
         val json = JSONObject()
         json["name"] = worldData.name
         json["world"] = worldData.world
