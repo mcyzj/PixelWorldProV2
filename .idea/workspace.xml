@@ -5,28 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e356bffb-3091-47d8-b0cd-d15642372130" name="更改" comment="2023.11.3 更新内容">
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/dataclass/Gui.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/gui/Core.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/gui/Open.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/gui/WorldCreate.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle.kts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/PixelWorldPro.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/PixelWorldPro.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/command/Admin.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/command/Admin.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/command/User.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/command/User.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/config/Config.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/config/Config.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/listener/World.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/listener/World.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/world/Local.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/world/Local.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/world/WorldImpl.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/world/WorldImpl.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/World.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/World.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/gui/BanEdit.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/gui/BanEdit.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/gui/MembersEdit.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/gui/MembersEdit.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/gui/WorldCreate.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/gui/WorldCreate.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/gui/WorldEdit.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/gui/WorldEdit.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/gui/WorldList.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/gui/WorldList.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/gui/WorldRestart.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/gui/WorldRestart.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/gui/custom/customGui.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/gui/custom/customGui.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/lang/zh_cn.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/lang/zh_cn.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -80,6 +59,11 @@
     </option>
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="beta" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="GitHubPullRequestSearchHistory">{
@@ -294,7 +278,15 @@
       <option name="project" value="LOCAL" />
       <updated>1698990119984</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="2023.11.3 更新内容">
+      <option name="closed" value="true" />
+      <created>1699011380407</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1699011380407</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -308,7 +300,7 @@
                   <entry key="branch">
                     <value>
                       <list>
-                        <option value="beta" />
+                        <option value="alpha" />
                       </list>
                     </value>
                   </entry>
