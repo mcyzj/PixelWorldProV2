@@ -5,19 +5,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e356bffb-3091-47d8-b0cd-d15642372130" name="更改" comment="2023.11.3 更新内容">
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/compress/Folder.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/gui/WorldList.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/server/Icon.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/api/interfaces/DatabaseApi.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/api/interfaces/DatabaseApi.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/api/interfaces/WorldAPI.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/api/interfaces/WorldAPI.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/compress/Zip.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/compress/Zip.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/database/DatabaseImpl.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/database/DatabaseImpl.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/gui/Core.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/gui/Core.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/gui/Open.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/gui/Open.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/PixelWorldPro.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/PixelWorldPro.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/config/Config.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/config/Config.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/server/World.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/server/World.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/world/Local.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/world/Local.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/world/WorldImpl.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/world/WorldImpl.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/gui/WorldCreate.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/gui/WorldCreate.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/gui/WorldList.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/gui/WorldList.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/File.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/File.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -77,6 +72,7 @@
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="RESET_MODE" value="HARD" />
   </component>
   <component name="GitHubPullRequestSearchHistory">{
   &quot;lastFilter&quot;: {
@@ -181,6 +177,13 @@
       <ForceTestExec>false</ForceTestExec>
       <method v="2" />
     </configuration>
+    <configuration name="Gui" type="JetRunConfigurationType" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.mcyzj.pixelworldpro.config.Gui" />
+      <module name="PixelWorldProV2.main" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration default="true" type="JetRunConfigurationType">
       <module name="PixelWorldProV2.Bukkit" />
       <method v="2">
@@ -261,6 +264,7 @@
     <recent_temporary>
       <list>
         <item itemvalue="Gradle.PixelWorldProV2 [shadowJar]" />
+        <item itemvalue="Kotlin.Gui" />
         <item itemvalue="Gradle.PixelWorldProV2 [knows]" />
       </list>
     </recent_temporary>
@@ -306,7 +310,15 @@
       <option name="project" value="LOCAL" />
       <updated>1699011668767</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="2023.11.3 更新内容">
+      <option name="closed" value="true" />
+      <created>1699017993860</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1699017993860</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">

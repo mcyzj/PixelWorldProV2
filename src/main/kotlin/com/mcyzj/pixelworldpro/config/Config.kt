@@ -15,4 +15,16 @@ object Config {
         permission = BuiltInConfiguration("Permission.yml")
         PixelWorldPro.instance.reloadAll()
     }
+    fun update(){
+        //config
+        //file
+        when (file.getInt("Version")){
+            1 -> {
+                file.set("Version", 2)
+                file.set("Backup.time", 1800)
+                file.set("Backup.number", 32)
+                file.saveToFile()
+            }
+        }
+    }
 }

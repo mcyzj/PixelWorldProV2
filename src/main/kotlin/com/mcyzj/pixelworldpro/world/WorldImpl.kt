@@ -24,7 +24,7 @@ object WorldImpl : WorldAPI {
     private val lang = PixelWorldPro.instance.lang
     private var config = Config.config
     private val database = PixelWorldPro.databaseApi
-    private var file = Config.file
+    private var fileConfig = Config.file
     private var worldConfig = Config.world
 
     private val asyncLoad = config.getBoolean("async.world.load")
@@ -47,9 +47,9 @@ object WorldImpl : WorldAPI {
             //获取路径下对应的world文件夹
             val worldName = "${owner}_$timeString"
             //复制模板文件
-            File(file.getString("Template.Path"), template).copyRecursively(
+            File(fileConfig.getString("Template.Path"), template).copyRecursively(
                 File(
-                    file.getString("World.Server"),
+                    fileConfig.getString("World.Server"),
                     worldName
                 )
             )
@@ -148,7 +148,7 @@ object WorldImpl : WorldAPI {
             backupWorld(worldData.id)
             if (Bukkit.unloadWorld(world, true)){
                 localWorld.remove(worldData.id)
-                File(file.getString("World.Server"), worldData.world).deleteRecursively()
+                File(fileConfig.getString("World.Server"), worldData.world).deleteRecursively()
                 future.complete(true)
             }else{
                 future.complete(false)
@@ -181,7 +181,7 @@ object WorldImpl : WorldAPI {
             backupWorld(worldData.id)
             if (Bukkit.unloadWorld(world, true)){
                 localWorld.remove(worldData.id)
-                File(file.getString("World.Server"), worldData.world).deleteRecursively()
+                File(fileConfig.getString("World.Server"), worldData.world).deleteRecursively()
                 future.complete(true)
             }else{
                 future.complete(false)
@@ -203,7 +203,9 @@ object WorldImpl : WorldAPI {
             localWorld.remove(worldData.id)
             return
         }
-        world.save()
+        submit {
+            world.save()
+        }
         val time = System.currentTimeMillis()
         val date = Date(time)
         //把time时间格式化
@@ -211,8 +213,8 @@ object WorldImpl : WorldAPI {
         //把time时间格式化为字符串
         val timeString = formatter.format(date)
         Zip.toZip(worldData.world, worldData.world)
-        val zip = File(file.getString("World.Path"), "/${worldData.world}/${worldData.world}.zip")
-        val file = File(file.getString("World.Path")!!, worldData.world)
+        val zip = File(fileConfig.getString("World.Path"), "/${worldData.world}/${worldData.world}.zip")
+        val file = File(fileConfig.getString("World.Path")!!, worldData.world)
         val backup = File(file, "backup/$timeString")
         backup.mkdirs()
         zip.copyTo(File(backup, "world.zip"))
@@ -224,6 +226,16 @@ object WorldImpl : WorldAPI {
         val bw = BufferedWriter(fileWriter)
         bw.write(database.joinToJson(worldData).toString())
         bw.close()
+        //删除过期的备份
+        val backupFile = File(file, "backup")
+        if (fileConfig.getInt("Backup.number") < (backupFile.listFiles()?.size ?: 1)){
+            for (files in backupFile.listFiles()!!){
+                files.deleteRecursively()
+                if (fileConfig.getInt("Backup.number") >= (backupFile.listFiles()?.size ?: 1)){
+                    break
+                }
+            }
+        }
     }
 
     override fun backupWorld(owner: UUID) {
@@ -247,8 +259,8 @@ object WorldImpl : WorldAPI {
         //把time时间格式化为字符串
         val timeString = formatter.format(date)
         Zip.toZip(worldData.world, worldData.world)
-        val zip = File(file.getString("World.Path"), "/${worldData.world}/${worldData.world}.zip")
-        val file = File(file.getString("World.Path")!!, worldData.world)
+        val zip = File(fileConfig.getString("World.Path"), "/${worldData.world}/${worldData.world}.zip")
+        val file = File(fileConfig.getString("World.Path")!!, worldData.world)
         val backup = File(file, "backup/$timeString")
         backup.mkdirs()
         zip.copyTo(backup)
@@ -260,5 +272,15 @@ object WorldImpl : WorldAPI {
         val bw = BufferedWriter(fileWriter)
         bw.write(database.joinToJson(worldData).toString())
         bw.close()
+        //删除过期的备份
+        val backupFile = File(file, "backup")
+        if (fileConfig.getInt("Backup.number") < (backupFile.listFiles()?.size ?: 1)){
+            for (files in backupFile.listFiles()!!){
+                files.deleteRecursively()
+                if (fileConfig.getInt("Backup.number") >= (backupFile.listFiles()?.size ?: 1)){
+                    break
+                }
+            }
+        }
     }
 }

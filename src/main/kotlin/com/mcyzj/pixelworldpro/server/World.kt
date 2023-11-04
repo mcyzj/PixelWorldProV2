@@ -17,25 +17,30 @@ object World {
     fun checkTemplate(template: String):Boolean{
         val templatePath = file.getString("Template.Path")
         if (templatePath == null){
-            logger.warning("§aPixelWorldPro ${lang.getString("world.warning.template.pathNotSet")}")
-            //return false
+            Icon.warning()
+            logger.warning("${lang.getString("world.warning.template.pathNotSet")}")
+            return false
         }
         val templateFile = File(templatePath, template)
         if (!templateFile.exists()){
-            logger.warning("§aPixelWorldPro ${lang.getString("world.warning.template.pathNotFound")}")
+            Icon.warning()
+            logger.warning("${lang.getString("world.warning.template.pathNotFound")}")
             return false
         }
         if ("level.dat" in templateFile.list()!!){
-            logger.warning("§aPixelWorldPro ${lang.getString("world.warning.template.worldInMain")}")
+            Icon.warning()
+            logger.warning("${lang.getString("world.warning.template.worldInMain")}")
             return false
         }
         if ("world" !in templateFile.list()!!){
-            logger.warning("§aPixelWorldPro ${lang.getString("world.warning.template.noWorld")}")
+            Icon.warning()
+            logger.warning("${lang.getString("world.warning.template.noWorld")}")
             return false
         }
         val worldFile = File(templateFile.path, "world")
         if ("uid.dat" in worldFile.list()!!){
-            logger.warning("§aPixelWorldPro ${lang.getString("world.warning.template.uidInWorld")}")
+            Icon.warning()
+            logger.warning("${lang.getString("world.warning.template.uidInWorld")}")
             return false
         }
         return true

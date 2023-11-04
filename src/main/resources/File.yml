@@ -1,10 +1,11 @@
 #版本设置，请勿修改
-Version: 1
+Version: 2
 #模板设置
 Template:
   #世界模板存放位置，填写绝对路径,禁止出现空格,请将所有的斜杠或反斜杠替换成/
   #Path: "D:/PixelWorldPro/template"
   Path: ""
+#世界存放设置
 World:
   #世界存放位置，填写绝对路径,禁止出现空格,请将所有的斜杠或反斜杠替换成/
   #Path: "D:/PixelWorldPro/worldData"
@@ -17,3 +18,10 @@ World:
     #压缩方式
     #None[不压缩]，Zip
     Method: None
+#世界备份设置
+Backup:
+  #自动备份世界，小于0关闭
+  #单位 秒
+  time: 1800
+  #备份保存数量
+  number: 32

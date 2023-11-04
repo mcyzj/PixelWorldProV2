@@ -10,8 +10,10 @@ import com.xbaimiao.easylib.bridge.economy.Vault
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import java.io.File
+import java.lang.Thread.sleep
 import java.util.*
 import java.util.concurrent.CompletableFuture
+import kotlin.concurrent.thread
 
 object Local {
     private val logger = PixelWorldPro.instance.logger
@@ -214,6 +216,26 @@ object Local {
         world = localWorld[id]?:return
         val location = world.spawnLocation
         player.teleport(location)
+    }
+
+    fun backupAllWorld(){
+        if (localWorld.isNotEmpty()) {
+            for (id in localWorld.keys) {
+                WorldAPI.Factory.get().backupWorld(id)
+            }
+        }
+    }
+
+    fun regularBackup(){
+        if (file.getInt("Backup.time") <= 0){
+            return
+        }
+        Thread{
+            while (true) {
+                sleep((file.getInt("Backup.time") * 1000).toLong())
+                backupAllWorld()
+            }
+        }.start()
     }
 
     fun getWorldNameUUID(worldName: String): UUID? {

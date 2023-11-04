@@ -4,9 +4,11 @@ import com.mcyzj.libs.JiangLib
 import com.mcyzj.libs.Metrics
 import com.mcyzj.pixelworldpro.api.interfaces.DatabaseApi
 import com.mcyzj.pixelworldpro.command.Register
+import com.mcyzj.pixelworldpro.config.Config
 import com.mcyzj.pixelworldpro.database.MysqlDatabaseApi
 import com.mcyzj.pixelworldpro.database.SQLiteDatabaseApi
 import com.mcyzj.pixelworldpro.listener.World
+import com.mcyzj.pixelworldpro.server.Icon
 import com.mcyzj.pixelworldpro.world.Local
 import com.xbaimiao.easylib.EasyPlugin
 import com.xbaimiao.easylib.module.chat.BuiltInConfiguration
@@ -38,18 +40,21 @@ class PixelWorldPro : EasyPlugin(){
         val pluginId = 20038
         val metrics = Metrics(this, pluginId)
         metrics.addCustomChart(Metrics.SimplePie("test_version") {
-            "beta"
+            "alpha"
         })
         metrics.addCustomChart(Metrics.SimplePie("language") {
             language
         })
         //开始插件加载
+        Icon.pixelWorldPro()
+        Icon.v2Alpha()
         val jdkVersion = System.getProperty("java.version") // jdk 版本
         logger.info("§aPixelWorldPro 开始加载于JDK${jdkVersion}上")
         instance = this
         //加载默认配置文件
         logger.info("§aPixelWorldPro ${lang.getString("config.load")}")
         saveOtherConfig()
+        Config.update()
         //加载语言文件
         saveLang()
         //检查系统信息
@@ -87,6 +92,8 @@ class PixelWorldPro : EasyPlugin(){
                 Register().command.register()
                 //注册监听
                 Bukkit.getPluginManager().registerEvents(World(), this@PixelWorldPro)
+                //注册备份线程
+                Local.regularBackup()
             }
         }
     }
@@ -148,6 +155,7 @@ class PixelWorldPro : EasyPlugin(){
     private fun checkServer(){
         val osArch = System.getProperty("os.arch") // 架构名称
         if (!osArch.equals("amd64")){
+            Icon.warning()
             logger.warning("§aPixelWorldPro ${lang.getString("system.unKnowArch")} osArch")
         }
     }
