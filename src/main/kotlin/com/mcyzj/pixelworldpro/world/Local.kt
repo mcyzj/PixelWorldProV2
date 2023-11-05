@@ -4,6 +4,7 @@ import com.mcyzj.pixelworldpro.PixelWorldPro
 import com.mcyzj.pixelworldpro.api.interfaces.WorldAPI
 import com.mcyzj.pixelworldpro.compress.Zip
 import com.mcyzj.pixelworldpro.config.Config
+import com.mcyzj.pixelworldpro.server.World
 import com.mcyzj.pixelworldpro.server.World.localWorld
 import com.xbaimiao.easylib.bridge.economy.PlayerPoints
 import com.xbaimiao.easylib.bridge.economy.Vault
@@ -75,6 +76,7 @@ object Local {
             }
             if (Bukkit.unloadWorld(world, true)){
                 localWorld.remove(worldData.id)
+                World.removeLock(worldData.id)
                 Zip.toZip(worldData.world, worldData.world)
                 File(file.getString("World.Server"), worldData.world).deleteRecursively()
             }
@@ -218,7 +220,7 @@ object Local {
         player.teleport(location)
     }
 
-    fun backupAllWorld(){
+    private fun backupAllWorld(){
         if (localWorld.isNotEmpty()) {
             for (id in localWorld.keys) {
                 WorldAPI.Factory.get().backupWorld(id)
@@ -236,6 +238,21 @@ object Local {
                 backupAllWorld()
             }
         }.start()
+    }
+
+    fun getUnzipWorld(){
+        val lock = World.getLock()?:return
+        val world = WorldAPI.Factory.get()
+        for (id in lock){
+            world.backupWorld(id)
+            //拉取世界数据
+            val worldData = database.getWorldData(id)
+            if (worldData == null){
+                logger.warning("§aPixelWorldPro $id ${lang.getString("world.warning.unload.noWorldData")}")
+                return
+            }
+            File(file.getString("World.Server"), worldData.world).deleteRecursively()
+        }
     }
 
     fun getWorldNameUUID(worldName: String): UUID? {

@@ -1,0 +1,36 @@
+﻿#配置文件版本号,用于更新配置文件，请勿修改
+#Configuration file version number, used to update the configuration file, please do not modify
+Version: 1
+#是否启用
+Enable: false
+#PixelWorldPro-Database数据库配置,false可以不管
+Database:
+  Host: 127.0.0.1
+  Port: 6379
+  Password: "Password"
+#服务器对玩家显示的名称
+ShowName: "大厅1"
+#服务器在bungee中的名称
+RealName: "lobby"
+#服务器运行模式
+#lobby不加载也不创建世界 load只负责加载世界，当子服内没有build时也承担创建世界 build只负责创建世界
+Mode: "lobby"
+
+#以下为世界加载设置
+#当前服务器最大加载世界数
+#-1为不限制
+MaxWorld: -1
+#当tps低于指定值时，停止世界的加载
+#需要指定值保留到小数点后一位
+#-1不限制
+LeastTps: 10.0
+
+#以下为信息显示设置
+#是否开启debug模式[输出插件所有操作]
+Debug: false
+#是否显示玩家跨服传送信息？
+BungeeTpShow: true
+#显示的内容
+#{server_showName}被传送服务器的显示名称
+#{server_realName}被传送服务器的实际名称
+BungeeTpShowStr: "传送至服务器{server_showName}"

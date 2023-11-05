@@ -70,6 +70,7 @@ object WorldImpl : WorldAPI {
             )
             val worldData = database.createWorldData(worldCreateData)
             localWorld[worldData.id] = world
+            World.setLock(worldData.id)
         }
         return future
     }
@@ -95,6 +96,7 @@ object WorldImpl : WorldAPI {
                 return@submit
             }
             localWorld[worldData.id] = world
+            World.setLock(worldData.id)
         }
         return future
     }
@@ -120,6 +122,7 @@ object WorldImpl : WorldAPI {
                 return@submit
             }
             localWorld[worldData.id] = world
+            World.setLock(worldData.id)
         }
         return future
     }
@@ -149,6 +152,7 @@ object WorldImpl : WorldAPI {
             if (Bukkit.unloadWorld(world, true)){
                 localWorld.remove(worldData.id)
                 File(fileConfig.getString("World.Server"), worldData.world).deleteRecursively()
+                World.removeLock(worldData.id)
                 future.complete(true)
             }else{
                 future.complete(false)
@@ -182,6 +186,7 @@ object WorldImpl : WorldAPI {
             if (Bukkit.unloadWorld(world, true)){
                 localWorld.remove(worldData.id)
                 File(fileConfig.getString("World.Server"), worldData.world).deleteRecursively()
+                World.removeLock(worldData.id)
                 future.complete(true)
             }else{
                 future.complete(false)

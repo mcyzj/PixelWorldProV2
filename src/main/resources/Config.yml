@@ -13,11 +13,6 @@ Mysql:
   passwd: '123456'
   ssl: false
   HikariCP: true
-#redis数据库配置,Bungee为false可以不管
-redis:
-  host: 127.0.0.1
-  port: 6379
-  password: ""
 #PWP主命令
 mainCommand: "pwp"
 #PWP变量开头

@@ -3,11 +3,13 @@ package com.mcyzj.pixelworldpro
 import com.mcyzj.libs.JiangLib
 import com.mcyzj.libs.Metrics
 import com.mcyzj.pixelworldpro.api.interfaces.DatabaseApi
+import com.mcyzj.pixelworldpro.bungee.database.SocketClient
 import com.mcyzj.pixelworldpro.command.Register
 import com.mcyzj.pixelworldpro.config.Config
 import com.mcyzj.pixelworldpro.database.MysqlDatabaseApi
 import com.mcyzj.pixelworldpro.database.SQLiteDatabaseApi
 import com.mcyzj.pixelworldpro.listener.World
+import com.mcyzj.pixelworldpro.server.Gui
 import com.mcyzj.pixelworldpro.server.Icon
 import com.mcyzj.pixelworldpro.world.Local
 import com.xbaimiao.easylib.EasyPlugin
@@ -16,6 +18,7 @@ import com.xbaimiao.easylib.module.utils.submit
 import org.bukkit.Bukkit
 import redis.clients.jedis.JedisPool
 import java.io.File
+import java.util.concurrent.CompletableFuture
 
 @Suppress("unused")
 class PixelWorldPro : EasyPlugin(){
@@ -25,11 +28,12 @@ class PixelWorldPro : EasyPlugin(){
         lateinit var jedisPool: JedisPool
     }
 
-    private var eula = BuiltInConfiguration("Eula.yml")
+    var eula = BuiltInConfiguration("Eula.yml")
     var config = BuiltInConfiguration("Config.yml")
     private var language = config.getString("lang")?:"zh_cn"
     var lang = BuiltInConfiguration("lang/${language}.yml")
     var pwpDebug = config.getBoolean("debug")
+    private var bungee = Config.bungee
     override fun enable() {
         //PixelWorldProV2遵循《用户协议-付费插件》
         //https://wiki.mcyzj.cn/#/zh-cn/agreement?id=%e4%bb%98%e8%b4%b9%e6%8f%92%e4%bb%b6
@@ -60,40 +64,46 @@ class PixelWorldPro : EasyPlugin(){
         //检查系统信息
         checkServer()
         //同意eula
-        if (!eula.getBoolean("eula")){
-            if (eula()){
-                eula.set("eula", true)
-                eula.saveToFile()
-            }else{
-                return
+        val future = eula()
+        future.thenApply {
+            if (!it){
+                return@thenApply
             }
-        }
-        //加载gui界面
-        saveGui()
-        //加载数据库
-        submit(async = config.getBoolean("async.database.connect")) {
-            if (config.getBoolean("debug")) {
-                Bukkit.getConsoleSender().sendMessage("§aPixelWorldPro 加载数据")
-            }
-            if (config.getString("Database").equals("db", true)) {
+            //加载gui界面
+            saveGui()
+            //加载数据库
+            submit(async = config.getBoolean("async.database.connect")) {
                 if (config.getBoolean("debug")) {
-                    Bukkit.getConsoleSender().sendMessage("§aPixelWorldPro 加载sqlite数据库")
+                    Bukkit.getConsoleSender().sendMessage("§aPixelWorldPro 加载数据")
                 }
-                databaseApi = SQLiteDatabaseApi()
-            }
-            if (config.getString("Database").equals("mysql", true)) {
-                if (config.getBoolean("debug")) {
-                    Bukkit.getConsoleSender().sendMessage("§aPixelWorldPro 加载MySQL数据库")
+                if (config.getString("Database").equals("db", true)) {
+                    if (config.getBoolean("debug")) {
+                        Bukkit.getConsoleSender().sendMessage("§aPixelWorldPro 加载sqlite数据库")
+                    }
+                    databaseApi = SQLiteDatabaseApi()
                 }
-                databaseApi = MysqlDatabaseApi()
-            }
-            submit {
-                //注册命令
-                Register().command.register()
-                //注册监听
-                Bukkit.getPluginManager().registerEvents(World(), this@PixelWorldPro)
-                //注册备份线程
-                Local.regularBackup()
+                if (config.getString("Database").equals("mysql", true)) {
+                    if (config.getBoolean("debug")) {
+                        Bukkit.getConsoleSender().sendMessage("§aPixelWorldPro 加载MySQL数据库")
+                    }
+                    databaseApi = MysqlDatabaseApi()
+                }
+                submit {
+                    //注册命令
+                    Register().command.register()
+                    //注册监听
+                    Bukkit.getPluginManager().registerEvents(World(), this@PixelWorldPro)
+                    //注册备份线程
+                    Local.regularBackup()
+                    //保存未正常备份的世界
+                    Local.getUnzipWorld()
+                }
+                if (bungee.getBoolean("Enable")) {
+                    submit(async = true) {
+                        //创建连接
+                        SocketClient.createClient()
+                    }
+                }
             }
         }
     }
@@ -111,32 +121,30 @@ class PixelWorldPro : EasyPlugin(){
         //检查系统信息
         checkServer()
         //同意eula
-        if (!eula.getBoolean("eula")){
-            if (eula()){
-                eula.set("eula", true)
-                eula.saveToFile()
-            }else{
-                return
+        val future = eula()
+        future.thenApply {
+            if (!it) {
+                return@thenApply
             }
-        }
-        //加载gui界面
-        saveGui()
-        //加载数据库
-        submit(async = config.getBoolean("async.database.connect")) {
-            if (config.getBoolean("debug")) {
-                Bukkit.getConsoleSender().sendMessage("§aPixelWorldPro 加载数据")
-            }
-            if (config.getString("Database").equals("db", true)) {
+            //加载gui界面
+            saveGui()
+            //加载数据库
+            submit(async = config.getBoolean("async.database.connect")) {
                 if (config.getBoolean("debug")) {
-                    Bukkit.getConsoleSender().sendMessage("§aPixelWorldPro 加载sqlite数据库")
+                    Bukkit.getConsoleSender().sendMessage("§aPixelWorldPro 加载数据")
                 }
-                databaseApi = SQLiteDatabaseApi()
-            }
-            if (config.getString("Database").equals("mysql", true)) {
-                if (config.getBoolean("debug")) {
-                    Bukkit.getConsoleSender().sendMessage("§aPixelWorldPro 加载MySQL数据库")
+                if (config.getString("Database").equals("db", true)) {
+                    if (config.getBoolean("debug")) {
+                        Bukkit.getConsoleSender().sendMessage("§aPixelWorldPro 加载sqlite数据库")
+                    }
+                    databaseApi = SQLiteDatabaseApi()
                 }
-                databaseApi = MysqlDatabaseApi()
+                if (config.getString("Database").equals("mysql", true)) {
+                    if (config.getBoolean("debug")) {
+                        Bukkit.getConsoleSender().sendMessage("§aPixelWorldPro 加载MySQL数据库")
+                    }
+                    databaseApi = MysqlDatabaseApi()
+                }
             }
         }
     }
@@ -145,12 +153,15 @@ class PixelWorldPro : EasyPlugin(){
         Local.unloadAllWorld()
     }
 
-    private fun eula(): Boolean{
+    private fun eula(): CompletableFuture<Boolean> {
+        if (eula.getBoolean("eula")){
+            val future = CompletableFuture<Boolean>()
+            future.complete(true)
+            return future
+        }
         logger.info(lang.getString("eula"))
         logger.info("https://wiki.mcyzj.cn/#/zh-cn/agreement?id=%e4%bb%98%e8%b4%b9%e6%8f%92%e4%bb%b6")
-        //val stringInput = readln()
-        //return stringInput == "true"
-        return false
+        return Gui.eulaGUI()
     }
     private fun checkServer(){
         val osArch = System.getProperty("os.arch") // 架构名称

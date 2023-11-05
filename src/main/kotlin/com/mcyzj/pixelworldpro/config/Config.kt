@@ -8,11 +8,13 @@ object Config {
     var file = BuiltInConfiguration("File.yml")
     var world = BuiltInConfiguration("World.yml")
     var permission = BuiltInConfiguration("Permission.yml")
+    var bungee = BuiltInConfiguration("BungeeSet.yml")
     fun reload(){
         config = BuiltInConfiguration("Config.yml")
         file = BuiltInConfiguration("File.yml")
         world = BuiltInConfiguration("World.yml")
         permission = BuiltInConfiguration("Permission.yml")
+        bungee = BuiltInConfiguration("BungeeSet.yml")
         PixelWorldPro.instance.reloadAll()
     }
     fun update(){
