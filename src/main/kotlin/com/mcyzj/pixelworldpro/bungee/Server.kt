@@ -114,8 +114,38 @@ object Server {
             localServer["type"]
         )
     }
-
-    fun serverCheck(){
-        
+    fun getCreateServer(): ServerData? {
+        val serverMap = System.getAllServer()
+        var createServer: ServerData? = null
+        for (server in serverMap.values){
+            if ((server.mode == "build").and("noLoad" !in (server.type?.split("||") ?: ArrayList()))){
+                if (createServer == null){
+                    createServer = server
+                    continue
+                }
+                if (createServer.tps < server.tps){
+                    createServer = server
+                    continue
+                }
+            }
+        }
+        return createServer
+    }
+    fun getLoadServer(): ServerData? {
+        val serverMap = System.getAllServer()
+        var loadServer: ServerData? = null
+        for (server in serverMap.values){
+            if ((server.mode == "load").and(("noLoad" !in (server.type?.split("||") ?: ArrayList())).or(server.type == null))){
+                if (loadServer == null){
+                    loadServer = server
+                    continue
+                }
+                if (loadServer.tps < server.tps){
+                    loadServer = server
+                    continue
+                }
+            }
+        }
+        return loadServer
     }
 }

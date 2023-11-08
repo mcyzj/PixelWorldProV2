@@ -3,6 +3,7 @@ package com.mcyzj.pixelworldpro
 import com.mcyzj.libs.JiangLib
 import com.mcyzj.libs.Metrics
 import com.mcyzj.pixelworldpro.api.interfaces.DatabaseApi
+import com.mcyzj.pixelworldpro.bungee.System.setServer
 import com.mcyzj.pixelworldpro.bungee.database.SocketClient
 import com.mcyzj.pixelworldpro.command.Register
 import com.mcyzj.pixelworldpro.config.Config
@@ -103,6 +104,8 @@ class PixelWorldPro : EasyPlugin(){
                         //创建连接
                         SocketClient.createClient()
                     }
+                    //写入服务器数据
+                    setServer()
                 }
             }
         }

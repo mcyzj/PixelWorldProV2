@@ -2,6 +2,7 @@ package com.mcyzj.pixelworldpro.world
 
 import com.mcyzj.pixelworldpro.PixelWorldPro
 import com.mcyzj.pixelworldpro.api.interfaces.WorldAPI
+import com.mcyzj.pixelworldpro.bungee.database.SocketClient
 import com.mcyzj.pixelworldpro.compress.Zip
 import com.mcyzj.pixelworldpro.config.Config
 import com.mcyzj.pixelworldpro.server.World
@@ -23,32 +24,45 @@ object Local {
     private val database = PixelWorldPro.databaseApi
     private var file = Config.file
     private var worldConfig = Config.world
+    private var bungee = Config.bungee
     fun adminCreateWorld(owner: UUID, template: String?): CompletableFuture<Boolean>{
-        val future = CompletableFuture<Boolean>()
-        val temp = if (template == null){
-            val templatePath = file.getString("Template.Path")
-            if (templatePath == null){
-                logger.warning("§aPixelWorldPro ${lang.getString("worldConfig.warning.template.pathNotSet")}")
-                future.complete(false)
-                return future
+        if (bungee.getBoolean("Enable")){
+            return com.mcyzj.pixelworldpro.bungee.World.adminCreateWorld(owner, template)
+        } else {
+            val future = CompletableFuture<Boolean>()
+            val temp = if (template == null) {
+                val templatePath = file.getString("Template.Path")
+                if (templatePath == null) {
+                    logger.warning("§aPixelWorldPro ${lang.getString("worldConfig.warning.template.pathNotSet")}")
+                    future.complete(false)
+                    return future
+                } else {
+                    val templateFile = File(templatePath)
+                    val templateList = templateFile.list()!!
+                    templateList[Random().nextInt(templateList.size)]
+                }
             } else {
-                val templateFile = File(templatePath)
-                val templateList = templateFile.list()!!
-                templateList[Random().nextInt(templateList.size)]
+                template
             }
-        }else{
-            template
+            val worldApi = WorldAPI.Factory.get()
+            return worldApi.createWorld(owner, temp)
         }
-        val worldApi = WorldAPI.Factory.get()
-        return worldApi.createWorld(owner, temp)
     }
     fun adminLoadWorld(owner: UUID): CompletableFuture<Boolean>{
-        val worldApi = WorldAPI.Factory.get()
-        return worldApi.loadWorld(owner)
+        return if (bungee.getBoolean("Enable")){
+            com.mcyzj.pixelworldpro.bungee.World.loadWorld(owner)
+        } else {
+            val worldApi = WorldAPI.Factory.get()
+            worldApi.loadWorld(owner)
+        }
     }
     fun adminLoadWorld(id: Int): CompletableFuture<Boolean>{
-        val worldApi = WorldAPI.Factory.get()
-        return worldApi.loadWorld(id)
+        return if (bungee.getBoolean("Enable")){
+            com.mcyzj.pixelworldpro.bungee.World.loadWorld(id)
+        } else {
+            val worldApi = WorldAPI.Factory.get()
+            worldApi.loadWorld(id)
+        }
     }
     fun adminUnloadWorld(owner: UUID): CompletableFuture<Boolean>{
         val worldApi = WorldAPI.Factory.get()
