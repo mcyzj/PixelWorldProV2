@@ -51,4 +51,5 @@ command:
       create2: "/[pwp主命令] create [模板名称] | 为您自身创建一个指定模板的世界"
 bungee:
   warning:
+    messageError: "发送bungee信息失败"
     noLoadServer: "没有可供世界加载的服务器"

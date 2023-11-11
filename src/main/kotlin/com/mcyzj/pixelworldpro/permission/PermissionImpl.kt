@@ -1,8 +1,7 @@
 package com.mcyzj.pixelworldpro.permission
 
 import com.mcyzj.pixelworldpro.api.interfaces.Permission
-import com.mcyzj.pixelworldpro.config.Config
-import com.mcyzj.pixelworldpro.world.WorldImpl
+import com.mcyzj.pixelworldpro.file.Config
 
 object PermissionImpl : Permission {
     private val permission = Config.permission

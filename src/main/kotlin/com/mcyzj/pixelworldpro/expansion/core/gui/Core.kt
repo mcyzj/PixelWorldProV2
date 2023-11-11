@@ -1,8 +1,8 @@
-package com.mcyzj.pixelworldpro.gui
+package com.mcyzj.pixelworldpro.expansion.core.gui
 
-import com.mcyzj.pixelworldpro.dataclass.BasicCharMap
-import com.mcyzj.pixelworldpro.dataclass.GuiData
-import com.mcyzj.pixelworldpro.dataclass.TypeValue
+import com.mcyzj.pixelworldpro.data.dataclass.BasicCharMap
+import com.mcyzj.pixelworldpro.data.dataclass.GuiData
+import com.mcyzj.pixelworldpro.data.dataclass.TypeValue
 import com.xbaimiao.easylib.bridge.replacePlaceholder
 import com.xbaimiao.easylib.module.chat.BuiltInConfiguration
 import com.xbaimiao.easylib.module.ui.Basic
@@ -39,10 +39,10 @@ object Core {
         return BasicCharMap(basic,charMap)
     }
 
-    private fun getTypeValue(gui:String, player: Player):TypeValue{
+    private fun getTypeValue(gui:String, player: Player): TypeValue {
         val config = BuiltInConfiguration("gui/$gui")
         val charList = config.getConfigurationSection("items")!!.getKeys(false)
-        val map = HashMap<Char,GuiData>()
+        val map = HashMap<Char, GuiData>()
         for (char in charList){
             val guiData = GuiData(type = null, value = null, commands = null)
             if (config.contains("items.$char.type")){

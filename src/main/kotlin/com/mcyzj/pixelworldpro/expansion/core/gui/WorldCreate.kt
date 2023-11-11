@@ -1,6 +1,6 @@
-package com.mcyzj.pixelworldpro.gui
+package com.mcyzj.pixelworldpro.expansion.core.gui
 
-import com.mcyzj.pixelworldpro.dataclass.BasicCharMap
+import com.mcyzj.pixelworldpro.data.dataclass.BasicCharMap
 import com.mcyzj.pixelworldpro.world.Local
 import org.bukkit.entity.Player
 

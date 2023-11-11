@@ -1,4 +1,4 @@
-package com.mcyzj.pixelworldpro.dataclass
+package com.mcyzj.pixelworldpro.data.dataclass
 
 import com.xbaimiao.easylib.module.chat.BuiltInConfiguration
 import com.xbaimiao.easylib.module.ui.Basic
@@ -14,5 +14,5 @@ data class BasicCharMap(
 )
 data class TypeValue(
     var config: BuiltInConfiguration,
-    var charMap:HashMap<Char,GuiData>
+    var charMap:HashMap<Char, GuiData>
 )

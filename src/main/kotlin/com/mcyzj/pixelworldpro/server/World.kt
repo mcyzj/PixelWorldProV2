@@ -1,10 +1,7 @@
 package com.mcyzj.pixelworldpro.server
 
 import com.mcyzj.pixelworldpro.PixelWorldPro
-import com.mcyzj.pixelworldpro.compress.Zip
-import com.mcyzj.pixelworldpro.config.Config
-import com.mcyzj.pixelworldpro.world.WorldImpl
-import com.xbaimiao.easylib.module.chat.BuiltInConfiguration
+import com.mcyzj.pixelworldpro.file.Config
 import org.bukkit.World
 import org.bukkit.configuration.file.YamlConfiguration
 import java.io.File

@@ -1,4 +1,4 @@
-package com.mcyzj.pixelworldpro.dataclass
+package com.mcyzj.pixelworldpro.data.dataclass
 
 import java.util.UUID
 

@@ -5,9 +5,11 @@ import com.google.gson.JsonObject
 import com.mcyzj.pixelworldpro.PixelWorldPro
 import com.mcyzj.pixelworldpro.api.interfaces.WorldAPI
 import com.mcyzj.pixelworldpro.bungee.Server
-import com.mcyzj.pixelworldpro.config.Config
+import com.mcyzj.pixelworldpro.bungee.System
+import com.mcyzj.pixelworldpro.file.Config
 import com.mcyzj.pixelworldpro.server.Icon
 import org.bukkit.OfflinePlayer
+import org.bukkit.entity.Player
 import org.json.simple.JSONObject
 import java.io.InputStream
 import java.lang.Thread.sleep
@@ -19,6 +21,7 @@ object SocketClient {
     private lateinit var client : Socket
     private var bungee = Config.bungee
     private val logger = PixelWorldPro.instance.logger
+    private val database = PixelWorldPro.databaseApi
     fun createClient(){
         try {
             //拉起socket连接
@@ -112,12 +115,43 @@ object SocketClient {
                             worldApi.createWorld(
                                 UUID.fromString(data["player"].asJsonObject["uuid"].asString),
                                 data["template"].asString
-                            )
+                            ).thenApply {
+                                if (it){
+                                    val worldData = database.getWorldData(data["id"].asInt)?:return@thenApply
+                                    System.setWorldLock(worldData)
+                                }
+                            }
                         }
 
                         "LoadWorld" -> {
                             val worldApi = WorldAPI.Factory.get()
-                            worldApi.loadWorld(data["id"].asInt)
+                            worldApi.loadWorld(data["id"].asInt).thenApply {
+                                if (it){
+                                    val worldData = database.getWorldData(data["id"].asInt)?:return@thenApply
+                                    System.setWorldLock(worldData)
+                                }
+                            }
+                        }
+
+                        "UnloadWorld" -> {
+                            val worldApi = WorldAPI.Factory.get()
+                            worldApi.unloadWorld(data["id"].asInt).thenApply {
+                                if (it){
+                                    val worldData = database.getWorldData(data["id"].asInt)?:return@thenApply
+                                    System.removeWorldLock(worldData)
+                                }
+                            }
+                        }
+
+                        "TpWorld" -> {
+                            val worldData = database.getWorldData(data["id"].asInt)
+                            if (worldData != null) {
+                                try {
+                                    val uuid = UUID.fromString(data["uuid"].asString)
+                                    Server.playerTp[uuid] = worldData.world
+                                } catch (_: Exception) {
+                                }
+                            }
                         }
                     }
                 }
@@ -157,6 +191,34 @@ object SocketClient {
         json["realName"] = local.realName
         json["id"] = world
         json["to"] = server
+        //发送数据
+        client.getOutputStream().write(json.toString().toByteArray(charset("UTF-8")))
+        client.getOutputStream().flush()
+    }
+    fun unloadWorld(world: Int, server: String){
+        //拉取本地信息
+        val local = Server.getLocalServer()
+        //构建json
+        val json = JSONObject()
+        json["type"] = "UnloadWorld"
+        json["realName"] = local.realName
+        json["id"] = world
+        json["to"] = server
+        //发送数据
+        client.getOutputStream().write(json.toString().toByteArray(charset("UTF-8")))
+        client.getOutputStream().flush()
+    }
+    fun tpWorld(world: Int, server: String, player: Player){
+        //拉取本地信息
+        val local = Server.getLocalServer()
+        //构建json
+        val json = JSONObject()
+        json["type"] = "TpWorld"
+        json["realName"] = local.realName
+        json["id"] = world
+        json["to"] = server
+        json["name"] = player.name
+        json["uuid"] = player.uniqueId.toString()
         //发送数据
         client.getOutputStream().write(json.toString().toByteArray(charset("UTF-8")))
         client.getOutputStream().flush()

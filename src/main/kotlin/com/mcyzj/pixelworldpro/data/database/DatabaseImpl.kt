@@ -1,4 +1,4 @@
-package com.mcyzj.pixelworldpro.database
+package com.mcyzj.pixelworldpro.data.database
 
 import com.google.common.collect.Maps
 import com.google.gson.Gson
@@ -6,9 +6,9 @@ import com.google.gson.JsonObject
 import com.j256.ormlite.dao.Dao
 import com.mcyzj.pixelworldpro.PixelWorldPro
 import com.mcyzj.pixelworldpro.api.interfaces.DatabaseApi
-import com.mcyzj.pixelworldpro.dataclass.PlayerData
-import com.mcyzj.pixelworldpro.dataclass.WorldCreateData
-import com.mcyzj.pixelworldpro.dataclass.WorldData
+import com.mcyzj.pixelworldpro.data.dataclass.PlayerData
+import com.mcyzj.pixelworldpro.data.dataclass.WorldCreateData
+import com.mcyzj.pixelworldpro.data.dataclass.WorldData
 import com.xbaimiao.easylib.module.database.Ormlite
 import com.xbaimiao.easylib.module.utils.submit
 import org.json.simple.JSONObject
@@ -98,10 +98,10 @@ abstract class DatabaseImpl(ormlite: Ormlite) : DatabaseApi {
         return idMap
     }
 
-    override fun getWorldUUIDMap(): HashMap<UUID,WorldData> {
+    override fun getWorldUUIDMap(): HashMap<UUID, WorldData> {
         val queryBuilder = worldTable.queryBuilder()
         val list = queryBuilder.query()
-        val uuidMap = HashMap<UUID,WorldData>()
+        val uuidMap = HashMap<UUID, WorldData>()
         for (world in list){
             val worldData = getFromJson(world)?:continue
             uuidMap[worldData.owner] = worldData

@@ -1,8 +1,7 @@
 package com.mcyzj.pixelworldpro.compress
 
 import com.mcyzj.pixelworldpro.PixelWorldPro
-import com.mcyzj.pixelworldpro.config.Config
-import com.xbaimiao.easylib.module.chat.BuiltInConfiguration
+import com.mcyzj.pixelworldpro.file.Config
 import java.io.*
 import java.util.*
 import java.util.zip.ZipEntry

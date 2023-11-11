@@ -1,21 +1,24 @@
 package com.mcyzj.pixelworldpro.bungee
 
 import com.mcyzj.pixelworldpro.PixelWorldPro
-import com.mcyzj.pixelworldpro.config.Config
-import com.mcyzj.pixelworldpro.dataclass.ServerData
+import com.mcyzj.pixelworldpro.file.Config
+import com.mcyzj.pixelworldpro.data.dataclass.ServerData
 import com.mcyzj.pixelworldpro.server.World
-import net.minecraft.server.v1_16_R3.MinecraftServer
+import com.xbaimiao.easylib.module.utils.submit
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import java.io.ByteArrayOutputStream
 import java.io.DataOutputStream
 import java.io.IOException
+import java.lang.Thread.sleep
+import java.util.UUID
 
 object Server {
     private val localServer = hashMapOf<String, String>()
     private var bungeeConfig = Config.bungee
     private var online = HashMap<String, Boolean>()
     private val debug = bungeeConfig.getBoolean("Debug")
+    val playerTp = HashMap<UUID, String>()
     private fun getTps(): Double {
         return Bukkit.getServer().tps.first()
     }
@@ -147,5 +150,21 @@ object Server {
             }
         }
         return loadServer
+    }
+    fun tpPlayer(){
+        Thread{
+            while (true) {
+                for (uuid in playerTp.keys){
+                    val player = Bukkit.getPlayer(uuid) ?: continue
+                    val worldName = "PixelWorldPro/${playerTp[player.uniqueId]}/world"
+                    val world = Bukkit.getWorld(worldName.toLowerCase()) ?: continue
+                    submit {
+                        player.teleport(world.spawnLocation)
+                    }
+                    playerTp.remove(player.uniqueId)
+                }
+                sleep(1000)
+            }
+        }.start()
     }
 }

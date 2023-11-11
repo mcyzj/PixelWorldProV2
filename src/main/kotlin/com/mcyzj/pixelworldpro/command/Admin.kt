@@ -2,15 +2,17 @@ package com.mcyzj.pixelworldpro.command
 
 import com.mcyzj.pixelworldpro.PixelWorldPro
 import com.mcyzj.pixelworldpro.api.interfaces.WorldAPI
-import com.mcyzj.pixelworldpro.config.Config
 import com.mcyzj.pixelworldpro.world.Local
+import com.xbaimiao.easylib.module.command.CommandSpec
 import com.xbaimiao.easylib.module.command.command
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
-class Admin {
+object Admin {
+    private val logger = PixelWorldPro.instance.logger
     private val lang = PixelWorldPro.instance.lang
     private val database = PixelWorldPro.databaseApi
+    private val commandMap = HashMap<String, CommandSpec<CommandSender>>()
 
     private val create = command<CommandSender>("create") {
         permission = "pwp.admin.create"
@@ -313,16 +315,29 @@ class Admin {
         sub(tpPlayer)
     }
 
-    private val reload = command<CommandSender>("reload") {
-        Config.reload()
-    }
+    //private val reload = command<CommandSender>("reload") {
+    //    Config.reload()
+    //}
 
-    val admin = command<CommandSender>("admin") {
+    var admin = command<CommandSender>("admin") {
         permission = "pwp.admin"
         sub(create)
         sub(load)
         sub(unload)
         sub(tp)
-        sub(reload)
+        //sub(reload)
+    }
+
+    fun setCommand(expansion: String, command: CommandSpec<CommandSender>){
+        commandMap[expansion] = command
+    }
+
+    fun getCommand(): CommandSpec<CommandSender> {
+        logger.info("注册 ${commandMap.keys.size} 个扩展命令")
+        for (key in commandMap.keys) {
+            logger.info("注册命令Admin扩展命令 $key")
+            admin.sub(commandMap[key]!!)
+        }
+        return admin
     }
 }

@@ -36,12 +36,12 @@ interface WorldAPI {
      * 使用世界id备份本地服务器中的世界
      * @param id 世界id Int
      */
-    fun backupWorld(id: Int)
+    fun backupWorld(id: Int, save: Boolean?)
     /**
      * 使用拥有者uuid备份本地服务器中的世界
      * @param owner 世界拥有者 UUID
      */
-    fun backupWorld(owner: UUID)
+    fun backupWorld(owner: UUID, save: Boolean?)
     object Factory {
         fun get() : WorldAPI{
             return WorldImpl

@@ -2,23 +2,17 @@ package com.mcyzj.pixelworldpro.bungee
 
 import com.mcyzj.pixelworldpro.PixelWorldPro
 import com.mcyzj.pixelworldpro.bungee.database.SocketClient
-import com.mcyzj.pixelworldpro.compress.Zip
-import com.mcyzj.pixelworldpro.config.Config
-import com.mcyzj.pixelworldpro.server.World
-import com.mcyzj.pixelworldpro.world.WorldImpl
-import com.xbaimiao.easylib.module.utils.submit
+import com.mcyzj.pixelworldpro.file.Config
 import org.bukkit.Bukkit
-import org.bukkit.OfflinePlayer
-import org.bukkit.WorldCreator
 import java.io.File
 import java.util.*
 import java.util.concurrent.CompletableFuture
 
 object World {
-    val logger = PixelWorldPro.instance.logger
-    var file = Config.file
-    var lang = PixelWorldPro.instance.lang
-    var database = PixelWorldPro.databaseApi
+    private val logger = PixelWorldPro.instance.logger
+    private var file = Config.file
+    private var lang = PixelWorldPro.instance.lang
+    private var database = PixelWorldPro.databaseApi
     fun adminCreateWorld(owner: UUID, template: String?): CompletableFuture<Boolean> {
         val future = CompletableFuture<Boolean>()
         val temp = if (template == null){
@@ -71,7 +65,6 @@ object World {
 
     fun loadWorld(owner: UUID): CompletableFuture<Boolean> {
         val future = CompletableFuture<Boolean>()
-        logger.info("§aPixelWorldPro 使用线程：${Thread.currentThread().name} 进行世界加载操作")
         //拉取世界数据
         val worldData = database.getWorldData(owner)
         if (worldData == null) {
@@ -88,6 +81,47 @@ object World {
         }
         //发送信息
         SocketClient.loadWorld(worldData.id, loadServer.realName)
+        return future
+    }
+
+    fun unloadWorld(id: Int): CompletableFuture<Boolean> {
+        val future = CompletableFuture<Boolean>()
+        //拉取世界数据
+        val worldData = database.getWorldData(id)
+        if (worldData == null) {
+            logger.warning("§aPixelWorldPro $id ${lang.getString("world.warning.unload.noWorldData")}")
+            future.complete(false)
+            return future
+        }
+        //拉取服务器
+        val loadServer = System.getWorldLock(worldData)
+        if (loadServer == null){
+            future.complete(true)
+            return future
+        }
+        //发送信息
+        SocketClient.unloadWorld(worldData.id, loadServer)
+        return future
+    }
+
+    fun unloadWorld(owner: UUID): CompletableFuture<Boolean> {
+        val future = CompletableFuture<Boolean>()
+        logger.info("§aPixelWorldPro 使用线程：${Thread.currentThread().name} 进行世界加载操作")
+        //拉取世界数据
+        val worldData = database.getWorldData(owner)
+        if (worldData == null) {
+            logger.warning("§aPixelWorldPro $owner ${lang.getString("world.warning.unload.noWorldData")}")
+            future.complete(false)
+            return future
+        }
+        //拉取服务器
+        val loadServer = System.getWorldLock(worldData)
+        if (loadServer == null){
+            future.complete(true)
+            return future
+        }
+        //发送信息
+        SocketClient.unloadWorld(worldData.id, loadServer)
         return future
     }
 }

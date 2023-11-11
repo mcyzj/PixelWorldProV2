@@ -1,7 +1,8 @@
 package com.mcyzj.pixelworldpro.bungee
 
-import com.mcyzj.pixelworldpro.config.Config
-import com.mcyzj.pixelworldpro.dataclass.ServerData
+import com.mcyzj.pixelworldpro.file.Config
+import com.mcyzj.pixelworldpro.data.dataclass.ServerData
+import com.mcyzj.pixelworldpro.data.dataclass.WorldData
 import org.bukkit.configuration.file.YamlConfiguration
 import java.io.File
 import java.lang.Thread.sleep
@@ -58,5 +59,37 @@ object System {
     }
     fun getServer(realName: String): ServerData? {
         return getAllServer()[realName]
+    }
+    private fun getWorldConfig(): YamlConfiguration {
+        val config = File(file.getString("World.Path"), "World.yml")
+        val data = YamlConfiguration()
+        if (!config.exists()) {
+            config.createNewFile()
+        }
+        data.load(config)
+        return data
+    }
+
+    private fun saveWorldConfig(data: YamlConfiguration){
+        val config = File(file.getString("World.Path"), "World.yml")
+        if (!config.exists()) {
+            config.createNewFile()
+        }
+        data.save(config)
+    }
+    fun setWorldLock(world: WorldData){
+        val worldConfig = getWorldConfig()
+        val server = Server.getLocalServer()
+        worldConfig.set("${world.world}.server", server.realName)
+        saveWorldConfig(worldConfig)
+    }
+    fun getWorldLock(world: WorldData): String? {
+        val worldConfig = getWorldConfig()
+        return worldConfig.getString("${world.world}.server")
+    }
+    fun removeWorldLock(world: WorldData){
+        val worldConfig = getWorldConfig()
+        worldConfig.set(world.world, null)
+        saveWorldConfig(worldConfig)
     }
 }

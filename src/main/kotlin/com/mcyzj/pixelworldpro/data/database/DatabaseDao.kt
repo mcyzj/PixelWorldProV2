@@ -1,4 +1,4 @@
-package com.mcyzj.pixelworldpro.database
+package com.mcyzj.pixelworldpro.data.database
 
 import com.j256.ormlite.field.DataType
 import com.j256.ormlite.field.DatabaseField

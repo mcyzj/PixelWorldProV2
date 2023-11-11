@@ -1,4 +1,4 @@
-package com.mcyzj.pixelworldpro.gui
+package com.mcyzj.pixelworldpro.expansion.core.gui
 
 import org.bukkit.entity.Player
 

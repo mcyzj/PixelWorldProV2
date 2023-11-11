@@ -1,9 +1,9 @@
 package com.mcyzj.pixelworldpro.api.interfaces
 
 import com.mcyzj.pixelworldpro.PixelWorldPro
-import com.mcyzj.pixelworldpro.dataclass.PlayerData
-import com.mcyzj.pixelworldpro.dataclass.WorldCreateData
-import com.mcyzj.pixelworldpro.dataclass.WorldData
+import com.mcyzj.pixelworldpro.data.dataclass.PlayerData
+import com.mcyzj.pixelworldpro.data.dataclass.WorldCreateData
+import com.mcyzj.pixelworldpro.data.dataclass.WorldData
 import org.json.simple.JSONObject
 import java.util.*
 import kotlin.collections.HashMap
@@ -45,7 +45,7 @@ interface DatabaseApi {
     /**
      * 获取所有世界的uuid map
      */
-    fun getWorldUUIDMap(): HashMap<UUID,WorldData>
+    fun getWorldUUIDMap(): HashMap<UUID, WorldData>
     /**
      * 获取所有世界的uuid list
      */

@@ -2,9 +2,10 @@ package com.mcyzj.pixelworldpro.world
 
 import com.mcyzj.pixelworldpro.PixelWorldPro
 import com.mcyzj.pixelworldpro.api.interfaces.WorldAPI
-import com.mcyzj.pixelworldpro.bungee.database.SocketClient
-import com.mcyzj.pixelworldpro.compress.Zip
-import com.mcyzj.pixelworldpro.config.Config
+import com.mcyzj.pixelworldpro.bungee.Server
+import com.mcyzj.pixelworldpro.bungee.System
+import com.mcyzj.pixelworldpro.bungee.database.SocketClient.tpWorld
+import com.mcyzj.pixelworldpro.file.Config
 import com.mcyzj.pixelworldpro.server.World
 import com.mcyzj.pixelworldpro.server.World.localWorld
 import com.xbaimiao.easylib.bridge.economy.PlayerPoints
@@ -15,7 +16,6 @@ import java.io.File
 import java.lang.Thread.sleep
 import java.util.*
 import java.util.concurrent.CompletableFuture
-import kotlin.concurrent.thread
 
 object Local {
     private val logger = PixelWorldPro.instance.logger
@@ -65,12 +65,20 @@ object Local {
         }
     }
     fun adminUnloadWorld(owner: UUID): CompletableFuture<Boolean>{
-        val worldApi = WorldAPI.Factory.get()
-        return worldApi.unloadWorld(owner)
+        return if (bungee.getBoolean("Enable")){
+            com.mcyzj.pixelworldpro.bungee.World.unloadWorld(owner)
+        } else {
+            val worldApi = WorldAPI.Factory.get()
+            worldApi.unloadWorld(owner)
+        }
     }
     fun adminUnloadWorld(id: Int): CompletableFuture<Boolean>{
-        val worldApi = WorldAPI.Factory.get()
-        return worldApi.unloadWorld(id)
+        return if (bungee.getBoolean("Enable")){
+            com.mcyzj.pixelworldpro.bungee.World.unloadWorld(id)
+        } else {
+            val worldApi = WorldAPI.Factory.get()
+            worldApi.unloadWorld(id)
+        }
     }
 
     fun unloadAllWorld(){
@@ -82,16 +90,12 @@ object Local {
                 logger.warning("§aPixelWorldPro $key ${lang.getString("worldConfig.warning.unload.noWorldData")}")
                 return
             }
+            System.removeWorldLock(worldData)
             //获取世界
-            val world = localWorld[worldData.id]
-            if (world == null) {
-                localWorld.remove(worldData.id)
-                return
-            }
+            val world = localWorld[key]!!
             if (Bukkit.unloadWorld(world, true)){
-                localWorld.remove(worldData.id)
-                World.removeLock(worldData.id)
-                Zip.toZip(worldData.world, worldData.world)
+                localWorld.remove(key)
+                World.removeLock(key)
                 File(file.getString("World.Server"), worldData.world).deleteRecursively()
             }
         }
@@ -212,32 +216,79 @@ object Local {
         return true
     }
 
-    fun adminTpWorldId(player: Player, id: Int){
-        val world = localWorld[id]
-        if (world == null){
-            player.sendMessage(lang.getString("worldConfig.warning.tp.notLoad")?:"无法传送至世界：世界未加载")
-            return
+    fun adminTpWorldId(player: Player, id: Int) {
+        if (bungee.getBoolean("Enable")) {
+            val worldData = database.getWorldData(id) ?: return
+            val server = System.getWorldLock(worldData)
+            if (server == null) {
+                player.sendMessage(lang.getString("worldConfig.warning.tp.notLoad") ?: "无法传送至世界：世界未加载")
+                return
+            }
+            try {
+                Server.bungeeTp(player, server)
+            }catch (_: Exception){
+                logger.info(lang.getString("bungee.warning.messageError") ?: "发送bungee信息失败")
+            }
+            tpWorld(id, server, player)
+        } else {
+            val world = localWorld[id]
+            if (world == null) {
+                player.sendMessage(lang.getString("worldConfig.warning.tp.notLoad") ?: "无法传送至世界：世界未加载")
+                return
+            }
+            val location = world.spawnLocation
+            player.teleport(location)
         }
-        val location = world.spawnLocation
-        player.teleport(location)
     }
 
     fun tpWorldId(player: Player, id: Int){
-        var world = localWorld[id]
-        if (world == null){
-            adminLoadWorld(id).thenApply {
-                tpWorldId(player, id)
+        if (bungee.getBoolean("Enable")) {
+            val worldData = database.getWorldData(id) ?: return
+            var server = System.getWorldLock(worldData)
+            if (server == null) {
+                adminLoadWorld(id).thenApply {
+                    server = System.getWorldLock(worldData)
+                    if (server != null) {
+                        try {
+                            Server.bungeeTp(player, server!!)
+                        } catch (_: Exception) {
+                            logger.info(lang.getString("bungee.warning.messageError") ?: "发送bungee信息失败")
+                        }
+                        tpWorld(id, server!!, player)
+                    } else {
+                        player.sendMessage(
+                            lang.getString("worldConfig.warning.tp.notLoad") ?: "无法传送至世界：世界未加载"
+                        )
+                        return@thenApply
+                    }
+                }
+            } else {
+                try {
+                    Server.bungeeTp(player, server!!)
+                }catch (_: Exception){
+                    logger.info(lang.getString("bungee.warning.messageError") ?: "发送bungee信息失败")
+                }
+                tpWorld(id, server!!, player)
             }
+        } else {
+            var world = localWorld[id]
+            if (world == null) {
+                adminLoadWorld(id).thenApply {
+                    world = localWorld[id] ?: return@thenApply
+                    val location = world!!.spawnLocation
+                    player.teleport(location)
+                }
+            }
+            world = localWorld[id] ?: return
+            val location = world!!.spawnLocation
+            player.teleport(location)
         }
-        world = localWorld[id]?:return
-        val location = world.spawnLocation
-        player.teleport(location)
     }
 
     private fun backupAllWorld(){
         if (localWorld.isNotEmpty()) {
             for (id in localWorld.keys) {
-                WorldAPI.Factory.get().backupWorld(id)
+                WorldAPI.Factory.get().backupWorld(id, true)
             }
         }
     }
@@ -258,7 +309,7 @@ object Local {
         val lock = World.getLock()?:return
         val world = WorldAPI.Factory.get()
         for (id in lock){
-            world.backupWorld(id)
+            world.backupWorld(id, true)
             //拉取世界数据
             val worldData = database.getWorldData(id)
             if (worldData == null){

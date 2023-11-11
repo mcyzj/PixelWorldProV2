@@ -1,4 +1,4 @@
-﻿package com.mcyzj.pixelworldpro.dataclass
+﻿package com.mcyzj.pixelworldpro.data.dataclass
 
 data class ServerData(
     val showName:String,

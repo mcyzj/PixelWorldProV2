@@ -3,14 +3,17 @@ package com.mcyzj.pixelworldpro
 import com.mcyzj.libs.JiangLib
 import com.mcyzj.libs.Metrics
 import com.mcyzj.pixelworldpro.api.interfaces.DatabaseApi
+import com.mcyzj.pixelworldpro.bungee.Server
 import com.mcyzj.pixelworldpro.bungee.System.setServer
 import com.mcyzj.pixelworldpro.bungee.database.SocketClient
 import com.mcyzj.pixelworldpro.command.Register
-import com.mcyzj.pixelworldpro.config.Config
-import com.mcyzj.pixelworldpro.database.MysqlDatabaseApi
-import com.mcyzj.pixelworldpro.database.SQLiteDatabaseApi
+import com.mcyzj.pixelworldpro.file.Config
+import com.mcyzj.pixelworldpro.data.database.MysqlDatabaseApi
+import com.mcyzj.pixelworldpro.data.database.SQLiteDatabaseApi
+import com.mcyzj.pixelworldpro.expansion.ExpansionManager
+import com.mcyzj.pixelworldpro.expansion.core.Core
 import com.mcyzj.pixelworldpro.listener.World
-import com.mcyzj.pixelworldpro.server.Gui
+import com.mcyzj.pixelworldpro.server.windows.Eula
 import com.mcyzj.pixelworldpro.server.Icon
 import com.mcyzj.pixelworldpro.world.Local
 import com.xbaimiao.easylib.EasyPlugin
@@ -90,8 +93,6 @@ class PixelWorldPro : EasyPlugin(){
                     databaseApi = MysqlDatabaseApi()
                 }
                 submit {
-                    //注册命令
-                    Register().command.register()
                     //注册监听
                     Bukkit.getPluginManager().registerEvents(World(), this@PixelWorldPro)
                     //注册备份线程
@@ -106,7 +107,15 @@ class PixelWorldPro : EasyPlugin(){
                     }
                     //写入服务器数据
                     setServer()
+                    //启用传送
+                    Server.tpPlayer()
                 }
+                //加载核心扩展
+                Core.enable()
+                //加载外部扩展
+                ExpansionManager.loadExpansion()
+                //注册命令
+                Register().command.register()
             }
         }
     }
@@ -154,6 +163,12 @@ class PixelWorldPro : EasyPlugin(){
 
     override fun onDisable() {
         Local.unloadAllWorld()
+        for (key in ExpansionManager.loadExpansion.keys){
+            if (config.getBoolean("debug")) {
+                Bukkit.getConsoleSender().sendMessage("§aPixelWorldPro 卸载扩展 $key")
+            }
+            ExpansionManager.loadExpansion[key]!!.onDisable()
+        }
     }
 
     private fun eula(): CompletableFuture<Boolean> {
@@ -164,7 +179,7 @@ class PixelWorldPro : EasyPlugin(){
         }
         logger.info(lang.getString("eula"))
         logger.info("https://wiki.mcyzj.cn/#/zh-cn/agreement?id=%e4%bb%98%e8%b4%b9%e6%8f%92%e4%bb%b6")
-        return Gui.eulaGUI()
+        return Eula.open()
     }
     private fun checkServer(){
         val osArch = System.getProperty("os.arch") // 架构名称

@@ -2,8 +2,10 @@ package com.mcyzj.pixelworldpro.command
 
 import com.mcyzj.pixelworldpro.PixelWorldPro
 import com.mcyzj.pixelworldpro.api.interfaces.WorldAPI
-import com.mcyzj.pixelworldpro.gui.Open
+import com.mcyzj.pixelworldpro.expansion.core.gui.Open
 import com.mcyzj.pixelworldpro.world.Local
+import com.xbaimiao.easylib.module.chat.BuiltInConfiguration
+import com.xbaimiao.easylib.module.command.ArgNode
 import com.xbaimiao.easylib.module.command.command
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
@@ -172,26 +174,38 @@ class User {
         sub(tpPlayer)
     }
 
+    private val guiArgNode = ArgNode("",
+        exec = {
+            arrayListOf("create", "list")
+        }, parse = {
+            it
+        }
+    )
+
     private val gui = command<CommandSender>("gui") {
         permission = "pwp.user.gui"
-        exec{
-            if (!sender.hasPermission("pwp.user.gui")){
-                sender.sendMessage(lang.getString("command.warning.noPermission")?:"你没有权限执行这个命令")
-                return@exec
-            }
-            when(args.size){
-                0 -> {
+        arg(guiArgNode) { gui ->
+            exec {
+                if (!sender.hasPermission("pwp.user.gui")) {
+                    sender.sendMessage(lang.getString("command.warning.noPermission") ?: "你没有权限执行这个命令")
+                    return@exec
+                }
+                when (args.size) {
+                    0 -> {
 
-                }
-                1 -> {
-                    Open.open(sender as Player, args[0])
-                }
-                else -> {
-                    sender.sendMessage(lang.getString("command.warning.formatError")?:"命令格式错误")
-                    sender.sendMessage(lang.getString("command.prompt.admin.create1")?:"???")
-                    sender.sendMessage(lang.getString("command.prompt.admin.create2")?:"???")
-                    sender.sendMessage(lang.getString("command.prompt.admin.create3")?:"???")
-                    sender.sendMessage(lang.getString("command.prompt.admin.create4")?:"???")
+                    }
+
+                    1 -> {
+                        Open.open(sender as Player, valueOf(gui))
+                    }
+
+                    else -> {
+                        sender.sendMessage(lang.getString("command.warning.formatError") ?: "命令格式错误")
+                        sender.sendMessage(lang.getString("command.prompt.admin.create1") ?: "???")
+                        sender.sendMessage(lang.getString("command.prompt.admin.create2") ?: "???")
+                        sender.sendMessage(lang.getString("command.prompt.admin.create3") ?: "???")
+                        sender.sendMessage(lang.getString("command.prompt.admin.create4") ?: "???")
+                    }
                 }
             }
         }

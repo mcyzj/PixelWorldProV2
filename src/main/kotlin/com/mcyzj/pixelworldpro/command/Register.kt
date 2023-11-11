@@ -6,11 +6,11 @@ import org.bukkit.command.CommandSender
 
 class Register {
     private val config = PixelWorldPro.instance.config
-    private val lang = PixelWorldPro.instance.lang
-
     private val mainCommand = config.getString("mainCommand") ?:"pwp"
+    private var user = User().user
+
     val command = command<CommandSender>(mainCommand) {
-        sub(Admin().admin)
-        sub(User().user)
+        sub(Admin.getCommand())
+        sub(user)
     }
 }

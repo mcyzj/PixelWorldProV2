@@ -1,7 +1,7 @@
-package com.mcyzj.pixelworldpro.gui
+package com.mcyzj.pixelworldpro.expansion.core.gui
 
 import com.mcyzj.pixelworldpro.PixelWorldPro
-import com.mcyzj.pixelworldpro.dataclass.BasicCharMap
+import com.mcyzj.pixelworldpro.data.dataclass.BasicCharMap
 import com.mcyzj.pixelworldpro.world.Local
 import com.xbaimiao.easylib.bridge.replacePlaceholder
 import com.xbaimiao.easylib.module.chat.BuiltInConfiguration

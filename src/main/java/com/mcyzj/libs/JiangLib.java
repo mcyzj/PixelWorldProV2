@@ -8,8 +8,8 @@ import org.jetbrains.annotations.NotNull;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-import sun.misc.Unsafe;
 import com.mcyzj.pixelworldpro.PixelWorldPro;
+import sun.misc.Unsafe;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -42,7 +42,7 @@ public class JiangLib {
     private static final Supplier<LibrariesOptions> librariesOptions = memoize(() -> {
         YamlConfiguration yamlConfiguration = YamlConfiguration.loadConfiguration(new InputStreamReader(requireNonNull(PixelWorldPro.class.getClassLoader().getResourceAsStream("plugin.yml"), "Jar does not contain plugin.yml")));
         if (yamlConfiguration.contains("runtime-libraries"))
-            return LibrariesOptions.fromMap((yamlConfiguration.getConfigurationSection("runtime-libraries")));
+            return LibrariesOptions.fromMap((requireNonNull(yamlConfiguration.getConfigurationSection("runtime-libraries"))));
         return null;
     });
     private static final Supplier<File> libFile = memoize(() -> {

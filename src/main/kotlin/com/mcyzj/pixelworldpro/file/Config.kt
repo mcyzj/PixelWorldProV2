@@ -1,4 +1,4 @@
-package com.mcyzj.pixelworldpro.config
+package com.mcyzj.pixelworldpro.file
 
 import com.mcyzj.pixelworldpro.PixelWorldPro
 import com.xbaimiao.easylib.module.chat.BuiltInConfiguration

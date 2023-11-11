@@ -1,4 +1,4 @@
-package com.mcyzj.pixelworldpro.server
+package com.mcyzj.pixelworldpro.server.windows
 
 import com.mcyzj.pixelworldpro.PixelWorldPro
 import java.awt.BorderLayout
@@ -11,8 +11,8 @@ import javax.swing.JLabel
 import javax.swing.JPanel
 
 
-object Gui {
-    fun eulaGUI(): CompletableFuture<Boolean> {
+object Eula {
+    fun open(): CompletableFuture<Boolean> {
         val future = CompletableFuture<Boolean>()
         // 创建窗口
         val frame = JFrame("PixelWorldProV2 使用协议")

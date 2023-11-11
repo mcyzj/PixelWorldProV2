@@ -1,9 +1,4 @@
-﻿import org.gradle.jvm.tasks.Jar
-import java.net.URI
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-
-plugins {
+﻿plugins {
     java
     id("com.github.johnrengelman.shadow") version ("7.1.2")
     kotlin("jvm") version "1.8.0"
@@ -12,7 +7,7 @@ plugins {
 }
 
 group = "com.mcyzj"
-version = "2.0.0-a2"
+version = "2.0.0-a4"
 
 easylib {
     version = "2.3.9"
@@ -30,7 +25,7 @@ repositories {
 }
 
 dependencies {
-    //implementation(kotlin("stdlib-jdk8"))
+    implementation(kotlin("stdlib-jdk8"))
     compileOnly("redis.clients:jedis:3.7.0")
     compileOnly("com.github.oshi:oshi-core:3.12.2")
     compileOnly("com.google.code.gson:gson:2.10")
