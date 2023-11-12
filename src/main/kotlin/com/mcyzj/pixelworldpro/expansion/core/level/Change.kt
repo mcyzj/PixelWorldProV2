@@ -1,6 +1,5 @@
 package com.mcyzj.pixelworldpro.expansion.core.level
 
-import com.mcyzj.pixelworldpro.api.event.WorldCreateSuccess
 import com.mcyzj.pixelworldpro.data.dataclass.WorldData
 import com.mcyzj.pixelworldpro.file.World
 import org.bukkit.Bukkit

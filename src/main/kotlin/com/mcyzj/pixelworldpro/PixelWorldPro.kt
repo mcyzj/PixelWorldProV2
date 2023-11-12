@@ -112,7 +112,7 @@ class PixelWorldPro : EasyPlugin() {
                     //加载核心扩展
                     Core.enable()
                     //加载外部扩展
-                    ExpansionManager.loadExpansion()
+                    //ExpansionManager.loadExpansion()
                     //注册命令
                     Register().command.register()
                 }
@@ -241,11 +241,6 @@ class PixelWorldPro : EasyPlugin() {
         }
         if (!File(dataFolder, "gui/WorldRestart.yml").exists()) {
             saveResource("gui/WorldRestart.yml", false)
-        }
-    }
-    fun regEvent(event: Listener){
-        submit {
-            Bukkit.getPluginManager().registerEvents(event, this@PixelWorldPro)
         }
     }
 }

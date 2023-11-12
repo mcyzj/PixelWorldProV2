@@ -1,9 +1,9 @@
 package com.mcyzj.pixelworldpro.world
 
 import com.mcyzj.pixelworldpro.PixelWorldPro
-import com.mcyzj.pixelworldpro.api.event.WorldCreateSuccess
-import com.mcyzj.pixelworldpro.api.event.WorldLoadSuccess
-import com.mcyzj.pixelworldpro.api.event.WorldUnloadSuccess
+import com.mcyzj.pixelworldpro.api.event.world.WorldCreateSuccess
+import com.mcyzj.pixelworldpro.api.event.world.WorldLoadSuccess
+import com.mcyzj.pixelworldpro.api.event.world.WorldUnloadSuccess
 import com.mcyzj.pixelworldpro.api.interfaces.Permission
 import com.mcyzj.pixelworldpro.api.interfaces.WorldAPI
 import com.mcyzj.pixelworldpro.compress.Zip
