@@ -5,6 +5,7 @@ import org.bukkit.Bukkit
 import org.bukkit.configuration.InvalidConfigurationException
 import org.bukkit.configuration.file.YamlConfiguration
 import java.io.*
+import java.net.URLDecoder
 import java.util.*
 import java.util.jar.JarFile
 import kotlin.collections.HashMap
@@ -12,6 +13,7 @@ import kotlin.collections.HashMap
 
 object ExpansionManager{
     val loadExpansion = HashMap<String, Expansion>()
+    val expansionDataMap = HashMap<String, ExpansionData>()
 
     private val classes: MutableMap<String, Class<*>>
     private val loaders: MutableMap<Expansion, ExpansionClassLoader>
@@ -41,20 +43,38 @@ object ExpansionManager{
         }
         val expansionList = expansionFile.list()
         if (expansionList != null) {
-            for (name in expansionList) {
-                val expansion = File("./plugins/PixelWorldProV2/Expansion", name)
-                JarFile(expansion).use { jar ->
-                    Bukkit.getConsoleSender().sendMessage("§aPixelWorldPro 尝试读取本地${name}扩展")
-                    val data = expansionDescription(jar)
-                    if (data != null) {
-                        if (data.getInt("api-version") >= 1) {
-                            Bukkit.getConsoleSender().sendMessage("§aPixelWorldPro 加载扩展本地扩展${name}")
-                            ExpansionClassLoader(this, data, expansion, this.javaClass.classLoader, name)
+            for (file in expansionList) {
+                val expansion = File("./plugins/PixelWorldProV2/Expansion", file)
+                if (expansion.isFile) {
+                    JarFile(expansion).use { jar ->
+                        Bukkit.getConsoleSender().sendMessage("§aPixelWorldPro 尝试读取本地${file}扩展")
+                        val data = expansionDescription(jar)
+                        if (data != null) {
+                            val expansionData = buildExpansionData(data)
+                            if (expansionData != null) {
+                                if (expansionData.api >= 1) {
+                                    Bukkit.getConsoleSender()
+                                        .sendMessage("§aPixelWorldPro 加载扩展本地扩展 ${expansionData.name}[${file}]")
+                                    Bukkit.getConsoleSender()
+                                        .sendMessage("§aPixelWorldPro 作者：${expansionData.author}")
+                                    Bukkit.getConsoleSender()
+                                        .sendMessage("§aPixelWorldPro 版本：${expansionData.version}")
+                                    expansionDataMap[expansion.name] = expansionData
+                                    ExpansionClassLoader(this, data, expansion, this.javaClass.classLoader, file)
+                                } else {
+                                    Bukkit.getConsoleSender()
+                                        .sendMessage("§4PixelWorldPro 无法理解 ${expansion.name}[${file}] 使用的API版本")
+                                    Bukkit.getConsoleSender()
+                                        .sendMessage("§4PixelWorldPro 内置api版本：1")
+                                    Bukkit.getConsoleSender()
+                                        .sendMessage("§4PixelWorldPro ${expansion.name}[${file}] 使用的API版本：${expansionData.api}")
+                                }
+                            } else {
+                                Bukkit.getConsoleSender().sendMessage("§4PixelWorldPro ${file}不是一个有效的扩展")
+                            }
                         } else {
-                            Bukkit.getConsoleSender().sendMessage("§4PixelWorldPro 无法理解${name}使用的API版本")
+                            Bukkit.getConsoleSender().sendMessage("§4PixelWorldPro ${file}不是一个有效的扩展")
                         }
-                    } else {
-                        Bukkit.getConsoleSender().sendMessage("§4PixelWorldPro ${name}不是一个有效的扩展")
                     }
                 }
             }
@@ -65,13 +85,26 @@ object ExpansionManager{
     private fun expansionDescription(jar: JarFile): YamlConfiguration? {
         return try {
             val entry = jar.getJarEntry("PixelWorldPro.yml")
-            val reader = BufferedReader(InputStreamReader(jar.getInputStream(entry)))
+            val reader = BufferedReader(InputStreamReader(jar.getInputStream(entry),"UTF-8"))
             val data = YamlConfiguration()
             data.load(reader)
             reader.close()
             data
         }catch (e:Exception){
             Bukkit.getConsoleSender().sendMessage("§aPixelWorldPro 该扩展不是一个有效的PixelWorldPro扩展")
+            null
+        }
+    }
+
+    private fun buildExpansionData(config: YamlConfiguration): ExpansionData? {
+        return try {
+            val name = URLDecoder.decode(config.getString("name")!!, "UTF-8")
+            val api = config.getInt("api")
+            val author = URLDecoder.decode(config.getString("author")!!, "UTF-8")
+            val version = URLDecoder.decode(config.getString("version")!!, "UTF-8")
+            ExpansionData(name, api, author, version)
+        }catch (e: Exception){
+            e.printStackTrace()
             null
         }
     }

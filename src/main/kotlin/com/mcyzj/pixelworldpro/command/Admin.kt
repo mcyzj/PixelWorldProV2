@@ -2,6 +2,7 @@ package com.mcyzj.pixelworldpro.command
 
 import com.mcyzj.pixelworldpro.PixelWorldPro
 import com.mcyzj.pixelworldpro.api.interfaces.WorldAPI
+import com.mcyzj.pixelworldpro.expansion.ExpansionManager.loadExpansion
 import com.mcyzj.pixelworldpro.world.Local
 import com.xbaimiao.easylib.module.command.CommandSpec
 import com.xbaimiao.easylib.module.command.command
@@ -92,7 +93,7 @@ object Admin {
             }
         }
     }
-    private val loadId = command<CommandSender>("Id") {
+    private val loadId = command<CommandSender>("id") {
         permission = "pwp.admin.load"
         exec{
             if (!sender.hasPermission("pwp.admin.load")){
@@ -169,7 +170,7 @@ object Admin {
             }
         }
     }
-    private val unloadId = command<CommandSender>("Id") {
+    private val unloadId = command<CommandSender>("id") {
         permission = "pwp.admin.unload"
         exec{
             if (!sender.hasPermission("pwp.admin.unload")){
@@ -255,7 +256,7 @@ object Admin {
             }
         }
     }
-    private val tpId = command<CommandSender>("Id") {
+    private val tpId = command<CommandSender>("id") {
         permission = "pwp.admin.tp"
         exec{
             if (!sender.hasPermission("pwp.admin.tp")){
@@ -315,6 +316,35 @@ object Admin {
         sub(tpPlayer)
     }
 
+    private val expansionLoad = command<CommandSender>("load") {
+        permission = "pwp.admin.expansion"
+        exec{
+            if (!sender.hasPermission("pwp.admin.tp")){
+                sender.sendMessage(lang.getString("command.warning.noPermission")?:"你没有权限执行这个命令")
+                return@exec
+            }
+            when(args.size){
+                1 -> {
+                    if (args[0] == "all"){
+                        loadExpansion()
+                    }
+                }
+                else -> {
+                    sender.sendMessage(lang.getString("command.warning.formatError")?:"命令格式错误")
+                    sender.sendMessage(lang.getString("command.prompt.admin.create1")?:"???")
+                    sender.sendMessage(lang.getString("command.prompt.admin.create2")?:"???")
+                    sender.sendMessage(lang.getString("command.prompt.admin.create3")?:"???")
+                    sender.sendMessage(lang.getString("command.prompt.admin.create4")?:"???")
+                }
+            }
+        }
+    }
+
+    private val expansion = command<CommandSender>("expansion") {
+        permission = "pwp.admin.expansion"
+        sub(expansionLoad)
+    }
+
     //private val reload = command<CommandSender>("reload") {
     //    Config.reload()
     //}
@@ -325,6 +355,7 @@ object Admin {
         sub(load)
         sub(unload)
         sub(tp)
+        sub(expansion)
         //sub(reload)
     }
 

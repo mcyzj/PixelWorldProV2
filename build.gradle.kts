@@ -25,7 +25,7 @@ repositories {
 }
 
 dependencies {
-    implementation(kotlin("stdlib-jdk8"))
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.9.20")
     compileOnly("redis.clients:jedis:3.7.0")
     compileOnly("com.github.oshi:oshi-core:3.12.2")
     compileOnly("com.google.code.gson:gson:2.10")

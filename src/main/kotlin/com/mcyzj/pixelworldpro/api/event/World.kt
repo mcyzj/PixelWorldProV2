@@ -6,6 +6,9 @@ import org.bukkit.event.HandlerList
 
 
 class WorldCreateSuccess(val worldData: WorldData) : Event(){
+    fun getHandlerList(): HandlerList {
+        return handlerList
+    }
     override fun getHandlers(): HandlerList {
         return handlerList
     }
@@ -16,6 +19,9 @@ class WorldCreateSuccess(val worldData: WorldData) : Event(){
 }
 
 class WorldLoadSuccess(val worldData: WorldData) : Event(){
+    fun getHandlerList(): HandlerList {
+        return handlerList
+    }
     override fun getHandlers(): HandlerList {
         return handlerList
     }
@@ -25,6 +31,9 @@ class WorldLoadSuccess(val worldData: WorldData) : Event(){
     }
 }
 class WorldUnloadSuccess(val worldData: WorldData) : Event(){
+    fun getHandlerList(): HandlerList {
+        return handlerList
+    }
     override fun getHandlers(): HandlerList {
         return handlerList
     }

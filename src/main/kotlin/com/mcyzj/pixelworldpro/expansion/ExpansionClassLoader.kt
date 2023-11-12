@@ -9,64 +9,76 @@ import java.net.URL
 import java.net.URLClassLoader
 import java.util.*
 
-class ExpansionClassLoader//try {
-//} catch (e: ClassCastException) {
-//    throw java.lang.Exception("主类没有扩展")
-//}
-    (addonsManager: ExpansionManager, data: YamlConfiguration, jarFile: File, parent: ClassLoader?, name: String) : URLClassLoader(
-    arrayOf<URL>(jarFile.toURI().toURL()), parent
-) {
+class ExpansionClassLoader : URLClassLoader {
     private val classes: MutableMap<String, Class<*>?> = HashMap()
+
 
     @JvmField
     val expansion: Expansion
-    private val loader: ExpansionManager = addonsManager
+    private val loader: ExpansionManager
 
-    init {
+
+    constructor(expansion: Expansion, loader: ExpansionManager, jarFile: File) : super(arrayOf<URL>(jarFile.toURI().toURL())) {
+        this.expansion = expansion
+        this.loader = loader
+    }
+
+    constructor(expansionManager: ExpansionManager, data: YamlConfiguration, jarFile: File, parent: ClassLoader?, name: String) : super(
+            arrayOf<URL>(jarFile.toURI().toURL()), parent
+    ) {
+        loader = expansionManager
         val javaClass: Class<*>
         try {
             val mainClass =
-                    data.getString("main") ?: throw java.lang.Exception("§4PixelWorldPro expansion.yml 没有设置一个主类！")
+                    data.getString("main") ?: throw java.lang.Exception("PixelWorldPro 扩展没有设置一个主类！")
             javaClass = Class.forName(mainClass, true, this)
-            if (mainClass.startsWith("com.mcyzj.pixelworldpro")) {
-                throw java.lang.Exception("§4PixelWorldPro 扩展的主类不能是 'com.mcyzj.pixelworldpro'")
+            if (mainClass.startsWith("com.mcyzj.pixelworldpro.")) {
+                throw java.lang.Exception("PixelWorldPro 扩展的主类不能是 'com.mcyzj.pixelworldpro'")
             }
         } catch (e: Exception) {
-            throw InvalidDescriptionException("§4PixelWorldPro 无法加载扩展$name")
+            throw InvalidDescriptionException("PixelWorldPro 无法加载 '" + jarFile.name + "' 在文件夹中 '" + jarFile.parent + "' - " + e.message)
         }
-        val expansionClass: Class<out Expansion> = javaClass.asSubclass(Expansion::class.java)
+        val expansionClass: Class<out Expansion> = try {
+            javaClass.asSubclass(Expansion::class.java)
+        } catch (e: ClassCastException) {
+            throw java.lang.Exception("PixelWorldPro 主类没有扩展")
+        }
         expansion = expansionClass.getDeclaredConstructor().newInstance()
-        Bukkit.getConsoleSender().sendMessage("§aPixelWorldPro 加载扩展$name")
+        Bukkit.getConsoleSender().sendMessage("§aPixelWorldPro 启动本地扩展扩展${jarFile.name}")
         expansion.onEnable()
-        ExpansionManager.loadExpansion[name] = expansion
     }
 
     public override fun findClass(name: String): Class<*>? {
         return findClass(name, true)
     }
 
+
     fun findClass(name: String, checkGlobal: Boolean): Class<*>? {
-        if (name.startsWith("com.mcyzj.pixelworldpro")) {
+        if (name.startsWith("world.bentobox.bentobox")) {
             return null
         }
         var result = classes[name]
         if (result == null) {
             if (checkGlobal) {
-                result = ExpansionManager.getClassByName(name) as Class<*>?
+                result = loader.getClassByName(name) as Class<*>?
             }
             if (result == null) {
                 try {
                     result = super.findClass(name)
                 } catch (e: ClassNotFoundException) {
                     // Do nothing.
-                } catch (_: NoClassDefFoundError) {
+                } catch (e: NoClassDefFoundError) {
                 }
                 if (result != null) {
-                    ExpansionManager.setClass(name, result)
+                    loader.setClass(name, result)
                 }
             }
             classes[name] = result
         }
         return result
+    }
+
+    fun getClasses(): Set<String> {
+        return classes.keys
     }
 }

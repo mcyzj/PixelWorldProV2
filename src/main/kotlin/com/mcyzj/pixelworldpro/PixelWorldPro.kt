@@ -20,16 +20,16 @@ import com.xbaimiao.easylib.EasyPlugin
 import com.xbaimiao.easylib.module.chat.BuiltInConfiguration
 import com.xbaimiao.easylib.module.utils.submit
 import org.bukkit.Bukkit
+import org.bukkit.event.Listener
+import org.bukkit.plugin.java.JavaPlugin
 import redis.clients.jedis.JedisPool
 import java.io.File
 import java.util.concurrent.CompletableFuture
 
-@Suppress("unused")
-class PixelWorldPro : EasyPlugin(){
+class PixelWorldPro : EasyPlugin() {
     companion object {
         lateinit var databaseApi: DatabaseApi
         lateinit var instance: PixelWorldPro
-        lateinit var jedisPool: JedisPool
     }
 
     var eula = BuiltInConfiguration("Eula.yml")
@@ -38,7 +38,8 @@ class PixelWorldPro : EasyPlugin(){
     var lang = BuiltInConfiguration("lang/${language}.yml")
     var pwpDebug = config.getBoolean("debug")
     private var bungee = Config.bungee
-    override fun enable() {
+    override fun onEnable() {
+        instance = this
         //PixelWorldProV2遵循《用户协议-付费插件》
         //https://wiki.mcyzj.cn/#/zh-cn/agreement?id=%e4%bb%98%e8%b4%b9%e6%8f%92%e4%bb%b6
         //购买/反编译/使用 插件即表明您认可我们的协议
@@ -58,7 +59,6 @@ class PixelWorldPro : EasyPlugin(){
         Icon.v2Alpha()
         val jdkVersion = System.getProperty("java.version") // jdk 版本
         logger.info("§aPixelWorldPro 开始加载于JDK${jdkVersion}上")
-        instance = this
         //加载默认配置文件
         logger.info("§aPixelWorldPro ${lang.getString("config.load")}")
         saveOtherConfig()
@@ -92,14 +92,6 @@ class PixelWorldPro : EasyPlugin(){
                     }
                     databaseApi = MysqlDatabaseApi()
                 }
-                submit {
-                    //注册监听
-                    Bukkit.getPluginManager().registerEvents(World(), this@PixelWorldPro)
-                    //注册备份线程
-                    Local.regularBackup()
-                    //保存未正常备份的世界
-                    Local.getUnzipWorld()
-                }
                 if (bungee.getBoolean("Enable")) {
                     submit(async = true) {
                         //创建连接
@@ -110,12 +102,20 @@ class PixelWorldPro : EasyPlugin(){
                     //启用传送
                     Server.tpPlayer()
                 }
-                //加载核心扩展
-                Core.enable()
-                //加载外部扩展
-                ExpansionManager.loadExpansion()
-                //注册命令
-                Register().command.register()
+                submit {
+                    //注册监听
+                    Bukkit.getPluginManager().registerEvents(World(), this@PixelWorldPro)
+                    //注册备份线程
+                    Local.regularBackup()
+                    //保存未正常备份的世界
+                    Local.getUnzipWorld()
+                    //加载核心扩展
+                    Core.enable()
+                    //加载外部扩展
+                    ExpansionManager.loadExpansion()
+                    //注册命令
+                    Register().command.register()
+                }
             }
         }
     }
@@ -124,7 +124,6 @@ class PixelWorldPro : EasyPlugin(){
         //开始插件加载
         val jdkVersion = System.getProperty("java.version") // jdk 版本
         logger.info("§aPixelWorldPro 开始重载于JDK${jdkVersion}上")
-        instance = this
         //加载默认配置文件
         logger.info("§aPixelWorldPro ${lang.getString("config.load")}")
         saveOtherConfig()
@@ -242,6 +241,11 @@ class PixelWorldPro : EasyPlugin(){
         }
         if (!File(dataFolder, "gui/WorldRestart.yml").exists()) {
             saveResource("gui/WorldRestart.yml", false)
+        }
+    }
+    fun regEvent(event: Listener){
+        submit {
+            Bukkit.getPluginManager().registerEvents(event, this@PixelWorldPro)
         }
     }
 }

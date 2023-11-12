@@ -4,7 +4,10 @@ import com.mcyzj.pixelworldpro.data.dataclass.WorldData
 import org.bukkit.event.Event
 import org.bukkit.event.HandlerList
 
-class WorldLevelChange(val worldData: WorldData, val level: Int) : Event(){
+class WorldLevelChange(val worldData: WorldData, level: Int) : Event(){
+    fun getHandlerList(): HandlerList {
+        return handlerList
+    }
     override fun getHandlers(): HandlerList {
         return handlerList
     }
