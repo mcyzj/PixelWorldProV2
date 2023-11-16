@@ -7,7 +7,7 @@
 }
 
 group = "com.mcyzj"
-version = "2.0.0-a4"
+version = "2.0.0-a5"
 
 easylib {
     version = "2.3.9"

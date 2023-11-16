@@ -44,7 +44,9 @@ object Zip {
                     try {
                         // 压缩文件
                         addToZipFile(folderName + "/" + file.name, file.absolutePath, zipOutputStream)
-                    }catch (_:Exception){}
+                    }catch (e:Exception){
+                        e.printStackTrace()
+                    }
                 }
             }
         }

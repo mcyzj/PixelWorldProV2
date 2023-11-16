@@ -1,14 +1,12 @@
 package com.mcyzj.pixelworldpro.world
 
 import com.mcyzj.pixelworldpro.PixelWorldPro
-import com.mcyzj.pixelworldpro.api.event.world.WorldCreateSuccess
-import com.mcyzj.pixelworldpro.api.event.world.WorldLoadSuccess
-import com.mcyzj.pixelworldpro.api.event.world.WorldUnloadSuccess
-import com.mcyzj.pixelworldpro.api.interfaces.Permission
-import com.mcyzj.pixelworldpro.api.interfaces.WorldAPI
+import com.mcyzj.pixelworldpro.api.interfaces.core.permission.PermissionAPI
+import com.mcyzj.pixelworldpro.api.interfaces.core.world.WorldAPI
 import com.mcyzj.pixelworldpro.compress.Zip
 import com.mcyzj.pixelworldpro.file.Config
 import com.mcyzj.pixelworldpro.data.dataclass.WorldCreateData
+import com.mcyzj.pixelworldpro.expansion.listener.trigger.world.WorldSuccess
 import com.mcyzj.pixelworldpro.server.World
 import com.mcyzj.pixelworldpro.server.World.localWorld
 import com.xbaimiao.easylib.module.utils.submit
@@ -17,6 +15,7 @@ import org.bukkit.WorldCreator
 import java.io.BufferedWriter
 import java.io.File
 import java.io.FileWriter
+import java.lang.Thread.sleep
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.CompletableFuture
@@ -69,15 +68,14 @@ object WorldImpl : WorldAPI {
                 owner,
                 owner.toString(),
                 worldName,
-                Permission.Factory.get().getConfigWorldPermission(),
+                PermissionAPI.Factory.get().getConfigWorldPermission(),
                 HashMap<UUID, String>(),
                 HashMap<String, Boolean>()
             )
             val worldData = database.createWorldData(worldCreateData)
             localWorld[worldData.id] = world
             World.setLock(worldData.id)
-            val exampleEvent = WorldCreateSuccess(worldData)
-            Bukkit.getPluginManager().callEvent(exampleEvent)
+            WorldSuccess.createWorldSuccess(worldData, template)
             future.complete(true)
         }
         return future
@@ -106,8 +104,7 @@ object WorldImpl : WorldAPI {
             localWorld[worldData.id] = world
             World.setLock(worldData.id)
             world.keepSpawnInMemory = false
-            val exampleEvent = WorldLoadSuccess(worldData)
-            Bukkit.getPluginManager().callEvent(exampleEvent)
+            WorldSuccess.loadWorldSuccess(worldData)
             future.complete(true)
         }
         return future
@@ -136,8 +133,7 @@ object WorldImpl : WorldAPI {
             localWorld[worldData.id] = world
             World.setLock(worldData.id)
             world.keepSpawnInMemory = false
-            val exampleEvent = WorldLoadSuccess(worldData)
-            Bukkit.getPluginManager().callEvent(exampleEvent)
+            WorldSuccess.loadWorldSuccess(worldData)
             future.complete(true)
         }
         return future
@@ -164,16 +160,18 @@ object WorldImpl : WorldAPI {
             for (player in world.players){
                 player.teleport(Bukkit.getWorld(worldConfig.getString("Unload.world")?: "world")!!.spawnLocation)
             }
-            backupWorld(worldData.id, false)
+            backupWorld(worldData.id, true)
             if (Bukkit.unloadWorld(world, true)){
                 localWorld.remove(worldData.id)
-                File(fileConfig.getString("World.Server"), worldData.world).deleteRecursively()
                 World.removeLock(worldData.id)
                 if (bungee.getBoolean("Enable")){
                     com.mcyzj.pixelworldpro.bungee.System.removeWorldLock(worldData)
                 }
-                val exampleEvent = WorldUnloadSuccess(worldData)
-                Bukkit.getPluginManager().callEvent(exampleEvent)
+                WorldSuccess.unloadWorldSuccess(worldData)
+                Thread{
+                    sleep(30000)
+                    File(fileConfig.getString("World.Server"), worldData.world).deleteRecursively()
+                }.start()
                 future.complete(true)
             }else{
                 future.complete(false)
@@ -203,16 +201,18 @@ object WorldImpl : WorldAPI {
             for (player in world.players){
                 player.teleport(Bukkit.getWorld(worldConfig.getString("Unload.world")?: "world")!!.spawnLocation)
             }
-            backupWorld(worldData.id, false)
+            backupWorld(worldData.id, true)
             if (Bukkit.unloadWorld(world, true)){
                 localWorld.remove(worldData.id)
-                File(fileConfig.getString("World.Server"), worldData.world).deleteRecursively()
                 World.removeLock(worldData.id)
                 if (bungee.getBoolean("Enable")){
                     com.mcyzj.pixelworldpro.bungee.System.removeWorldLock(worldData)
                 }
-                val exampleEvent = WorldUnloadSuccess(worldData)
-                Bukkit.getPluginManager().callEvent(exampleEvent)
+                WorldSuccess.unloadWorldSuccess(worldData)
+                Thread{
+                    sleep(30000)
+                    File(fileConfig.getString("World.Server"), worldData.world).deleteRecursively()
+                }.start()
                 future.complete(true)
             }else{
                 future.complete(false)
@@ -256,7 +256,7 @@ object WorldImpl : WorldAPI {
             backup.mkdirs()
             zip.copyTo(File(backup, "world.zip"))
             //备份数据文件
-            File(file, "config").copyTo(File(backup, "config"))
+            File(file, "config").copyRecursively(backup)
             val json = File(backup, "database.json")
             json.createNewFile()
             val fileWriter = FileWriter(json.absoluteFile, false)
@@ -273,6 +273,7 @@ object WorldImpl : WorldAPI {
                     }
                 }
             }
+            WorldSuccess.backupWorldSuccess(worldData, save)
         }
     }
 
@@ -311,7 +312,7 @@ object WorldImpl : WorldAPI {
             backup.mkdirs()
             zip.copyTo(backup)
             //备份数据文件
-            File(file, "config").copyTo(backup)
+            File(file, "config").copyRecursively(backup)
             val json = File(backup, "database.json")
             json.createNewFile()
             val fileWriter = FileWriter(json.absoluteFile, false)
@@ -328,6 +329,15 @@ object WorldImpl : WorldAPI {
                     }
                 }
             }
+            WorldSuccess.backupWorldSuccess(worldData, save)
         }
+    }
+
+    override fun zipWorld(from: String, to: String) {
+
+    }
+
+    override fun unzipWorld(zip: String, to: String) {
+        TODO("Not yet implemented")
     }
 }

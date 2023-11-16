@@ -1,8 +1,9 @@
 package com.mcyzj.pixelworldpro.expansion.core.level
 
 import com.mcyzj.pixelworldpro.data.dataclass.WorldData
+import com.mcyzj.pixelworldpro.expansion.listener.trigger.level.Level
+import com.mcyzj.pixelworldpro.file.Config
 import com.mcyzj.pixelworldpro.file.World
-import org.bukkit.Bukkit
 import org.bukkit.configuration.file.YamlConfiguration
 
 object Change {
@@ -12,8 +13,10 @@ object Change {
         val levelConfig = World.getWorldConfig(worldData, "level", data)
         levelConfig.set("level", level)
         World.saveWorldConfig(worldData, "level", levelConfig)
-        val exampleEvent = WorldLevelChange(worldData, level)
-        Bukkit.getPluginManager().callEvent(exampleEvent)
+        Level.levelChange(worldData, level)
+        if (Config.bungee.getBoolean("Enable")){
+            Send.send(worldData.id, level)
+        }
     }
     fun getLevel(worldData: WorldData): Int {
         val data = YamlConfiguration()
@@ -28,8 +31,10 @@ object Change {
         val level = levelConfig.getInt("level") + 1
         levelConfig.set("level", level)
         World.saveWorldConfig(worldData, "level", levelConfig)
-        val exampleEvent = WorldLevelChange(worldData, level)
-        Bukkit.getPluginManager().callEvent(exampleEvent)
+        Level.levelChange(worldData, level)
+        if (Config.bungee.getBoolean("Enable")){
+            Send.send(worldData.id, level)
+        }
     }
     fun addLevel(worldData: WorldData, number: Int){
         val data = YamlConfiguration()
@@ -38,8 +43,10 @@ object Change {
         val level = levelConfig.getInt("level") + number
         levelConfig.set("level", level)
         World.saveWorldConfig(worldData, "level", levelConfig)
-        val exampleEvent = WorldLevelChange(worldData, level)
-        Bukkit.getPluginManager().callEvent(exampleEvent)
+        Level.levelChange(worldData, level)
+        if (Config.bungee.getBoolean("Enable")){
+            Send.send(worldData.id, level)
+        }
     }
     fun removeLevel(worldData: WorldData){
         val data = YamlConfiguration()
@@ -52,8 +59,10 @@ object Change {
         }
         levelConfig.set("level", level)
         World.saveWorldConfig(worldData, "level", levelConfig)
-        val exampleEvent = WorldLevelChange(worldData, level)
-        Bukkit.getPluginManager().callEvent(exampleEvent)
+        Level.levelChange(worldData, level)
+        if (Config.bungee.getBoolean("Enable")){
+            Send.send(worldData.id, level)
+        }
     }
     fun removeLevel(worldData: WorldData, number: Int){
         val data = YamlConfiguration()
@@ -66,7 +75,9 @@ object Change {
         }
         levelConfig.set("level", level)
         World.saveWorldConfig(worldData, "level", levelConfig)
-        val exampleEvent = WorldLevelChange(worldData, level)
-        Bukkit.getPluginManager().callEvent(exampleEvent)
+        Level.levelChange(worldData, level)
+        if (Config.bungee.getBoolean("Enable")){
+            Send.send(worldData.id, level)
+        }
     }
 }

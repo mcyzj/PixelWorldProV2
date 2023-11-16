@@ -1,11 +1,10 @@
 package com.mcyzj.pixelworldpro.data.database
 
-import com.google.common.collect.Maps
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.j256.ormlite.dao.Dao
 import com.mcyzj.pixelworldpro.PixelWorldPro
-import com.mcyzj.pixelworldpro.api.interfaces.DatabaseApi
+import com.mcyzj.pixelworldpro.api.interfaces.core.database.DatabaseAPI
 import com.mcyzj.pixelworldpro.data.dataclass.PlayerData
 import com.mcyzj.pixelworldpro.data.dataclass.WorldCreateData
 import com.mcyzj.pixelworldpro.data.dataclass.WorldData
@@ -16,7 +15,7 @@ import java.util.*
 import kotlin.collections.HashMap
 
 
-abstract class DatabaseImpl(ormlite: Ormlite) : DatabaseApi {
+abstract class DatabaseImpl(ormlite: Ormlite) : DatabaseAPI {
     private val worldTable: Dao<WorldDao, Int> = ormlite.createDao(WorldDao::class.java)
     private val playerTable: Dao<PlayerDao, Int> = ormlite.createDao(PlayerDao::class.java)
     private val logger = PixelWorldPro.instance.logger

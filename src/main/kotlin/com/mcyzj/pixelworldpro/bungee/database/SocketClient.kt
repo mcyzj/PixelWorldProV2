@@ -3,9 +3,10 @@ package com.mcyzj.pixelworldpro.bungee.database
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.mcyzj.pixelworldpro.PixelWorldPro
-import com.mcyzj.pixelworldpro.api.interfaces.WorldAPI
+import com.mcyzj.pixelworldpro.api.interfaces.core.world.WorldAPI
 import com.mcyzj.pixelworldpro.bungee.Server
 import com.mcyzj.pixelworldpro.bungee.System
+import com.mcyzj.pixelworldpro.expansion.`object`.bungee.ClientManager
 import com.mcyzj.pixelworldpro.file.Config
 import com.mcyzj.pixelworldpro.server.Icon
 import org.bukkit.OfflinePlayer
@@ -124,11 +125,11 @@ object SocketClient {
                         }
 
                         "LoadWorld" -> {
-                            val worldApi = WorldAPI.Factory.get()
-                            worldApi.loadWorld(data["id"].asInt).thenApply {
-                                if (it){
-                                    val worldData = database.getWorldData(data["id"].asInt)?:return@thenApply
-                                    System.setWorldLock(worldData)
+                            val worldData = database.getWorldData(data["id"].asInt)
+                            if (worldData != null) {
+                                System.setWorldLock(worldData)
+                                val worldApi = WorldAPI.Factory.get()
+                                worldApi.loadWorld(data["id"].asInt).thenApply {
                                 }
                             }
                         }
@@ -154,6 +155,12 @@ object SocketClient {
                             }
                         }
                     }
+                    val listenList = ClientManager.getListener(data.get("type").asString)
+                    if (listenList != null){
+                        for (listener in listenList){
+                            listener.listen(data)
+                        }
+                    }
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -162,6 +169,9 @@ object SocketClient {
     }
 
     //以下为通讯模块
+    fun getClient(): Socket {
+        return client
+    }
     fun createWorld(player: OfflinePlayer, template: String, server: String){
         //拉取本地信息
         val local = Server.getLocalServer()

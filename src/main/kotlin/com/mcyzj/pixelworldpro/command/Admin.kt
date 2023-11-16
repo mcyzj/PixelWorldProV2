@@ -1,7 +1,8 @@
 package com.mcyzj.pixelworldpro.command
 
 import com.mcyzj.pixelworldpro.PixelWorldPro
-import com.mcyzj.pixelworldpro.api.interfaces.WorldAPI
+import com.mcyzj.pixelworldpro.api.interfaces.core.world.WorldAPI
+import com.mcyzj.pixelworldpro.expansion.ExpansionManager.loadAllExpansion
 import com.mcyzj.pixelworldpro.expansion.ExpansionManager.loadExpansion
 import com.mcyzj.pixelworldpro.world.Local
 import com.xbaimiao.easylib.module.command.CommandSpec
@@ -326,7 +327,7 @@ object Admin {
             when(args.size){
                 1 -> {
                     if (args[0] == "all"){
-                        loadExpansion()
+                        loadAllExpansion()
                     }
                 }
                 else -> {

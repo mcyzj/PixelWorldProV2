@@ -1,6 +1,7 @@
 package com.mcyzj.pixelworldpro.expansion
 
 import com.mcyzj.pixelworldpro.api.Expansion
+import com.mcyzj.pixelworldpro.data.dataclass.ExpansionData
 import org.bukkit.Bukkit
 import org.bukkit.configuration.InvalidConfigurationException
 import org.bukkit.configuration.file.YamlConfiguration
@@ -36,7 +37,7 @@ object ExpansionManager{
         classes.putIfAbsent(name, clazz)
     }
 
-    fun loadExpansion() {
+    fun loadAllExpansion() {
         val expansionFile = File("./plugins/PixelWorldProV2/Expansion")
         if (!expansionFile.exists()){
             expansionFile.mkdirs()
@@ -52,22 +53,34 @@ object ExpansionManager{
                         if (data != null) {
                             val expansionData = buildExpansionData(data)
                             if (expansionData != null) {
-                                if (expansionData.api >= 1) {
+                                if (expansionData.api.toInt() < 2){
                                     Bukkit.getConsoleSender()
-                                        .sendMessage("§aPixelWorldPro 加载扩展本地扩展 ${expansionData.name}[${file}]")
+                                        .sendMessage("§4PixelWorldPro ${expansionData.name}[${file}] 正在使用过时的api版本")
                                     Bukkit.getConsoleSender()
-                                        .sendMessage("§aPixelWorldPro 作者：${expansionData.author}")
+                                        .sendMessage("§4PixelWorldPro 内置api版本：2")
                                     Bukkit.getConsoleSender()
-                                        .sendMessage("§aPixelWorldPro 版本：${expansionData.version}")
-                                    expansionDataMap[expansion.name] = expansionData
-                                    ExpansionClassLoader(this, data, expansion, this.javaClass.classLoader, file)
+                                        .sendMessage("§4PixelWorldPro ${expansionData.name}[${file}] 使用的API版本：${expansionData.api}")
                                 } else {
                                     Bukkit.getConsoleSender()
-                                        .sendMessage("§4PixelWorldPro 无法理解 ${expansion.name}[${file}] 使用的API版本")
+                                        .sendMessage("§4PixelWorldPro 无法理解 ${expansionData.name}[${file}] 使用的API版本")
                                     Bukkit.getConsoleSender()
-                                        .sendMessage("§4PixelWorldPro 内置api版本：1")
+                                        .sendMessage("§4PixelWorldPro 内置api版本：2")
                                     Bukkit.getConsoleSender()
-                                        .sendMessage("§4PixelWorldPro ${expansion.name}[${file}] 使用的API版本：${expansionData.api}")
+                                        .sendMessage("§4PixelWorldPro ${expansionData.name}[${file}] 使用的API版本：${expansionData.api}")
+                                }
+                                Bukkit.getConsoleSender()
+                                    .sendMessage("§aPixelWorldPro 加载扩展本地扩展 ${expansionData.name}[${file}]")
+                                Bukkit.getConsoleSender()
+                                    .sendMessage("§aPixelWorldPro 作者：${expansionData.author}")
+                                Bukkit.getConsoleSender()
+                                    .sendMessage("§aPixelWorldPro 版本：${expansionData.version}")
+                                try {
+                                    expansionDataMap[expansion.name] = expansionData
+                                    ExpansionClassLoader(this, data, expansion, this.javaClass.classLoader, file)
+                                } catch (e: Throwable){
+                                    Bukkit.getConsoleSender()
+                                        .sendMessage("§4PixelWorldPro ${expansionData.name}[${file}] 崩溃啦！")
+                                    e.printStackTrace()
                                 }
                             } else {
                                 Bukkit.getConsoleSender().sendMessage("§4PixelWorldPro ${file}不是一个有效的扩展")
@@ -109,10 +122,3 @@ object ExpansionManager{
         }
     }
 }
-
-data class ExpansionData(
-    val name: String,
-    val api: Int,
-    val author: String,
-    val version: String
-)

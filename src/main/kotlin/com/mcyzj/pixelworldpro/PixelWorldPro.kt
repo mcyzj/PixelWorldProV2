@@ -2,33 +2,31 @@ package com.mcyzj.pixelworldpro
 
 import com.mcyzj.libs.JiangLib
 import com.mcyzj.libs.Metrics
-import com.mcyzj.pixelworldpro.api.interfaces.DatabaseApi
+import com.mcyzj.pixelworldpro.api.interfaces.core.database.DatabaseAPI
 import com.mcyzj.pixelworldpro.bungee.Server
 import com.mcyzj.pixelworldpro.bungee.System.setServer
 import com.mcyzj.pixelworldpro.bungee.database.SocketClient
 import com.mcyzj.pixelworldpro.command.Register
-import com.mcyzj.pixelworldpro.file.Config
-import com.mcyzj.pixelworldpro.data.database.MysqlDatabaseApi
-import com.mcyzj.pixelworldpro.data.database.SQLiteDatabaseApi
+import com.mcyzj.pixelworldpro.data.database.MysqlDatabaseAPI
+import com.mcyzj.pixelworldpro.data.database.SQLiteDatabaseAPI
 import com.mcyzj.pixelworldpro.expansion.ExpansionManager
 import com.mcyzj.pixelworldpro.expansion.core.Core
+import com.mcyzj.pixelworldpro.file.Config
 import com.mcyzj.pixelworldpro.listener.World
-import com.mcyzj.pixelworldpro.server.windows.Eula
 import com.mcyzj.pixelworldpro.server.Icon
+import com.mcyzj.pixelworldpro.server.windows.Eula
 import com.mcyzj.pixelworldpro.world.Local
 import com.xbaimiao.easylib.EasyPlugin
 import com.xbaimiao.easylib.module.chat.BuiltInConfiguration
 import com.xbaimiao.easylib.module.utils.submit
 import org.bukkit.Bukkit
-import org.bukkit.event.Listener
-import org.bukkit.plugin.java.JavaPlugin
-import redis.clients.jedis.JedisPool
 import java.io.File
 import java.util.concurrent.CompletableFuture
 
+
 class PixelWorldPro : EasyPlugin() {
     companion object {
-        lateinit var databaseApi: DatabaseApi
+        lateinit var databaseApi: DatabaseAPI
         lateinit var instance: PixelWorldPro
     }
 
@@ -84,13 +82,13 @@ class PixelWorldPro : EasyPlugin() {
                     if (config.getBoolean("debug")) {
                         Bukkit.getConsoleSender().sendMessage("§aPixelWorldPro 加载sqlite数据库")
                     }
-                    databaseApi = SQLiteDatabaseApi()
+                    databaseApi = SQLiteDatabaseAPI()
                 }
                 if (config.getString("Database").equals("mysql", true)) {
                     if (config.getBoolean("debug")) {
                         Bukkit.getConsoleSender().sendMessage("§aPixelWorldPro 加载MySQL数据库")
                     }
-                    databaseApi = MysqlDatabaseApi()
+                    databaseApi = MysqlDatabaseAPI()
                 }
                 if (bungee.getBoolean("Enable")) {
                     submit(async = true) {
@@ -112,7 +110,7 @@ class PixelWorldPro : EasyPlugin() {
                     //加载核心扩展
                     Core.enable()
                     //加载外部扩展
-                    //ExpansionManager.loadExpansion()
+                    ExpansionManager.loadAllExpansion()
                     //注册命令
                     Register().command.register()
                 }
@@ -148,13 +146,13 @@ class PixelWorldPro : EasyPlugin() {
                     if (config.getBoolean("debug")) {
                         Bukkit.getConsoleSender().sendMessage("§aPixelWorldPro 加载sqlite数据库")
                     }
-                    databaseApi = SQLiteDatabaseApi()
+                    databaseApi = SQLiteDatabaseAPI()
                 }
                 if (config.getString("Database").equals("mysql", true)) {
                     if (config.getBoolean("debug")) {
                         Bukkit.getConsoleSender().sendMessage("§aPixelWorldPro 加载MySQL数据库")
                     }
-                    databaseApi = MysqlDatabaseApi()
+                    databaseApi = MysqlDatabaseAPI()
                 }
             }
         }

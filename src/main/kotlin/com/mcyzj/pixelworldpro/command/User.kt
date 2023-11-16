@@ -1,10 +1,9 @@
 package com.mcyzj.pixelworldpro.command
 
 import com.mcyzj.pixelworldpro.PixelWorldPro
-import com.mcyzj.pixelworldpro.api.interfaces.WorldAPI
+import com.mcyzj.pixelworldpro.api.interfaces.core.world.WorldAPI
 import com.mcyzj.pixelworldpro.expansion.core.gui.Open
 import com.mcyzj.pixelworldpro.world.Local
-import com.xbaimiao.easylib.module.chat.BuiltInConfiguration
 import com.xbaimiao.easylib.module.command.ArgNode
 import com.xbaimiao.easylib.module.command.command
 import org.bukkit.command.CommandSender

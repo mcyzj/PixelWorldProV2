@@ -1,9 +1,9 @@
 package com.mcyzj.pixelworldpro.permission
 
-import com.mcyzj.pixelworldpro.api.interfaces.Permission
+import com.mcyzj.pixelworldpro.api.interfaces.core.permission.PermissionAPI
 import com.mcyzj.pixelworldpro.file.Config
 
-object PermissionImpl : Permission {
+object PermissionAPIImpl : PermissionAPI {
     private val permission = Config.permission
     override fun getConfigWorldPermission(): HashMap<String, HashMap<String, String>> {
         val permissionList = permission.getConfigurationSection("World")!!.getKeys(false)

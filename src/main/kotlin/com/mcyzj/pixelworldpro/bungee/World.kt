@@ -1,6 +1,7 @@
 package com.mcyzj.pixelworldpro.bungee
 
 import com.mcyzj.pixelworldpro.PixelWorldPro
+import com.mcyzj.pixelworldpro.api.interfaces.core.bungee.BungeeAPI
 import com.mcyzj.pixelworldpro.bungee.database.SocketClient
 import com.mcyzj.pixelworldpro.file.Config
 import org.bukkit.Bukkit
@@ -8,12 +9,12 @@ import java.io.File
 import java.util.*
 import java.util.concurrent.CompletableFuture
 
-object World {
+object World : BungeeAPI {
     private val logger = PixelWorldPro.instance.logger
     private var file = Config.file
     private var lang = PixelWorldPro.instance.lang
     private var database = PixelWorldPro.databaseApi
-    fun adminCreateWorld(owner: UUID, template: String?): CompletableFuture<Boolean> {
+    override fun adminCreateWorld(owner: UUID, template: String?): CompletableFuture<Boolean> {
         val future = CompletableFuture<Boolean>()
         val temp = if (template == null){
             val templatePath = file.getString("Template.Path")
@@ -42,7 +43,7 @@ object World {
         }
         return future
     }
-    fun loadWorld(id: Int): CompletableFuture<Boolean> {
+    override fun loadWorld(id: Int): CompletableFuture<Boolean> {
         val future = CompletableFuture<Boolean>()
         //拉取世界数据
         val worldData = database.getWorldData(id)
@@ -63,7 +64,7 @@ object World {
         return future
     }
 
-    fun loadWorld(owner: UUID): CompletableFuture<Boolean> {
+    override fun loadWorld(owner: UUID): CompletableFuture<Boolean> {
         val future = CompletableFuture<Boolean>()
         //拉取世界数据
         val worldData = database.getWorldData(owner)
@@ -84,7 +85,7 @@ object World {
         return future
     }
 
-    fun unloadWorld(id: Int): CompletableFuture<Boolean> {
+    override fun unloadWorld(id: Int): CompletableFuture<Boolean> {
         val future = CompletableFuture<Boolean>()
         //拉取世界数据
         val worldData = database.getWorldData(id)
@@ -104,7 +105,7 @@ object World {
         return future
     }
 
-    fun unloadWorld(owner: UUID): CompletableFuture<Boolean> {
+    override fun unloadWorld(owner: UUID): CompletableFuture<Boolean> {
         val future = CompletableFuture<Boolean>()
         logger.info("§aPixelWorldPro 使用线程：${Thread.currentThread().name} 进行世界加载操作")
         //拉取世界数据

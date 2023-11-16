@@ -1,4 +1,4 @@
-package com.mcyzj.pixelworldpro.api.interfaces
+package com.mcyzj.pixelworldpro.api.interfaces.core.database
 
 import com.mcyzj.pixelworldpro.PixelWorldPro
 import com.mcyzj.pixelworldpro.data.dataclass.PlayerData
@@ -8,7 +8,7 @@ import org.json.simple.JSONObject
 import java.util.*
 import kotlin.collections.HashMap
 
-interface DatabaseApi {
+interface DatabaseAPI {
     /**
      * 创建一个世界记录
      */
@@ -60,7 +60,7 @@ interface DatabaseApi {
     fun getPlayerData(uuid: UUID): PlayerData?
 
     fun joinToJson(worldData: WorldData): JSONObject
-    fun getInstance(): DatabaseApi {
+    fun getInstance(): DatabaseAPI {
         return PixelWorldPro.databaseApi
     }
 

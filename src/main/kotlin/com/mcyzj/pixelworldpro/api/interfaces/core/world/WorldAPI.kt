@@ -1,4 +1,4 @@
-package com.mcyzj.pixelworldpro.api.interfaces
+package com.mcyzj.pixelworldpro.api.interfaces.core.world
 
 import com.mcyzj.pixelworldpro.world.WorldImpl
 import java.util.UUID
@@ -42,8 +42,17 @@ interface WorldAPI {
      * @param owner 世界拥有者 UUID
      */
     fun backupWorld(owner: UUID, save: Boolean?)
+
+    /**
+     * 压缩世界
+     */
+    fun zipWorld(from: String, to: String)
+    /**
+     * 解压世界
+     */
+    fun unzipWorld(zip: String, to: String)
     object Factory {
-        fun get() : WorldAPI{
+        fun get() : WorldAPI {
             return WorldImpl
         }
     }
