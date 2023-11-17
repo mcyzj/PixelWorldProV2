@@ -2,7 +2,7 @@
 
 import com.mcyzj.pixelworldpro.PixelWorldPro
 import com.mcyzj.pixelworldpro.expansion.core.level.Change
-import com.mcyzj.pixelworldpro.expansion.core.level.dataclass.ItemData
+import com.mcyzj.pixelworldpro.data.dataclass.ItemData
 import com.mcyzj.pixelworldpro.expansion.core.level.dataclass.LevelData
 import com.mcyzj.pixelworldpro.file.Config
 import com.xbaimiao.easylib.bridge.economy.PlayerPoints
@@ -17,7 +17,7 @@ import kotlin.collections.HashMap
 
 
 object User {
-    var config = Config.level
+    private var config = Config.level
     private fun buildLevel(): HashMap<String, HashMap<Int, LevelData>> {
         val configLevelList = config.getConfigurationSection("level")!!.getKeys(false)
         val levelMap = HashMap<String, HashMap<Int, LevelData>>()
@@ -33,10 +33,14 @@ object User {
                     val maxLevel = config.getBoolean("level.$group.$level.maxLevel")
                     val points = config.getDouble("level.$group.$level.up.points")
                     val money = config.getDouble("level.$group.$level.up.money")
-                    val itemConfig = config.getConfigurationSection("level.$group.$level.up.item")!!
+                    val itemConfig = config.getConfigurationSection("level.$group.$level.up.item")
                     val itemMap = HashMap<String, Int>()
-                    for (key in itemConfig.getKeys(false)){
-                        itemMap[key as String] = itemConfig.getInt(key)
+                    if (itemConfig != null) {
+                        if (itemConfig.getKeys(false).isNotEmpty()) {
+                            for (key in itemConfig.getKeys(false)) {
+                                itemMap[key as String] = itemConfig.getInt(key)
+                            }
+                        }
                     }
                     val levelData = LevelData(
                         level,
@@ -59,7 +63,7 @@ object User {
         }
         return levelMap
     }
-    private fun getItemData(name: String): ItemData{
+    private fun getItemData(name: String): ItemData {
         val material = config.getString("item.$name.material")!!.uppercase(Locale.getDefault())
         val lore = config.getStringList("item.$name.lore")
         return ItemData(

@@ -1,4 +1,4 @@
-package com.mcyzj.pixelworldpro.expansion.core.level.dataclass
+package com.mcyzj.pixelworldpro.data.dataclass
 
 data class ItemData(
     val material: String,

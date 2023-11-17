@@ -1,7 +1,10 @@
 package com.mcyzj.pixelworldpro.permission
 
+import com.mcyzj.pixelworldpro.PixelWorldPro
 import com.mcyzj.pixelworldpro.api.interfaces.core.permission.PermissionAPI
+import com.mcyzj.pixelworldpro.data.dataclass.WorldData
 import com.mcyzj.pixelworldpro.file.Config
+import org.bukkit.OfflinePlayer
 
 object PermissionImpl : PermissionAPI {
     private val permission = Config.permission
@@ -16,5 +19,16 @@ object PermissionImpl : PermissionAPI {
             permissionMap[p] = map
         }
         return permissionMap
+    }
+
+    override fun changePermission(player: OfflinePlayer, world: WorldData, permission: String) {
+        val playerMap = world.player
+        val permissionData = world.permission
+        if (permission !in permissionData){
+            return
+        }
+        playerMap[player.uniqueId] = permission
+        world.player = playerMap
+        PixelWorldPro.databaseApi.setWorldData(world)
     }
 }
