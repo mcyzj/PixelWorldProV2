@@ -132,7 +132,7 @@ object User {
             }
         }
     }
-    private val tpId = command<CommandSender>("Id") {
+    private val tpId = command<CommandSender>("id") {
         permission = "pwp.user.tp"
         exec{
             if (!sender.hasPermission("pwp.user.tp")){
@@ -213,7 +213,7 @@ object User {
         }
     }
 
-    val user = command<CommandSender>("user") {
+    private val user = command<CommandSender>("user") {
         permission = "pwp.user"
         sub(create)
         sub(load)
@@ -227,9 +227,9 @@ object User {
     }
 
     fun getCommand(): CommandSpec<CommandSender> {
-        logger.info("注册 ${commandMap.keys.size} 个扩展命令")
+        logger.info("注册 ${commandMap.keys.size} 个User扩展命令")
         for (key in commandMap.keys) {
-            logger.info("注册命令Admin扩展命令 $key")
+            logger.info("注册命令User扩展命令 $key")
             user.sub(commandMap[key]!!)
         }
         return user

@@ -9,12 +9,14 @@ object Config {
     var world = BuiltInConfiguration("World.yml")
     var permission = BuiltInConfiguration("Permission.yml")
     var bungee = BuiltInConfiguration("BungeeSet.yml")
+    var level = BuiltInConfiguration("Level.yml")
     fun reload(){
         config = BuiltInConfiguration("Config.yml")
         file = BuiltInConfiguration("File.yml")
         world = BuiltInConfiguration("World.yml")
         permission = BuiltInConfiguration("Permission.yml")
         bungee = BuiltInConfiguration("BungeeSet.yml")
+        level = BuiltInConfiguration("Level.yml")
         PixelWorldPro.instance.reloadAll()
     }
     fun update(){

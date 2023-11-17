@@ -129,7 +129,7 @@ class WorldList(val player: Player) {
             if (worldData.player[player.uniqueId] == "BlackList")
                 listConfig.set("name",listConfig.getString("name")?.
                 replace("{role}",config.getStringColored("List.role.ban")))
-            if (worldData.player[player.uniqueId] == "Member")
+            if (worldData.player[player.uniqueId] != "BlackList")
                 listConfig.set("name",listConfig.getString("name")?.
                 replace("{role}",config.getStringColored("List.role.member")))
             listConfig.set("name",listConfig.getString("name")?.
@@ -145,7 +145,7 @@ class WorldList(val player: Player) {
                 listConfig.set("lore",listConfig.getStringList("lore").map {
                     it.replace("{role}",config.getStringColored("List.role.ban"))
                 })
-            if (worldData.player[player.uniqueId] == "Member")
+            if (worldData.player[player.uniqueId] != "BlackList")
                 listConfig.set("lore",listConfig.getStringList("lore").map {
                     it.replace("{role}",config.getStringColored("List.role.member"))
                 })
@@ -168,71 +168,83 @@ class WorldList(val player: Player) {
             Bukkit.getConsoleSender().sendMessage("§aPixelWorldPro 打开第 $page 页玩家世界列表菜单")
         }
         val basicCharMap = build(page, isTrust, gui)
-        val basic = basicCharMap.basic
+        //val basic = basicCharMap.basic
         val charMap = basicCharMap.charMap
-        basic.openAsync()
-        basic.onClick {
-            it.isCancelled = true
-        }
+        basicCharMap.basic.openAsync()
         if (PixelWorldPro.instance.config.getBoolean("debug")){
             Bukkit.getConsoleSender().sendMessage("§aPixelWorldPro 打开玩家世界列表菜单")
         }
-        for (guiData in charMap) {
-            basic.onClick(guiData.key) {
-                //执行命令
-                if (guiData.value.commands != null) {
-                    Core.runCommand(player, guiData.value.commands!!)
-                }
-                when (guiData.value.type) {
-                    "ChangeList" -> {
-                        open(1, !isTrust, gui)
-                    }
-
-                    "List" -> {
-                        val slot = it.rawSlot
-                        val uuid = listMap[slot] ?: return@onClick
-                        val data = PixelWorldPro.databaseApi.getWorldData(uuid) ?: return@onClick
-                        Local.tpWorldId(player, data.id)
-                    }
-                    "Page" -> {
-                        if (PixelWorldPro.instance.config.getBoolean("debug")){
-                            Bukkit.getConsoleSender().sendMessage("§aPixelWorldPro 判断翻页类型")
-                        }
-                        when (guiData.value.value) {
-                            "next" -> {
-                                if (!isLastPage) {
-                                    if (PixelWorldPro.instance.config.getBoolean("debug")){
-                                        Bukkit.getConsoleSender().sendMessage("§aPixelWorldPro 打开下一页玩家世界列表菜单")
-                                    }
-                                    start = intList.size * page
-                                    open(page + 1, isTrust, gui)
-                                }else{
-                                    if (PixelWorldPro.instance.config.getBoolean("debug")){
-                                        Bukkit.getConsoleSender().sendMessage("§aPixelWorldPro 打开下一页玩家世界列表菜单失败：已经是最后一页了")
-                                    }
-                                }
-                            }
-
-                            "back" -> {
-                                if (page == 1) {
-                                    if (PixelWorldPro.instance.config.getBoolean("debug")){
-                                        Bukkit.getConsoleSender().sendMessage("§aPixelWorldPro 打开前一页玩家世界列表菜单失败：已经是第一页了")
-                                    }
-                                    return@onClick
-                                }
-                                if (PixelWorldPro.instance.config.getBoolean("debug")){
-                                    Bukkit.getConsoleSender().sendMessage("§aPixelWorldPro 打开前一页玩家世界列表菜单")
-                                }
-                                start = intList.size * (page - 2)
-                                open(page - 1, isTrust, gui)
-                            }
-                        }
-                    }
-                    else -> {
-                    }
-                }
-
+        var close = false
+        //while (!close){
+            basicCharMap.basic.onClose {
+                println("3")
+                close = true
             }
+            for (guiData in charMap) {
+                println("2")
+                basicCharMap.basic.onClick(guiData.key) {
+                    it.isCancelled = true
+                    println("1")
+                    //执行命令
+                    if (guiData.value.commands != null) {
+                        Core.runCommand(player, guiData.value.commands!!)
+                    }
+                    when (guiData.value.type) {
+                        "ChangeList" -> {
+                            open(1, !isTrust, gui)
+                        }
+
+                        "List" -> {
+                            val slot = it.rawSlot
+                            val uuid = listMap[slot] ?: return@onClick
+                            val data = PixelWorldPro.databaseApi.getWorldData(uuid) ?: return@onClick
+                            Local.tpWorldId(player, data.id)
+                        }
+
+                        "Page" -> {
+                            if (PixelWorldPro.instance.config.getBoolean("debug")) {
+                                Bukkit.getConsoleSender().sendMessage("§aPixelWorldPro 判断翻页类型")
+                            }
+                            when (guiData.value.value) {
+                                "next" -> {
+                                    if (!isLastPage) {
+                                        if (PixelWorldPro.instance.config.getBoolean("debug")) {
+                                            Bukkit.getConsoleSender()
+                                                .sendMessage("§aPixelWorldPro 打开下一页玩家世界列表菜单")
+                                        }
+                                        start = intList.size * page
+                                        open(page + 1, isTrust, gui)
+                                    } else {
+                                        if (PixelWorldPro.instance.config.getBoolean("debug")) {
+                                            Bukkit.getConsoleSender()
+                                                .sendMessage("§aPixelWorldPro 打开下一页玩家世界列表菜单失败：已经是最后一页了")
+                                        }
+                                    }
+                                }
+
+                                "back" -> {
+                                    if (page == 1) {
+                                        if (PixelWorldPro.instance.config.getBoolean("debug")) {
+                                            Bukkit.getConsoleSender()
+                                                .sendMessage("§aPixelWorldPro 打开前一页玩家世界列表菜单失败：已经是第一页了")
+                                        }
+                                        return@onClick
+                                    }
+                                    if (PixelWorldPro.instance.config.getBoolean("debug")) {
+                                        Bukkit.getConsoleSender()
+                                            .sendMessage("§aPixelWorldPro 打开前一页玩家世界列表菜单")
+                                    }
+                                    start = intList.size * (page - 2)
+                                    open(page - 1, isTrust, gui)
+                                }
+                            }
+                        }
+
+                        else -> {
+                        }
+                    }
+                }
+            //}
         }
 
     }

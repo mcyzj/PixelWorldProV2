@@ -350,7 +350,7 @@ object Admin {
     //    Config.reload()
     //}
 
-    var admin = command<CommandSender>("admin") {
+    private var admin = command<CommandSender>("admin") {
         permission = "pwp.admin"
         sub(create)
         sub(load)
@@ -365,7 +365,7 @@ object Admin {
     }
 
     fun getCommand(): CommandSpec<CommandSender> {
-        logger.info("注册 ${commandMap.keys.size} 个扩展命令")
+        logger.info("注册 ${commandMap.keys.size} 个Admin扩展命令")
         for (key in commandMap.keys) {
             logger.info("注册命令Admin扩展命令 $key")
             admin.sub(commandMap[key]!!)

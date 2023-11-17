@@ -72,8 +72,6 @@ class PixelWorldPro : EasyPlugin() {
             if (!it){
                 return@thenApply
             }
-            //删除未删除的缓存
-            deleteLock()
             //加载gui界面
             saveGui()
             //加载数据库
@@ -104,6 +102,8 @@ class PixelWorldPro : EasyPlugin() {
                     Server.tpPlayer()
                 }
                 submit {
+                    //删除未删除的缓存
+                    deleteLock()
                     //注册监听
                     Bukkit.getPluginManager().registerEvents(World(), this@PixelWorldPro)
                     //注册备份线程

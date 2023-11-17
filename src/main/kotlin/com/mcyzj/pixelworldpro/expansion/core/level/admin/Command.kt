@@ -38,7 +38,7 @@ class Command {
             }
         }
     }
-    private val setId = command<CommandSender>("Id") {
+    private val setId = command<CommandSender>("id") {
         permission = "pwp.admin.level"
         exec{
             if (!sender.hasPermission("pwp.admin.level")){
