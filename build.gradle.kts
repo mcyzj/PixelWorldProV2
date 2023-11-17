@@ -30,6 +30,8 @@ dependencies {
     compileOnly("redis.clients:jedis:3.7.0")
     compileOnly("com.github.oshi:oshi-core:3.12.2")
     compileOnly("com.google.code.gson:gson:2.10")
+    compileOnly("org.tukaani:xz:1.8")
+    compileOnly("org.apache.commons:commons-compress:1.21")
     compileOnly("org.bouncycastle:bcprov-lts8on:2.73.3")
     implementation(fileTree("shadowLibs"))
     compileOnly(fileTree("libs"))

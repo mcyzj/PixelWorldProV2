@@ -19,6 +19,7 @@ object Zip {
     fun toZip(from: String, to: String) {
         try {
             Folder.create(file.getString("World.Path")!!, to)
+            Folder.delete(to, "Zip")
             val zipFIle = File(file.getString("World.Path"), "/$to/$to.zip")
             ZipOutputStream(FileOutputStream(zipFIle)).use { zipOutputStream ->
                 // 压缩文件夹
@@ -67,7 +68,7 @@ object Zip {
     }
 
     @JvmStatic
-    fun unzip(zip: String, to: String) {
+    fun unZip(zip: String, to: String) {
         //targetPath输出文件路径
         val targetFile = File(file.getString("World.Server"), to)
         // 如果目录不存在，则创建

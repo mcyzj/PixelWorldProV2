@@ -1,7 +1,9 @@
 package com.mcyzj.pixelworldpro.server
 
 import com.mcyzj.pixelworldpro.PixelWorldPro
+import com.mcyzj.pixelworldpro.api.interfaces.core.world.WorldAPI
 import com.mcyzj.pixelworldpro.file.Config
+import com.mcyzj.pixelworldpro.world.WorldImpl
 import org.bukkit.World
 import org.bukkit.configuration.file.YamlConfiguration
 import java.io.File
@@ -108,5 +110,64 @@ object World {
         newWorldList.remove(id)
         data.set("load", newWorldList)
         saveLockConfig(data)
+    }
+
+    fun setDeleteLock(file: String){
+        val data = getLockConfig()
+        val deleteList = data.getList("delete")
+        if (deleteList == null){
+            val newDeleteList = ArrayList<String>()
+            newDeleteList.add(file)
+            data.set("delete", newDeleteList)
+            saveLockConfig(data)
+            return
+        }
+        val newDeleteList = ArrayList<String>()
+        for (value in deleteList){
+            newDeleteList.add(value as String)
+        }
+        if (file in deleteList){
+            return
+        }
+        newDeleteList.add(file)
+        data.set("delete", newDeleteList)
+        saveLockConfig(data)
+    }
+
+    fun removeDeleteLock(file: String){
+        val data = getLockConfig()
+        val deleteList = data.getList("delete") ?: return
+        val newDeleteList = ArrayList<String>()
+        for (value in deleteList){
+            newDeleteList.add(value as String)
+        }
+        if (file !in deleteList){
+            return
+        }
+        newDeleteList.remove(file)
+        data.set("delete", newDeleteList)
+        saveLockConfig(data)
+    }
+
+    private fun getDeleteLock(): ArrayList<String>? {
+        val data = getLockConfig()
+        val deleteList = data.getList("delete") ?: return null
+        val newDeleteList = ArrayList<String>()
+        for (value in deleteList){
+            newDeleteList.add(value as String)
+        }
+        return newDeleteList
+    }
+
+    fun deleteLock(){
+        val deleteList = getDeleteLock() ?: return
+        for (path in deleteList){
+            val file = File(path)
+            if (file.exists()){
+                WorldAPI.Factory.get().zipWorld(file.name, file.name)
+                file.deleteRecursively()
+            }
+            removeDeleteLock(path)
+        }
     }
 }

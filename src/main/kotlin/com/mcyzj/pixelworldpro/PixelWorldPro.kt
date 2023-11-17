@@ -14,6 +14,7 @@ import com.mcyzj.pixelworldpro.expansion.core.Core
 import com.mcyzj.pixelworldpro.file.Config
 import com.mcyzj.pixelworldpro.listener.World
 import com.mcyzj.pixelworldpro.server.Icon
+import com.mcyzj.pixelworldpro.server.World.deleteLock
 import com.mcyzj.pixelworldpro.server.windows.Eula
 import com.mcyzj.pixelworldpro.world.Local
 import com.xbaimiao.easylib.EasyPlugin
@@ -71,6 +72,8 @@ class PixelWorldPro : EasyPlugin() {
             if (!it){
                 return@thenApply
             }
+            //删除未删除的缓存
+            deleteLock()
             //加载gui界面
             saveGui()
             //加载数据库

@@ -53,14 +53,15 @@ object ExpansionManager{
                         if (data != null) {
                             val expansionData = buildExpansionData(data)
                             if (expansionData != null) {
-                                if (expansionData.api.toInt() < 2){
+                                if (expansionData.api < 2){
                                     Bukkit.getConsoleSender()
                                         .sendMessage("§4PixelWorldPro ${expansionData.name}[${file}] 正在使用过时的api版本")
                                     Bukkit.getConsoleSender()
                                         .sendMessage("§4PixelWorldPro 内置api版本：2")
                                     Bukkit.getConsoleSender()
                                         .sendMessage("§4PixelWorldPro ${expansionData.name}[${file}] 使用的API版本：${expansionData.api}")
-                                } else {
+                                }
+                                if (expansionData.api > 2){
                                     Bukkit.getConsoleSender()
                                         .sendMessage("§4PixelWorldPro 无法理解 ${expansionData.name}[${file}] 使用的API版本")
                                     Bukkit.getConsoleSender()

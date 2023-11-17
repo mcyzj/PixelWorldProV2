@@ -5,13 +5,16 @@ import com.mcyzj.pixelworldpro.api.interfaces.core.world.WorldAPI
 import com.mcyzj.pixelworldpro.expansion.core.gui.Open
 import com.mcyzj.pixelworldpro.world.Local
 import com.xbaimiao.easylib.module.command.ArgNode
+import com.xbaimiao.easylib.module.command.CommandSpec
 import com.xbaimiao.easylib.module.command.command
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
-class User {
+object User {
+    private val logger = PixelWorldPro.instance.logger
     private val lang = PixelWorldPro.instance.lang
     private val database = PixelWorldPro.databaseApi
+    private val commandMap = HashMap<String, CommandSpec<CommandSender>>()
 
     private val create = command<CommandSender>("create") {
         permission = "pwp.user.create"
@@ -217,5 +220,18 @@ class User {
         sub(unload)
         sub(tp)
         sub(gui)
+    }
+
+    fun setCommand(expansion: String, command: CommandSpec<CommandSender>){
+        commandMap[expansion] = command
+    }
+
+    fun getCommand(): CommandSpec<CommandSender> {
+        logger.info("注册 ${commandMap.keys.size} 个扩展命令")
+        for (key in commandMap.keys) {
+            logger.info("注册命令Admin扩展命令 $key")
+            user.sub(commandMap[key]!!)
+        }
+        return user
     }
 }

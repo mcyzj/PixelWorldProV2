@@ -25,6 +25,7 @@ world:
       notEnough: "无法创建世界：所需的资源不足"
     load:
       noWorldData: "无法加载世界：数据库中没有找到世界数据"
+      inBurial: "无法加载世界：世界处于冷却冻结状态"
     unload:
       unloaded: "无法卸载世界：对象没有世界"
       noWorldData: "无法卸载世界：数据库中没有找到世界数据"

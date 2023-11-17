@@ -16,7 +16,7 @@ World:
   #世界压缩设置
   Compress:
     #压缩方式
-    #None[不压缩]，Zip
+    #None[不压缩]，Zip, 7z
     Method: None
 #世界备份设置
 Backup:

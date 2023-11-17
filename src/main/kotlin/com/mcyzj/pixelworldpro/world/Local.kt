@@ -94,6 +94,7 @@ object Local {
             //获取世界
             val world = localWorld[key]!!
             if (Bukkit.unloadWorld(world, true)){
+                WorldAPI.Factory.get().zipWorld(worldData.world, worldData.world)
                 localWorld.remove(key)
                 World.removeLock(key)
                 File(file.getString("World.Server"), worldData.world).deleteRecursively()
