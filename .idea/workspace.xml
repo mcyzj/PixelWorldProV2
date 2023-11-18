@@ -4,44 +4,19 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e356bffb-3091-47d8-b0cd-d15642372130" name="更改" comment="2023.11.12 更新内容">
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/api/interfaces/core/bungee/BungeeAPI.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/api/interfaces/core/permission/PermissionAPI.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/api/interfaces/event/bungee/Client.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/api/interfaces/event/level/LevelAPI.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/api/interfaces/event/world/WorldSuccessAPI.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/api/objects/bungee/Client.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/data/dataclass/ExpansionData.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/expansion/listener/ListenerManager.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/expansion/listener/ListenerRegister.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/expansion/listener/trigger/level/Level.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/expansion/listener/trigger/world/WorldSuccess.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/expansion/object/bungee/Client.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/expansion/object/bungee/ClientManager.kt" afterDir="false" />
+    <list default="true" id="e356bffb-3091-47d8-b0cd-d15642372130" name="更改" comment="2023.11.17 更新内容">
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/data/dataclass/ResultData.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/data/dataclass/WorldPermission.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/server/Permission.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/practive/World.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/PixelWorldPro.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/PixelWorldPro.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/api/Expansion.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/api/Expansion.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/api/event/world/WorldCreateSuccess.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/api/event/world/WorldLoadSuccess.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/api/event/world/WorldUnloadSuccess.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/api/interfaces/BungeeAPI.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/api/interfaces/DatabaseApi.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/api/interfaces/core/database/DatabaseAPI.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/api/interfaces/Permission.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/api/interfaces/WorldAPI.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/api/interfaces/core/world/WorldAPI.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/bungee/World.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/bungee/World.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/bungee/database/SocketClient.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/bungee/database/SocketClient.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/command/Admin.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/command/Admin.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle.kts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/command/User.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/command/User.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/compress/Zip.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/compress/Zip.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/data/database/DatabaseImpl.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/data/database/DatabaseImpl.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/data/database/MysqlDatabaseApi.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/data/database/MysqlDatabaseAPI.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/data/database/SQLiteDatabaseApi.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/data/database/SQLiteDatabaseAPI.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/expansion/ExpansionManager.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/expansion/ExpansionManager.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/expansion/core/level/Change.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/expansion/core/level/Change.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/expansion/core/level/WorldLevelChange.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/permission/PermissionImpl.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/permission/PermissionAPIImpl.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/world/Local.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/world/Local.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/world/WorldImpl.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/world/WorldImpl.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/data/dataclass/PermissionData.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/data/dataclass/PermissionData.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/expansion/core/level/user/User.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/expansion/core/level/user/User.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/file/Config.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/file/Config.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/permission/Local.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/permission/Local.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/lang/zh_cn.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/lang/zh_cn.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -87,10 +62,11 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Kotlin Class" />
-        <option value="Kotlin File" />
         <option value="Kotlin Interface" />
+        <option value="Kotlin File" />
+        <option value="Kotlin Class" />
         <option value="Kotlin Object" />
+        <option value="Kotlin Data Class" />
       </list>
     </option>
   </component>
@@ -134,7 +110,7 @@
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
     &quot;jdk.selected.JAVA_MODULE&quot;: &quot;1.8&quot;,
-    &quot;last_opened_file_path&quot;: &quot;D:/项目/PixelWorldProV2_WorldBoundary&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/项目/PixelWorldProV2/src/main/kotlin/com/mcyzj/pixelworldpro/expansion/core/gui&quot;,
     &quot;project.structure.last.edited&quot;: &quot;模块&quot;,
     &quot;project.structure.proportion&quot;: &quot;0.099609375&quot;,
     &quot;project.structure.side.proportion&quot;: &quot;0.24851191&quot;
@@ -142,11 +118,11 @@
 }</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\项目\PixelWorldProV2\src\main\kotlin\com\mcyzj\pixelworldpro\expansion\core\gui" />
+      <recent name="D:\项目\PixelWorldProV2\src\main\kotlin\com\mcyzj\pixelworldpro\expansion\core\level\user" />
+      <recent name="D:\项目\PixelWorldProV2\src\main\resources" />
       <recent name="D:\项目\PixelWorldProV2\src\main\kotlin\com\mcyzj\pixelworldpro\expansion\core\level" />
       <recent name="D:\项目\PixelWorldProV2\src\main\kotlin\com\mcyzj\pixelworldpro\expansion" />
-      <recent name="D:\项目\PixelWorldProV2\src\main\kotlin\com\mcyzj\pixelworldpro" />
-      <recent name="D:\项目\PixelWorldProV2\src\main\kotlin\com\mcyzj\pixelworldpro\bungee" />
-      <recent name="D:\项目\PixelWorldProV2\src\main\kotlin\com\mcyzj\pixelworldpro\dataclass" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="D:\项目\PixelWorldProV2" />
@@ -154,13 +130,14 @@
       <recent name="D:\项目\PixelWorldProV2\src" />
     </key>
     <key name="MoveKotlinTopLevelDeclarationsDialog.RECENTS_KEY">
+      <recent name="com.mcyzj.pixelworldpro.data.dataclass" />
       <recent name="com.mcyzj.pixelworldpro.api.interfaces.core.database" />
       <recent name="com.mcyzj.pixelworldpro.api.interfaces.core.permission" />
       <recent name="com.mcyzj.pixelworldpro.api.interfaces.core" />
       <recent name="com.mcyzj.pixelworldpro.api.interfaces.event.world" />
-      <recent name="com.mcyzj.pixelworldpro.api.interfaces.bungee" />
     </key>
     <key name="CopyKotlinDeclarationDialog.RECENTS_KEY">
+      <recent name="com.mcyzj.pixelworldpro.expansion.core.gui" />
       <recent name="com.mcyzj.pixelworldpro.api.event.world" />
       <recent name="com.mcyzj.pixelworldpro.expansion" />
       <recent name="com.mcyzj.pixelworldpro.gui" />
@@ -434,7 +411,39 @@
       <option name="project" value="LOCAL" />
       <updated>1699791867987</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="2023.11.16 更新内容">
+      <option name="closed" value="true" />
+      <created>1700143468214</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1700143468214</updated>
+    </task>
+    <task id="LOCAL-00013" summary="2023.11.17 更新内容">
+      <option name="closed" value="true" />
+      <created>1700200992507</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1700200992507</updated>
+    </task>
+    <task id="LOCAL-00014" summary="2023.11.17 更新内容">
+      <option name="closed" value="true" />
+      <created>1700223177120</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1700223177120</updated>
+    </task>
+    <task id="LOCAL-00015" summary="2023.11.17 更新内容">
+      <option name="closed" value="true" />
+      <created>1700227522025</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1700227522025</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -468,7 +477,9 @@
     <MESSAGE value="2023.11.8 更新内容" />
     <MESSAGE value="2023.11.11 更新内容" />
     <MESSAGE value="2023.11.12 更新内容" />
-    <option name="LAST_COMMIT_MESSAGE" value="2023.11.12 更新内容" />
+    <MESSAGE value="2023.11.16 更新内容" />
+    <MESSAGE value="2023.11.17 更新内容" />
+    <option name="LAST_COMMIT_MESSAGE" value="2023.11.17 更新内容" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/PixelWorldProV2$PixelWorldProV2__shadowJar_.ic" NAME="PixelWorldProV2 [shadowJar] 覆盖结果" MODIFIED="1699966900595" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />

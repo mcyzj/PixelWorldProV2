@@ -7,6 +7,7 @@ import com.mcyzj.pixelworldpro.world.Local
 import com.xbaimiao.easylib.module.command.ArgNode
 import com.xbaimiao.easylib.module.command.CommandSpec
 import com.xbaimiao.easylib.module.command.command
+import org.bukkit.OfflinePlayer
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
@@ -213,6 +214,48 @@ object User {
         }
     }
 
+    private val groupSet = command<CommandSender>("set") {
+        permission = "pwp.user.group.set"
+        exec{
+            if (!sender.hasPermission("pwp.user.group.set")){
+                sender.sendMessage(lang.getString("command.warning.noPermission")?:"你没有权限执行这个命令")
+                return@exec
+            }
+            when(args.size){
+                2 -> {
+                    val player = com.mcyzj.pixelworldpro.server.Player.getOfflinePlayer(args[0])
+                    val worldData = database.getWorldData((sender as Player).uniqueId) ?: return@exec
+                    if (worldData.owner == player.uniqueId){
+                        return@exec
+                    }
+                    sender.sendMessage(com.mcyzj.pixelworldpro.permission.Local.setGroup(worldData, player, args[1]).reason)
+                }
+            }
+        }
+    }
+
+    private val groupUp = command<CommandSender>("up") {
+        permission = "pwp.user.group.up"
+        exec{
+            if (!sender.hasPermission("pwp.user.group.up")){
+                sender.sendMessage(lang.getString("command.warning.noPermission")?:"你没有权限执行这个命令")
+                return@exec
+            }
+            when(args.size){
+                1 -> {
+                    val worldData = database.getWorldData((sender as Player).uniqueId) ?: return@exec
+                    sender.sendMessage(com.mcyzj.pixelworldpro.permission.Local.upPermission(worldData, args[0]).reason)
+                }
+            }
+        }
+    }
+
+    private val group = command<CommandSender>("group") {
+        permission = "pwp.user.group"
+        sub(groupSet)
+        sub(groupUp)
+    }
+
     private val user = command<CommandSender>("user") {
         permission = "pwp.user"
         sub(create)
@@ -220,6 +263,7 @@ object User {
         sub(unload)
         sub(tp)
         sub(gui)
+        sub(group)
     }
 
     fun setCommand(expansion: String, command: CommandSpec<CommandSender>){

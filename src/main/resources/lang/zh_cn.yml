@@ -34,6 +34,22 @@ world:
       noWorld: "无法传送至世界：对象没有世界"
       notLoad: "无法传送至世界：世界未加载"
       notId: "无法传送至世界：输入值不是一个有效的数字id"
+    permission:
+      set:
+        noGroup: "无法找到对应世界内权限组名："
+        max: "已达到该权限组当前人数上限"
+      add:
+        noGroup: "无法找到对应世界内权限组名："
+        max: "已达到该权限组最大人数上限"
+        points: "没有足够的点券，你需要{0}个点券，你只有{1}个点券"
+        money: "没有足够的金币，你需要{0}个金币，你只有{1}个金币"
+        item: "没有足够的物品，你需要{0}个{1}"
+  info:
+    permission:
+      set:
+        success: "成功设置玩家在世界内的权限组"
+      add:
+        success: "成功扩展世界内权限组玩家槽位"
 compress:
   info:
     success: "成功压缩世界 "

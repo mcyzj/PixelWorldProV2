@@ -1,0 +1,14 @@
+#世界数据文件示例，请勿更改
+#配置文件版本
+Version: 1
+#维度设置
+Dimension:
+  Nether: false
+  The_End: false
+#权限组设置
+Permission:
+  #房主的权限
+  Permission: default
+  Member:
+    Max: 5
+

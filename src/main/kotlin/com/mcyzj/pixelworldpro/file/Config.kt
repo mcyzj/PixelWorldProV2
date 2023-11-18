@@ -1,7 +1,10 @@
 package com.mcyzj.pixelworldpro.file
 
 import com.mcyzj.pixelworldpro.PixelWorldPro
+import com.mcyzj.pixelworldpro.data.dataclass.WorldData
 import com.xbaimiao.easylib.module.chat.BuiltInConfiguration
+import org.bukkit.configuration.file.YamlConfiguration
+import java.io.File
 
 object Config {
     var config = BuiltInConfiguration("Config.yml")
@@ -30,5 +33,24 @@ object Config {
                 file.saveToFile()
             }
         }
+    }
+
+    fun saveWorldConfig(world: WorldData, configData: YamlConfiguration){
+        val worldFile = File(file.getString("World.Path"), world.world)
+        val config = File(worldFile, "/World.yml")
+        if (!config.exists()){
+            config.createNewFile()
+        }
+        configData.save(config)
+    }
+    fun getWorldConfig(world: WorldData): YamlConfiguration {
+        val worldFile = File(file.getString("World.Path"), world.world)
+        val config = File(worldFile, "/World.yml")
+        val data = YamlConfiguration()
+        if (!config.exists()) {
+            config.createNewFile()
+        }
+        data.load(config)
+        return data
     }
 }

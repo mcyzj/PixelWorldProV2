@@ -120,11 +120,18 @@ object User {
                 return
             }
         }
+        //拿走物品
         for (key in itemMap.keys) {
             val itemData = getItemData(key)
             player.inventory.takeItem(itemMap[key]!!) {
                 return@takeItem this.type == Material.getMaterial(itemData.material)!!
             }
+        }
+        if (levelData.points > 0.0) {
+            PlayerPoints().take(player, levelData.points)
+        }
+        if (levelData.money > 0.0) {
+            Vault().take(player, levelData.money)
         }
         //增加等级
         player.sendMessage("等级增加！\n当前等级: ${level + 1}")
