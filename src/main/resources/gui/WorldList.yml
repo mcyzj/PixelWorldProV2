@@ -1,19 +1,19 @@
-title: "世界列表"
+Title: "世界列表"
 
-slots:
+Slots:
   - 'BNNNONNNN'
   - 'AAAAAAAAA'
   - 'AAAAAAAAA'
   - 'AAAAAAAAA'
   - 'UNNNXNNND'
 
-items:
+Items:
   B:
-    material: GRASS_BLOCK
-    name: '&a&l我的世界'
-    lore:
+    Material: GRASS_BLOCK
+    Name: '&a&l我的世界'
+    Lore:
       - '返回%player_name%的世界'
-    commands:
+    Command:
       - '[player] pwp user tp id'
   N:
     material: GLASS_PANE
