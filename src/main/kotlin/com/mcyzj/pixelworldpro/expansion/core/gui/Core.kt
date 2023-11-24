@@ -1,13 +1,14 @@
 package com.mcyzj.pixelworldpro.expansion.core.gui
 
 import com.mcyzj.pixelworldpro.PixelWorldPro
+import com.mcyzj.pixelworldpro.expansion.core.gui.dataclass.ConfigItemData
 import org.bukkit.configuration.file.YamlConfiguration
 
 object Core {
     val logger = PixelWorldPro.instance.logger
-    fun buildItem(menu: YamlConfiguration): HashMap<String, MenuItemData>? {
+    fun buildItem(menu: YamlConfiguration): HashMap<String, ConfigItemData>? {
         //初始化itemMap
-        val itemMap = HashMap<String, MenuItemData>()
+        val itemMap = HashMap<String, ConfigItemData>()
         //读取item模块
         val itemConfig = menu.getConfigurationSection("Item")
         if (itemConfig == null){
@@ -22,7 +23,7 @@ object Core {
                 logger.warning("有问题的菜单文件 ${menu.name} : Item模块中的${itemKey}没有指定Material")
                 continue
             }
-            val menuItemMap = MenuItemData(
+            val menuItemMap = ConfigItemData(
                 material,
                 item.getString("Name"),
                 item.getStringList("Lore"),

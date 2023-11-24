@@ -4,17 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e356bffb-3091-47d8-b0cd-d15642372130" name="更改" comment="2023.11.24 更新内容">
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/api/interfaces/core/gui/Menu.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/expansion/core/gui/dataclass/ConfigItemData.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/expansion/core/gui/dataclass/MenuItemData.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/expansion/core/gui/Core.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/expansion/core/gui/Core.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/expansion/core/gui/Open.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/expansion/core/gui/WorldCreate.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/expansion/core/gui/WorldList.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/mcyzj/pixelworldpro/expansion/core/gui/WorldList.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/gui/WorldList.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/gui/WorldList.yml" afterDir="false" />
-    </list>
+    <list default="true" id="e356bffb-3091-47d8-b0cd-d15642372130" name="更改" comment="2023.11.24 传递内容" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -456,7 +446,15 @@
       <option name="project" value="LOCAL" />
       <updated>1700810069595</updated>
     </task>
-    <option name="localTasksCounter" value="18" />
+    <task id="LOCAL-00018" summary="2023.11.24 传递内容">
+      <option name="closed" value="true" />
+      <created>1700826920085</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1700826920085</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -494,7 +492,8 @@
     <MESSAGE value="2023.11.17 更新内容" />
     <MESSAGE value="2023.11.18 更新内容" />
     <MESSAGE value="2023.11.24 更新内容" />
-    <option name="LAST_COMMIT_MESSAGE" value="2023.11.24 更新内容" />
+    <MESSAGE value="2023.11.24 传递内容" />
+    <option name="LAST_COMMIT_MESSAGE" value="2023.11.24 传递内容" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/PixelWorldProV2$PixelWorldProV2__shadowJar_.ic" NAME="PixelWorldProV2 [shadowJar] 覆盖结果" MODIFIED="1699966900595" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
