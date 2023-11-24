@@ -81,7 +81,9 @@ object WorldImpl : WorldAPI {
             val worldData = database.createWorldData(worldCreateData)
             localWorld[worldData.id] = world
             World.setLock(worldData.id)
-            WorldSuccess.createWorldSuccess(worldData, template)
+            submit {
+                WorldSuccess.createWorldSuccess(worldData, template)
+            }
             future.complete(true)
         }
         return future
@@ -115,7 +117,9 @@ object WorldImpl : WorldAPI {
             localWorld[worldData.id] = world
             World.setLock(worldData.id)
             world.keepSpawnInMemory = false
-            WorldSuccess.loadWorldSuccess(worldData)
+            submit {
+                WorldSuccess.loadWorldSuccess(worldData)
+            }
             future.complete(true)
         }
         return future
@@ -149,7 +153,9 @@ object WorldImpl : WorldAPI {
             localWorld[worldData.id] = world
             World.setLock(worldData.id)
             world.keepSpawnInMemory = false
-            WorldSuccess.loadWorldSuccess(worldData)
+            submit {
+                WorldSuccess.loadWorldSuccess(worldData)
+            }
             future.complete(true)
         }
         return future
@@ -182,7 +188,9 @@ object WorldImpl : WorldAPI {
                 if (bungee.getBoolean("Enable")){
                     com.mcyzj.pixelworldpro.bungee.System.removeWorldLock(worldData)
                 }
-                WorldSuccess.unloadWorldSuccess(worldData)
+                submit {
+                    WorldSuccess.unloadWorldSuccess(worldData)
+                }
                 Thread{
                     burialWorld.add(worldData)
                     World.setDeleteLock(File(fileConfig.getString("World.Server"), worldData.world).path)
@@ -228,7 +236,9 @@ object WorldImpl : WorldAPI {
                 if (bungee.getBoolean("Enable")){
                     com.mcyzj.pixelworldpro.bungee.System.removeWorldLock(worldData)
                 }
-                WorldSuccess.unloadWorldSuccess(worldData)
+                submit {
+                    WorldSuccess.unloadWorldSuccess(worldData)
+                }
                 Thread{
                     burialWorld.add(worldData)
                     World.setDeleteLock(File(fileConfig.getString("World.Server"), worldData.world).path)
@@ -380,6 +390,9 @@ object WorldImpl : WorldAPI {
     }
     private fun getWorldConfig(world: String): YamlConfiguration {
         val file = File(fileConfig.getString("World.Path")!!, "$world/World.yml")
+        if (!File(fileConfig.getString("World.Path")!!, world).exists()){
+            File(fileConfig.getString("World.Path")!!, world).mkdirs()
+        }
         if (!file.exists()){
             file.createNewFile()
         }

@@ -9,12 +9,18 @@ object World {
     private var fileConfig = Config.file
     fun saveWorldConfig(world: WorldData, name: String, configData: YamlConfiguration){
         val worldFile = File(fileConfig.getString("World.Path"), world.world)
-        val config = File(worldFile, "/config/$name.yml")
+        val config = File(worldFile, "config/$name.yml")
         configData.save(config)
     }
     fun getWorldConfig(world: WorldData, name: String, default: YamlConfiguration): YamlConfiguration {
         val worldFile = File(fileConfig.getString("World.Path"), world.world)
-        val config = File(worldFile, "/config/$name.yml")
+        if (!worldFile.exists()){
+            worldFile.mkdirs()
+        }
+        if (!File(worldFile, "config").exists()){
+            File(worldFile, "config").mkdirs()
+        }
+        val config = File(worldFile, "config/$name.yml")
         val data = YamlConfiguration()
         if (!config.exists()) {
             config.createNewFile()
