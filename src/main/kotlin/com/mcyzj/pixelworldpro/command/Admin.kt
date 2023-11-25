@@ -3,7 +3,8 @@ package com.mcyzj.pixelworldpro.command
 import com.mcyzj.pixelworldpro.PixelWorldPro
 import com.mcyzj.pixelworldpro.api.interfaces.core.world.WorldAPI
 import com.mcyzj.pixelworldpro.expansion.ExpansionManager.loadAllExpansion
-import com.mcyzj.pixelworldpro.expansion.ExpansionManager.loadExpansion
+import com.mcyzj.pixelworldpro.file.Config
+import com.mcyzj.pixelworldpro.permission.PermissionImpl
 import com.mcyzj.pixelworldpro.world.Local
 import com.xbaimiao.easylib.module.command.CommandSpec
 import com.xbaimiao.easylib.module.command.command
@@ -320,7 +321,7 @@ object Admin {
     private val expansionLoad = command<CommandSender>("load") {
         permission = "pwp.admin.expansion"
         exec{
-            if (!sender.hasPermission("pwp.admin.tp")){
+            if (!sender.hasPermission("pwp.admin.expansion")){
                 sender.sendMessage(lang.getString("command.warning.noPermission")?:"你没有权限执行这个命令")
                 return@exec
             }
@@ -346,9 +347,59 @@ object Admin {
         sub(expansionLoad)
     }
 
-    //private val reload = command<CommandSender>("reload") {
-    //    Config.reload()
-    //}
+    private val groupUpdateAll = command<CommandSender>("all") {
+        permission = "pwp.admin.group"
+        exec{
+            if (!sender.hasPermission("pwp.admin.group")){
+                sender.sendMessage(lang.getString("command.warning.noPermission")?:"你没有权限执行这个命令")
+                return@exec
+            }
+            val worldMap = database.getWorldIdMap()
+            for (worldData in worldMap.values){
+                worldData.permission = PermissionImpl.getConfigWorldPermission()
+                database.setWorldData(worldData)
+            }
+        }
+    }
+
+    private val groupUpdate = command<CommandSender>("update") {
+        permission = "pwp.admin.group"
+        sub(groupUpdateAll)
+    }
+
+    private val group = command<CommandSender>("group") {
+        permission = "pwp.admin.group"
+        sub(groupUpdate)
+    }
+
+    private val nameSet = command<CommandSender>("set") {
+        permission = "pwp.admin.set"
+        exec{
+            if (!sender.hasPermission("pwp.admin.set")){
+                sender.sendMessage(lang.getString("command.warning.noPermission")?:"你没有权限执行这个命令")
+                return@exec
+            }
+            if (sender !is Player){
+                return@exec
+            }
+            val player = sender as Player
+            val worldData = database.getWorldData(player.uniqueId) ?: return@exec
+            worldData.name = args[0]
+            database.setWorldData(worldData)
+        }
+    }
+
+    private val name = command<CommandSender>("name") {
+        permission = "pwp.admin.name"
+        sub(nameSet)
+    }
+
+    private val reload = command<CommandSender>("reload") {
+        permission = "pwp.admin.reload"
+        exec {
+            Config.reload()
+        }
+    }
 
     private var admin = command<CommandSender>("admin") {
         permission = "pwp.admin"
@@ -357,7 +408,9 @@ object Admin {
         sub(unload)
         sub(tp)
         sub(expansion)
-        //sub(reload)
+        sub(group)
+        sub(name)
+        sub(reload)
     }
 
     fun setCommand(expansion: String, command: CommandSpec<CommandSender>){

@@ -11,6 +11,7 @@ import com.mcyzj.pixelworldpro.data.database.MysqlDatabaseAPI
 import com.mcyzj.pixelworldpro.data.database.SQLiteDatabaseAPI
 import com.mcyzj.pixelworldpro.expansion.ExpansionManager
 import com.mcyzj.pixelworldpro.expansion.core.Core
+import com.mcyzj.pixelworldpro.expansion.core.gui.listener.MenuListen
 import com.mcyzj.pixelworldpro.file.Config
 import com.mcyzj.pixelworldpro.listener.World
 import com.mcyzj.pixelworldpro.server.Icon
@@ -102,14 +103,15 @@ class PixelWorldPro : EasyPlugin() {
                     Server.tpPlayer()
                 }
                 submit {
+                    //保存未正常备份的世界
+                    Local.getUnzipWorld()
                     //删除未删除的缓存
                     deleteLock()
                     //注册监听
                     Bukkit.getPluginManager().registerEvents(World(), this@PixelWorldPro)
+                    Bukkit.getPluginManager().registerEvents(MenuListen(), this@PixelWorldPro)
                     //注册备份线程
                     Local.regularBackup()
-                    //保存未正常备份的世界
-                    Local.getUnzipWorld()
                     //加载核心扩展
                     Core.enable()
                     //加载外部扩展
@@ -222,26 +224,8 @@ class PixelWorldPro : EasyPlugin() {
     private fun saveGui() {
         logger.info("§aPixelWorldPro ${lang.getString("gui.load")}")
         //遍历插件resources中gui文件夹下所有的.yml文件,并保存在生成的插件文件夹中
-        if (!File(dataFolder, "gui/WorldCreate.yml").exists()) {
-            saveResource("gui/WorldCreate.yml", false)
-        }
-        if (!File(dataFolder, "gui/WorldEdit.yml").exists()) {
-            saveResource("gui/WorldEdit.yml", false)
-        }
         if (!File(dataFolder, "gui/WorldList.yml").exists()) {
             saveResource("gui/WorldList.yml", false)
-        }
-        if (!File(dataFolder, "gui/custom/customGui.yml").exists()) {
-            saveResource("gui/custom/customGui.yml", false)
-        }
-        if (!File(dataFolder, "gui/MembersEdit.yml").exists()) {
-            saveResource("gui/MembersEdit.yml", false)
-        }
-        if (!File(dataFolder, "gui/BanEdit.yml").exists()) {
-            saveResource("gui/BanEdit.yml", false)
-        }
-        if (!File(dataFolder, "gui/WorldRestart.yml").exists()) {
-            saveResource("gui/WorldRestart.yml", false)
         }
     }
 }

@@ -1,11 +1,13 @@
 #配置文件版本号,用于更新配置文件，请勿修改
 #Configuration file version number, used to update the configuration file, please do not modify
-version: 1
+version: 2
 #世界内权限设置
 World:
   #可以更具相同的格式添加新的用户组，但不会同步到已经创建的世界中，只有后面创建的世界会依据此用户组
   #拥有者权限，不得删除
   Owner:
+    #权限组名称
+    Name: "拥有者"
     #游戏模式
     GameMode: SURVIVAL
     #是否能右击方块[与方块交互]
@@ -34,6 +36,8 @@ World:
     ChangePermission: False
   #信任者权限，可删除
   Member:
+    #权限组名称
+    Name: "信任者"
     #游戏模式
     GameMode: SURVIVAL
     #是否能右击方块[与方块交互]
@@ -62,6 +66,8 @@ World:
     ChangePermission: False
   #游客权限，可不删除
   Visitor:
+    #权限组名称
+    Name: "参观者"
     #游戏模式
     GameMode: ADVENTURE
     #是否能右击方块[与方块交互]
@@ -90,6 +96,8 @@ World:
     ChangePermission: False
   #黑名单用户权限，可不删除
   BlackList:
+    #权限组名称
+    Name: "黑名单"
     #游戏模式
     GameMode: ADVENTURE
     #是否能右击方块[与方块交互]

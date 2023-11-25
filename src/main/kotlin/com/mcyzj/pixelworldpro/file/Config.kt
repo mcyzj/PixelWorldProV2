@@ -13,6 +13,7 @@ object Config {
     var permission = BuiltInConfiguration("Permission.yml")
     var bungee = BuiltInConfiguration("BungeeSet.yml")
     var level = BuiltInConfiguration("Level.yml")
+    var gui = BuiltInConfiguration("Gui.yml")
     fun reload(){
         config = BuiltInConfiguration("Config.yml")
         file = BuiltInConfiguration("File.yml")
@@ -20,17 +21,36 @@ object Config {
         permission = BuiltInConfiguration("Permission.yml")
         bungee = BuiltInConfiguration("BungeeSet.yml")
         level = BuiltInConfiguration("Level.yml")
+        gui = BuiltInConfiguration("Gui.yml")
         PixelWorldPro.instance.reloadAll()
     }
     fun update(){
-        //config
-        //file
+        //File配置文件更新
         when (file.getInt("Version")){
             1 -> {
                 file.set("Version", 2)
                 file.set("Backup.time", 1800)
                 file.set("Backup.number", 32)
                 file.saveToFile()
+            }
+        }
+        //World配置文件更新
+        when (world.getInt("Version")){
+            1 -> {
+                world.set("Version", 2)
+                world.set("Create.Name", "{Player.Name}的世界")
+                world.saveToFile()
+            }
+        }
+        //Permission配置文件更新
+        when (permission.getInt("Version")){
+            1 -> {
+                permission.set("Version", 2)
+                permission.set("World.Owner.Name", "拥有者")
+                permission.set("World.Member.Name", "信任者")
+                permission.set("World.Visitor.Name", "参观者")
+                permission.set("World.BlackList.Name", "黑名单")
+                permission.saveToFile()
             }
         }
     }

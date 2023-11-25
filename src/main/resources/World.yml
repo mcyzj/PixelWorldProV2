@@ -1,5 +1,5 @@
 #版本设置，请勿更改
-Version: 1
+Version: 2
 #创建设置
 Create:
   #创建使用
@@ -20,6 +20,8 @@ Create:
       Money: 0.0
       #PlayerPoints点券
       Point: 0.0
+  #默认世界名称
+  Name: "{Player.Name}的世界"
 Unload:
   #当玩家世界卸载时传送世界剩余玩家至的世界
   world: "world"

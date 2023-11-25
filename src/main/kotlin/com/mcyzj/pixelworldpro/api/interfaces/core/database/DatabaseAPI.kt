@@ -49,6 +49,10 @@ interface DatabaseAPI {
     /**
      * 获取所有世界的uuid list
      */
+    fun getWorldIdList(start:Int,number: Int): List<Int>
+    /**
+     * 获取所有世界的uuid list
+     */
     fun getWorldUUIDList(start:Int,number: Int): List<UUID>
     /**
      * 创建或覆盖一个玩家记录,此操作为同步数据库操作

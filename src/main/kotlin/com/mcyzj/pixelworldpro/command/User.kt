@@ -3,6 +3,7 @@ package com.mcyzj.pixelworldpro.command
 import com.mcyzj.pixelworldpro.PixelWorldPro
 import com.mcyzj.pixelworldpro.api.interfaces.core.world.WorldAPI
 import com.mcyzj.pixelworldpro.expansion.core.gui.Open
+import com.mcyzj.pixelworldpro.file.Config
 import com.mcyzj.pixelworldpro.world.Local
 import com.xbaimiao.easylib.module.command.ArgNode
 import com.xbaimiao.easylib.module.command.CommandSpec
@@ -179,7 +180,7 @@ object User {
 
     private val guiArgNode = ArgNode("",
         exec = {
-            arrayListOf("create", "list")
+            Config.gui.getConfigurationSection("Command")!!.getKeys(false).toList()
         }, parse = {
             it
         }

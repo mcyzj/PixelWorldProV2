@@ -70,9 +70,12 @@ object WorldImpl : WorldAPI {
                 future.complete(false)
                 return@submit
             }
+            var name = worldConfig.getString("Create.Name") ?: "{Player.Name}的世界"
+            name = name.replace("{Player.Name}", Bukkit.getOfflinePlayer(owner).name ?: owner.toString())
+            name = name.replace("{Player.UUID}", owner.toString())
             val worldCreateData = WorldCreateData(
                 owner,
-                owner.toString(),
+                name,
                 worldName,
                 PermissionAPI.Factory.get().getConfigWorldPermission(),
                 HashMap<UUID, String>(),

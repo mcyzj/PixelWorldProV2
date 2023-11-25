@@ -16,6 +16,7 @@ import java.io.File
 import java.lang.Thread.sleep
 import java.util.*
 import java.util.concurrent.CompletableFuture
+import kotlin.collections.ArrayList
 
 object Local {
     private val logger = PixelWorldPro.instance.logger
@@ -82,7 +83,12 @@ object Local {
     }
 
     fun unloadAllWorld(){
+        val keys = ArrayList<Int>()
         for (key in localWorld.keys){
+            keys.add(key)
+        }
+        println(keys)
+        for (key in keys){
             logger.info("§aPixelWorldPro 使用线程：${Thread.currentThread().name} 进行世界卸载操作")
             //拉取世界数据
             val worldData = database.getWorldData(key)

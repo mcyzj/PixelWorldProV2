@@ -1,0 +1,6 @@
+#配置版本，勿动
+Version: 1
+#设置子命令对应绑定的菜单
+Command:
+  create: "WorldCreate.yml"
+  list: "WorldList.yml"

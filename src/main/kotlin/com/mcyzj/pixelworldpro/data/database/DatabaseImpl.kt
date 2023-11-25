@@ -108,6 +108,22 @@ abstract class DatabaseImpl(ormlite: Ormlite) : DatabaseAPI {
         return uuidMap
     }
 
+    override fun getWorldIdList(start:Int,number: Int): List<Int> {
+        val list = mutableListOf<Int>()
+        val dataMap = PixelWorldPro.databaseApi.getWorldIdMap()
+        for (data in dataMap) {
+            val id = data.key
+            list.add(id)
+        }
+        if (list.size < start) {
+            return listOf()
+        }
+        if (list.size < start + number) {
+            return list.subList(start, list.size)
+        }
+        return list.subList(start, start + number)
+    }
+
     override fun getWorldUUIDList(start:Int,number: Int): List<UUID> {
         val list = mutableListOf<UUID>()
         val dataMap = PixelWorldPro.databaseApi.getWorldUUIDMap()
