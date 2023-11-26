@@ -224,6 +224,9 @@ class PixelWorldPro : EasyPlugin() {
     private fun saveGui() {
         logger.info("§aPixelWorldPro ${lang.getString("gui.load")}")
         //遍历插件resources中gui文件夹下所有的.yml文件,并保存在生成的插件文件夹中
+        if (!File(dataFolder, "gui/WorldCreate.yml").exists()) {
+            saveResource("gui/WorldCreate.yml", false)
+        }
         if (!File(dataFolder, "gui/WorldList.yml").exists()) {
             saveResource("gui/WorldList.yml", false)
         }
