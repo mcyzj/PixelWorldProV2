@@ -5,12 +5,14 @@ import com.mcyzj.pixelworldpro.api.interfaces.core.world.WorldAPI
 import com.mcyzj.pixelworldpro.bungee.Server
 import com.mcyzj.pixelworldpro.bungee.System
 import com.mcyzj.pixelworldpro.bungee.database.SocketClient.tpWorld
+import com.mcyzj.pixelworldpro.data.dataclass.WorldData
 import com.mcyzj.pixelworldpro.file.Config
 import com.mcyzj.pixelworldpro.server.World
 import com.mcyzj.pixelworldpro.server.World.localWorld
 import com.xbaimiao.easylib.bridge.economy.PlayerPoints
 import com.xbaimiao.easylib.bridge.economy.Vault
 import org.bukkit.Bukkit
+import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import java.io.File
 import java.lang.Thread.sleep
@@ -147,7 +149,7 @@ object Local {
             for (use in useList){
                 val permission = worldConfig.getString("Create.Use.$use.Permission")!!
                 if (!player.hasPermission(permission)){
-                    return false
+                    continue
                 }
                 if (worldConfig.getDouble("Create.Use.$use.Money") > 0.0) {
                     if (!Vault().has(player, worldConfig.getDouble("Create.Use.$use.Money"))) {
@@ -320,11 +322,156 @@ object Local {
             //拉取世界数据
             val worldData = database.getWorldData(id)
             if (worldData == null){
-                logger.warning("§aPixelWorldPro $id ${lang.getString("world.warning.unload.noWorldData")}")
+                logger.warning("$id ${lang.getString("world.warning.unload.noWorldData")}")
                 return
             }
             File(file.getString("World.Server"), worldData.world).deleteRecursively()
         }
+    }
+
+    fun adminNameWorld(id: Int, name: String, player: Player){
+        val worldData = database.getWorldData(id)
+        if (worldData == null){
+            player.sendMessage(lang.getString("world.warning.name.noWorldData")?: "无法命名世界：数据库中没有找到世界数据")
+            logger.warning("$id ${lang.getString("world.warning.name.noWorldData")}")
+            return
+        }
+        adminNameWorld(worldData, name, player)
+    }
+
+    fun adminNameWorld(uuid: UUID, name: String, player: Player){
+        val worldData = database.getWorldData(uuid)
+        if (worldData == null){
+            player.sendMessage(lang.getString("world.warning.name.noWorldData")?: "无法命名世界：数据库中没有找到世界数据")
+            logger.warning("$uuid ${lang.getString("world.warning.name.noWorldData")}")
+            return
+        }
+        adminNameWorld(worldData, name, player)
+    }
+
+    private fun adminNameWorld(worldData: WorldData, name: String, player: Player){
+        worldData.name = name
+        database.setWorldData(worldData)
+        player.sendMessage(lang.getString("world.info.name.success")?: "成功命名世界")
+    }
+
+    fun adminNameWorld(id: Int, name: String, player: CommandSender){
+        val worldData = database.getWorldData(id)
+        if (worldData == null){
+            player.sendMessage(lang.getString("world.warning.name.noWorldData")?: "无法命名世界：数据库中没有找到世界数据")
+            logger.warning("$id ${lang.getString("world.warning.name.noWorldData")}")
+            return
+        }
+        adminNameWorld(worldData, name, player)
+    }
+
+    fun adminNameWorld(uuid: UUID, name: String, player: CommandSender){
+        val worldData = database.getWorldData(uuid)
+        if (worldData == null){
+            player.sendMessage(lang.getString("world.warning.name.noWorldData")?: "无法命名世界：数据库中没有找到世界数据")
+            logger.warning("$uuid ${lang.getString("world.warning.name.noWorldData")}")
+            return
+        }
+        adminNameWorld(worldData, name, player)
+    }
+
+    private fun adminNameWorld(worldData: WorldData, name: String, player: CommandSender){
+        worldData.name = name
+        database.setWorldData(worldData)
+        player.sendMessage(lang.getString("world.info.name.success")?: "成功命名世界")
+    }
+
+    fun nameWorld(player: Player, name: String){
+        if (checkNameMoney(player.uniqueId)) {
+            adminNameWorld(player.uniqueId, name, player)
+            takeNameMoney(player.uniqueId)
+        } else {
+            player.sendMessage(lang.getString("world.warning.name.notEnough")?: "无法命名世界：所需的资源不足")
+        }
+    }
+
+    private fun checkNameMoney(user: UUID):Boolean{
+        val player = Bukkit.getPlayer(user) ?: return false
+        val useList = worldConfig.getConfigurationSection("Name.Use")!!.getKeys(false)
+        useList.remove("Default")
+        if (useList.isNotEmpty()){
+            for (use in useList){
+                val permission = worldConfig.getString("Name.Use.$use.Permission")!!
+                if (!player.hasPermission(permission)){
+                    continue
+                }
+                if (worldConfig.getDouble("Name.Use.$use.Money") > 0.0) {
+                    if (!Vault().has(player, worldConfig.getDouble("Name.Use.$use.Money"))) {
+                        return false
+                    }
+                }
+                if (worldConfig.getDouble("Name.Use.$use.Point") > 0.0) {
+                    if (!PlayerPoints().has(player, worldConfig.getDouble("Name.Use.$use.Point"))) {
+                        return false
+                    }
+                }
+                return true
+            }
+        }
+        val permission = worldConfig.getString("Name.Use.Default.Permission")!!
+        if (!player.hasPermission(permission)){
+            return false
+        }
+        if (worldConfig.getDouble("Name.Use.Default.Money") > 0.0) {
+            if (!Vault().has(player, worldConfig.getDouble("Name.Use.Default.Money"))) {
+                return false
+            }
+        }
+        if (worldConfig.getDouble("Name.Use.Default.Point") > 0.0) {
+            if (!PlayerPoints().has(player, worldConfig.getDouble("Name.Use.Default.Point"))) {
+                return false
+            }
+        }
+        return true
+    }
+
+    private fun takeNameMoney(user: UUID):Boolean{
+        val player = Bukkit.getPlayer(user) ?: return false
+        val useList = worldConfig.getConfigurationSection("Name.Use")!!.getKeys(false)
+        useList.remove("Default")
+        if (useList.isNotEmpty()){
+            for (use in useList){
+                val permission = worldConfig.getString("Name.Use.$use.Permission")!!
+                if (!player.hasPermission(permission)){
+                    return false
+                }
+                if (worldConfig.getDouble("Name.Use.$use.Money") > 0.0) {
+                    if (!Vault().has(player, worldConfig.getDouble("Name.Use.$use.Money"))) {
+                        return false
+                    }
+                    Vault().take(player, worldConfig.getDouble("Name.Use.$use.Money"))
+                }
+                if (worldConfig.getDouble("Name.Use.$use.Point") > 0.0) {
+                    if (!PlayerPoints().has(player, worldConfig.getDouble("Name.Use.$use.Point"))) {
+                        return false
+                    }
+                    PlayerPoints().take(player, worldConfig.getDouble("Name.Use.$use.Point"))
+                }
+                return true
+            }
+        }
+        val permission = worldConfig.getString("Name.Use.Default.Permission")!!
+        if (!player.hasPermission(permission)){
+            return false
+        }
+        if (worldConfig.getDouble("Name.Use.Default.Money") > 0.0) {
+            if (!Vault().has(player, worldConfig.getDouble("Name.Use.Default.Money"))) {
+                return false
+            }
+            Vault().take(player, worldConfig.getDouble("Name.Use.Default.Money"))
+        }
+        if (worldConfig.getDouble("Name.Use.Default.Point") > 0.0) {
+            if (!PlayerPoints().has(player, worldConfig.getDouble("Name.Use.Default.Point"))) {
+                return false
+            }
+            PlayerPoints().take(player, worldConfig.getDouble("Name.Use.Default.Point"))
+        }
+        return true
     }
 
     fun getWorldNameUUID(worldName: String): UUID? {

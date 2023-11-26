@@ -1,5 +1,5 @@
 #版本设置，请勿更改
-Version: 2
+Version: 3
 #创建设置
 Create:
   #创建使用
@@ -25,3 +25,23 @@ Create:
 Unload:
   #当玩家世界卸载时传送世界剩余玩家至的世界
   world: "world"
+#命名设置
+Name:
+  #更改使用
+  Use:
+    #默认使用
+    Default:
+      #需要的权限
+      Permission: "pwp.user.name"
+      #Vault井壁
+      Money: 0.0
+      #PlayerPoints点券
+      Point: 100.0
+    #自定义权限组购买，优先级从上到下
+    Vip:
+      #需要的权限
+      Permission: "group.vip"
+      #Vault井壁
+      Money: 0.0
+      #PlayerPoints点券
+      Point: 0.0

@@ -35,11 +35,24 @@ object Config {
             }
         }
         //World配置文件更新
-        when (world.getInt("Version")){
-            1 -> {
-                world.set("Version", 2)
-                world.set("Create.Name", "{Player.Name}的世界")
-                world.saveToFile()
+        while (world.getInt("Version") < 3) {
+            when (world.getInt("Version")) {
+                1 -> {
+                    world.set("Version", 2)
+                    world.set("Create.Name", "{Player.Name}的世界")
+                    world.saveToFile()
+                }
+
+                2 -> {
+                    world.set("Version", 3)
+                    world.set("Name.Use.Default.Permission", "pwp.user.name")
+                    world.set("Name.Use.Default.Money", 0.0)
+                    world.set("Name.Use.Default.Point", 100.0)
+                    world.set("Name.Vip.Default.Permission", "group.vip")
+                    world.set("Name.Vip.Default.Money", 0.0)
+                    world.set("Name.Vip.Default.Point", 0.0)
+                    world.saveToFile()
+                }
             }
         }
         //Permission配置文件更新

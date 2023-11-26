@@ -44,12 +44,18 @@ world:
         points: "没有足够的点券，你需要{0}个点券，你只有{1}个点券"
         money: "没有足够的金币，你需要{0}个金币，你只有{1}个金币"
         item: "没有足够的物品，你需要{0}个{1}"
+    name:
+      noWorldData: "无法命名世界：数据库中没有找到世界数据"
+      notId: "无法命名世界：输入值不是一个有效的数字id"
+      notEnough: "无法命名世界：所需的资源不足"
   info:
     permission:
       set:
         success: "成功设置玩家在世界内的权限组"
       add:
         success: "成功扩展世界内权限组玩家槽位"
+    name:
+      success: "成功命名世界"
 compress:
   info:
     success: "成功压缩世界 "

@@ -7,6 +7,7 @@ import com.mcyzj.pixelworldpro.expansion.core.gui.Core
 import com.mcyzj.pixelworldpro.expansion.core.gui.dataclass.ConfigItemData
 import com.mcyzj.pixelworldpro.expansion.core.gui.dataclass.MenuData
 import com.mcyzj.pixelworldpro.expansion.core.gui.dataclass.MenuItemData
+import com.mcyzj.pixelworldpro.expansion.core.gui.worldcreate.WorldCreate
 import com.mcyzj.pixelworldpro.expansion.core.level.admin.Admin
 import com.mcyzj.pixelworldpro.world.Local
 import org.bukkit.Bukkit
@@ -381,7 +382,7 @@ class WorldList : Menu {
                             menuData.cache["Page"] = ((menuData.cache["Page"].toString().toInt()) + 1 ).toString()
                             val uuid = UUID.fromString(menuData.cache["UUID"].toString())
                             val offlinePlayer = Bukkit.getOfflinePlayer(uuid)
-                            WorldList().open(player, offlinePlayer, menuData.config, menuData.cache)
+                            WorldCreate().open(player, offlinePlayer, menuData.config, menuData.cache)
                         }
                     }
                     "Back" -> {
@@ -392,7 +393,7 @@ class WorldList : Menu {
                             menuData.cache["Number"] = ((menuData.cache["Number"].toString().toInt()) - (menuData.cache["LastFillNumber"].toString().toInt()) - (menuData.cache["FillNumber"].toString().toInt())).toString()
                             val uuid = UUID.fromString(menuData.cache["UUID"].toString())
                             val offlinePlayer = Bukkit.getOfflinePlayer(uuid)
-                            WorldList().open(player, offlinePlayer, menuData.config, menuData.cache)
+                            WorldCreate().open(player, offlinePlayer, menuData.config, menuData.cache)
                         }
                     }
                 }

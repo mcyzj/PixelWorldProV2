@@ -257,6 +257,24 @@ object User {
         sub(groupUp)
     }
 
+    private val name = command<CommandSender>("name") {
+        permission = "pwp.user.name"
+        exec{
+            if (!sender.hasPermission("pwp.user.name")){
+                sender.sendMessage(lang.getString("command.warning.noPermission")?:"你没有权限执行这个命令")
+                return@exec
+            }
+            if (sender !is Player){
+                return@exec
+            }
+            when(args.size){
+                1 -> {
+                    Local.nameWorld(sender as Player, args[0])
+                }
+            }
+        }
+    }
+
     private val user = command<CommandSender>("user") {
         permission = "pwp.user"
         sub(create)
@@ -265,6 +283,7 @@ object User {
         sub(tp)
         sub(gui)
         sub(group)
+        sub(name)
     }
 
     fun setCommand(expansion: String, command: CommandSpec<CommandSender>){

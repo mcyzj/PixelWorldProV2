@@ -1,59 +1,49 @@
-title: "创建世界"
+Type: WorldCreate
+Title: "创建世界"
 
-slots:
+Slots:
   - 'NNNNNNNNN'
   - 'AB       '
   - '    C    '
-  - '        E'
+  - '         '
   - 'NNNNXNNNN'
 
-items:
+Item:
   N:
-    material: GLASS_PANE
+    Material: GLASS_PANE
   X:
-    material: BARRIER
-    name: '&c&l关闭'
-    lore:
+    Material: BARRIER
+    Name: '&c&l关闭'
+    Lore:
       - '&f点击关闭'
+    Command:
+      - '[Close]'
   A:
-    type: Template
+    Type: Template
     #模板文件夹名,点击后点击创建世界按钮就会创建对应模板的世界
-    value: desert
-    material: PLAYER_HEAD
-    #url
-    skull: 'a35a50a3ab62e86ac1c1502f23ed17facd423c83fb7cc5ae532d78d542486f8'
-    name: '&a&l沙漠模板 [注意，这个是没有配置模板的菜单范例]'
-    lore:
+    Value: Desert
+    Material: PLAYER_HEAD
+    Name: '&a&l沙漠模板 [注意，这个是没有配置模板的菜单范例]'
+    Lore:
       - '&f选择此模板'
   B:
-    type: Template
-    value: plain
-    material: PLAYER_HEAD
-    #username
-    skull: '%player_name%'
-    #1.14+可以使用custom-model-data
-    #custom-model-data: 10010
-    name: '&a&l平原模板 [注意，这个是没有配置模板的菜单范例]'
-    lore:
+    Type: Template
+    Value: Plain
+    Material: PLAYER_HEAD
+    Name: '&a&l平原模板 [注意，这个是没有配置模板的菜单范例]'
+    Lore:
       - '&f选择此模板'
   C:
-    type: CreateWorld
-    #写模板文件夹名就是创建对应模板的世界，写random就是随机创建世界
-    value: random
-    material: GRASS_BLOCK
-    name: '&a&l创建世界'
-    lore:
-      - '&f当前选择的模板为: {template}'
-      - '&f创建世界需要花费: 100 金币'
-      - '&f创建世界需要花费: 100 点券'
-  E:
-    material: PLAYER_HEAD
-    #value:
-    skull: 'eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTc5NmRlNjAxYjUxYjk4Y2VhNWI4OTk5NDRiMWE0ODcxODQ4NDAxNzRkODQ4ZjhjNTdmZTBiNDRjODQ5Y2U0MCJ9fX0='
-    name: '&a&l下一页'
-    commands:
-      - '[player] pixelworldpro gui custom/customGui.yml'
+    Type: CreateWorld
+    #默认的模板值，Random即为随机
+    Value: Random
+    Material: GRASS_BLOCK
+    Name: '&a&l创建世界'
+    Lore:
+      - '&f当前选择的模板为: {Menu.Cache.Template}'
+      - '&f创建世界需要花费: {CreateUse.Money} 金币'
+      - '&f创建世界需要花费: {CreateUse.Point} 点券'
 Template:
-  random: '随机模板'
-  desert: '沙漠模板'
-  plain: '平原模板'
+  Random: '随机模板'
+  Plain: '平原模板 [注意，这个是没有配置模板的菜单范例]'
+  Desert: '沙漠模板 [注意，这个是没有配置模板的菜单范例]'

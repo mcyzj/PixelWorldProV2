@@ -373,9 +373,9 @@ object Admin {
     }
 
     private val nameSet = command<CommandSender>("set") {
-        permission = "pwp.admin.set"
+        permission = "pwp.admin.name"
         exec{
-            if (!sender.hasPermission("pwp.admin.set")){
+            if (!sender.hasPermission("pwp.admin.name")){
                 sender.sendMessage(lang.getString("command.warning.noPermission")?:"你没有权限执行这个命令")
                 return@exec
             }
@@ -383,14 +383,51 @@ object Admin {
                 return@exec
             }
             val player = sender as Player
-            val worldData = database.getWorldData(player.uniqueId) ?: return@exec
-            worldData.name = args[0]
-            database.setWorldData(worldData)
+            Local.adminNameWorld(player.uniqueId, args[0], player)
+        }
+    }
+
+    private val nameId = command<CommandSender>("player") {
+        permission = "pwp.admin.name"
+        exec{
+            if (!sender.hasPermission("pwp.admin.name")){
+                sender.sendMessage(lang.getString("command.warning.noPermission")?:"你没有权限执行这个命令")
+                return@exec
+            }
+            when (args.size){
+                2 -> {
+                    val id = try {
+                        args[0].toInt()
+                    } catch (_:Exception) {
+                        sender.sendMessage(lang.getString("world.warning.name.notId")?:"无法命名世界：输入值不是一个有效的数字id")
+                        return@exec
+                    }
+                    Local.adminNameWorld(id, args[1], sender)
+                }
+            }
+        }
+    }
+
+    private val namePlayer = command<CommandSender>("player") {
+        permission = "pwp.admin.name"
+        exec{
+            if (!sender.hasPermission("pwp.admin.name")){
+                sender.sendMessage(lang.getString("command.warning.noPermission")?:"你没有权限执行这个命令")
+                return@exec
+            }
+            when (args.size){
+                2 -> {
+                    val player = com.mcyzj.pixelworldpro.server.Player.getOfflinePlayer(args[0])
+                    Local.adminNameWorld(player.uniqueId, args[1], sender)
+                }
+            }
         }
     }
 
     private val name = command<CommandSender>("name") {
         permission = "pwp.admin.name"
+        sub(nameId)
+        sub(namePlayer)
         sub(nameSet)
     }
 

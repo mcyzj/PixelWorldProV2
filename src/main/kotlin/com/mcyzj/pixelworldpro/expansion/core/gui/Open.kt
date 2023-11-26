@@ -1,5 +1,6 @@
 package com.mcyzj.pixelworldpro.expansion.core.gui
 
+import com.mcyzj.pixelworldpro.expansion.core.gui.worldcreate.WorldCreate
 import com.mcyzj.pixelworldpro.expansion.core.gui.worldlist.WorldList
 import com.mcyzj.pixelworldpro.file.Config
 import com.xbaimiao.easylib.module.chat.BuiltInConfiguration
@@ -12,6 +13,9 @@ object Open {
         val name = gui.getString("Command.$menu") ?: return
         val config = BuiltInConfiguration("gui/$name")
         when (config.getString("Type")){
+            "WorldCreate" -> {
+                WorldCreate().open(player, player, config, HashMap())
+            }
             "WorldList" -> {
                 WorldList().open(player, player, config, HashMap())
             }
@@ -21,6 +25,9 @@ object Open {
         val name = gui.getString("Command.$menu") ?: return
         val config = BuiltInConfiguration("gui/$name")
         when (config.getString("Type")){
+            "WorldCreate" -> {
+                WorldCreate().open(player, player, config, cache)
+            }
             "WorldList" -> {
                 WorldList().open(player, player, config, cache)
             }
@@ -28,6 +35,9 @@ object Open {
     }
     fun open(player: Player, menu: YamlConfiguration, cache: HashMap<String, Any>){
         when (menu.getString("Type")){
+            "WorldCreate" -> {
+                WorldCreate().open(player, player, menu, cache)
+            }
             "WorldList" -> {
                 WorldList().open(player, player, menu, cache)
             }
