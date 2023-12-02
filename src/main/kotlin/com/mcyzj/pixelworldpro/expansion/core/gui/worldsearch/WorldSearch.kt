@@ -1,4 +1,4 @@
-package com.mcyzj.pixelworldpro.expansion.core.gui.worldlist
+package com.mcyzj.pixelworldpro.expansion.core.gui.worldsearch
 
 import com.mcyzj.pixelworldpro.PixelWorldPro
 import com.mcyzj.pixelworldpro.api.interfaces.core.gui.Menu
@@ -7,21 +7,20 @@ import com.mcyzj.pixelworldpro.expansion.core.gui.Core
 import com.mcyzj.pixelworldpro.expansion.core.gui.dataclass.ConfigItemData
 import com.mcyzj.pixelworldpro.expansion.core.gui.dataclass.MenuData
 import com.mcyzj.pixelworldpro.expansion.core.gui.dataclass.MenuItemData
-import com.mcyzj.pixelworldpro.expansion.core.gui.worldcreate.WorldCreate
 import com.mcyzj.pixelworldpro.expansion.core.level.admin.Admin
-import com.mcyzj.pixelworldpro.world.Local
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.OfflinePlayer
 import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.ClickType
+import org.bukkit.event.inventory.InventoryType
 import org.bukkit.inventory.ItemStack
 import java.util.*
-import kotlin.collections.HashMap
+import kotlin.math.max
 
 
-class WorldList : Menu {
+class WorldSearch : Menu {
     private val logger = PixelWorldPro.instance.logger
     private var cache = HashMap<String, Any>()
     private fun buildMenu(player: OfflinePlayer, menu: YamlConfiguration, cache: HashMap<String, Any>): MenuData? {
@@ -29,9 +28,9 @@ class WorldList : Menu {
         val title = menu.getString("Title")
         val slots = menu.getStringList("Slots")
         val gui = if (title == null) {
-            Bukkit.createInventory(null, slots.size * 9)
+            Bukkit.createInventory(null, InventoryType.ANVIL)
         } else {
-            Bukkit.createInventory(null, slots.size * 9, title.replace("{Menu.Cache.Search}", this.cache["Search"].toString()))
+            Bukkit.createInventory(null, InventoryType.ANVIL, title)
         }
         //构建物品Map
         val configItemMap = Core.buildItem(menu) ?: return null
@@ -39,30 +38,28 @@ class WorldList : Menu {
         //填充物品Map
         //初始化菜单格子数
         var menuNumber = 0
-        //遍历菜单的行数
-        for (menuList in slots) {
-            //将每一行的字符数量填充至9
-            val itemList = menuList.split("") as ArrayList
-            //清除split导致的第一个和最后一个的空格
-            itemList.removeFirst()
-            itemList.removeLast()
-            while (itemList.size < 9) {
-                itemList.add(" ")
+        val menuList = slots.first()
+        //将每一行的字符数量填充至9
+        val itemList = menuList.split("") as ArrayList
+        //清除split导致的第一个和最后一个的空格
+        itemList.removeFirst()
+        itemList.removeLast()
+        while (itemList.size < 3) {
+            itemList.add(" ")
+        }
+        //初始化当前行数起始
+        var menuListNumber = 0
+        for (itemKey in itemList) {
+            if (menuListNumber > 2) {
+                continue
             }
-            //初始化当前行数起始
-            var menuListNumber = 0
-            for (itemKey in itemList) {
-                if (menuListNumber >= 9) {
-                    continue
-                }
-                val menuItemData = buildItem(itemKey, player, configItemMap, menu, cache)
-                if (menuItemData != null) {
-                    gui.setItem(menuNumber, menuItemData.itemStack)
-                    menuItemMap[menuNumber] = menuItemData
-                }
-                menuListNumber++
-                menuNumber++
+            val menuItemData = buildItem(itemKey, player, configItemMap, menu, cache)
+            if (menuItemData != null) {
+                gui.setItem(menuNumber, menuItemData.itemStack)
+                menuItemMap[menuNumber] = menuItemData
             }
+            menuListNumber++
+            menuNumber++
         }
         return MenuData(
             gui,
@@ -363,43 +360,69 @@ class WorldList : Menu {
             player.closeInventory()
             return
         }
+        val cache = menuData.cache
         when (itemData.type){
-            "List" -> {
-                val id = itemData.cache["Id"]
-                if (id == null){
-                    player.closeInventory()
-                    return
-                }
-                Local.tpWorldId(player, id.toInt())
-            }
-
-            "Page" -> {
-                when (itemData.value) {
-                    "Next" -> {
-                        if (menuData.cache["Last"] != "True"){
-                            player.closeInventory()
-                            menuData.cache["LastFillNumber"] = menuData.cache["FillNumber"]!!
-                            menuData.cache["Page"] = ((menuData.cache["Page"].toString().toInt()) + 1 ).toString()
-                            val uuid = UUID.fromString(menuData.cache["UUID"].toString())
-                            val offlinePlayer = Bukkit.getOfflinePlayer(uuid)
-                            WorldCreate().open(player, offlinePlayer, menuData.config, menuData.cache)
-                        }
+            "Search" -> {
+                println(cache)
+                if (cache["Rename"] != null){
+                    val value = cache["Rename"] as String
+                    val worldDataMap = PixelWorldPro.databaseApi.getWorldIdMap()
+                    val searchMap = HashMap<Int, WorldData>()
+                    //分析相似度
+                    val similarMap = HashMap<Int, Float>()
+                    for (worldData in worldDataMap.values){
+                        similarMap[worldData.id] = levenshtein(worldData.name, value)
                     }
-                    "Back" -> {
-                        if ((menuData.cache["Page"].toString().toInt()) > 1){
-                            player.closeInventory()
-                            menuData.cache["Last"] = "False"
-                            menuData.cache["Page"] = ((menuData.cache["Page"].toString().toInt()) - 1 ).toString()
-                            menuData.cache["Number"] = ((menuData.cache["Number"].toString().toInt()) - (menuData.cache["LastFillNumber"].toString().toInt()) - (menuData.cache["FillNumber"].toString().toInt())).toString()
-                            val uuid = UUID.fromString(menuData.cache["UUID"].toString())
-                            val offlinePlayer = Bukkit.getOfflinePlayer(uuid)
-                            WorldCreate().open(player, offlinePlayer, menuData.config, menuData.cache)
-                        }
-                    }
+                    //排序结果
+                    println(similarMap)
                 }
             }
         }
         Core.runCommand(itemData.command, player, menuData.cache)
+    }
+
+    private fun levenshtein(str1: String, str2: String): Float {
+        //计算两个字符串的长度。
+        val len1 = str1.length
+        val len2 = str2.length
+        //建立上面说的数组，比字符长度大一个空间
+        val dif = Array(len1 + 1) { IntArray(len2 + 1) }
+        //赋初值，步骤B。
+        for (a in 0..len1) {
+            dif[a][0] = a
+        }
+        for (a in 0..len2) {
+            dif[0][a] = a
+        }
+        //计算两个字符是否一样，计算左上的值
+        var temp: Int
+        for (i in 1..len1) {
+            for (j in 1..len2) {
+                temp = if (str1[i - 1] == str2[j - 1]) {
+                    0
+                } else {
+                    1
+                }
+                //取三个值中最小的
+                dif[i][j] = min(
+                    dif[i - 1][j - 1] + temp, dif[i][j - 1] + 1,
+                    dif[i - 1][j] + 1
+                )
+            }
+        }
+        //计算相似度
+        return (1 - dif[len1][len2].toFloat() / max(str1.length.toDouble(), str2.length.toDouble())).toFloat()
+    }
+
+    //得到最小值
+    private fun min(vararg `is`: Int): Int {
+        var min = Int.MAX_VALUE
+        for (i in `is`) {
+            if (min > i) {
+                min = i
+            }
+        }
+        return min
     }
 
 }

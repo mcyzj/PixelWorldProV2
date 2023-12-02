@@ -22,7 +22,6 @@ import kotlin.collections.ArrayList
 
 object Local {
     private val logger = PixelWorldPro.instance.logger
-    private var config = Config.config
     private val lang = PixelWorldPro.instance.lang
     private val database = PixelWorldPro.databaseApi
     private var file = Config.file
@@ -137,7 +136,10 @@ object Local {
         future.thenApply {
             if (!takeCreateMoney(owner)){
                 player.sendMessage(lang.getString("worldConfig.warning.create.notEnough")?: "无法创建世界：所需的资源不足")
+                return@thenApply
             }
+            val worldData = database.getWorldData(owner) ?: return@thenApply
+            tpWorldId(player, worldData.id)
         }
     }
 
@@ -475,11 +477,11 @@ object Local {
     }
 
     fun getWorldNameUUID(worldName: String): UUID? {
-        val realNamelist = worldName.split("/").size
-        if (realNamelist < 2) {
+        val realNameList = worldName.split("/").size
+        if (realNameList < 2) {
             return null
         }
-        val realName = worldName.split("/")[realNamelist - 2]
+        val realName = worldName.split("/")[realNameList - 2]
         val uuidString: String? = Regex(pattern = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-z]{12}")
             .find(realName)?.value
         return try{

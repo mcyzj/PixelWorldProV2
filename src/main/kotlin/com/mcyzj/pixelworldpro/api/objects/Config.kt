@@ -1,7 +1,9 @@
 package com.mcyzj.pixelworldpro.api.objects
 
+import com.mcyzj.pixelworldpro.data.dataclass.WorldData
 import com.mcyzj.pixelworldpro.expansion.ExpansionManager
 import com.mcyzj.pixelworldpro.expansion.ExpansionManager.getClassByName
+import com.mcyzj.pixelworldpro.file.World
 import org.bukkit.configuration.InvalidConfigurationException
 import org.bukkit.configuration.file.YamlConfiguration
 import java.io.BufferedReader
@@ -36,5 +38,13 @@ object Config {
         }
         data.load(getConfig)
         return data
+    }
+
+    fun getWorldConfig(world: WorldData, name: String, default: YamlConfiguration): YamlConfiguration {
+        return World.getWorldConfig(world, name, default)
+    }
+
+    fun saveWorldConfig(world: WorldData, name: String, configData: YamlConfiguration){
+        World.saveWorldConfig(world, name, configData)
     }
 }

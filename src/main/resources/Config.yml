@@ -16,7 +16,7 @@ Mysql:
 #PWP主命令
 mainCommand: "pwp"
 #PWP变量开头
-mainPapi: "pixelworldpro"
+mainPapi: "PixelWorldPro"
 #异步设置，自行斟酌选择
 #true为异步，false为同步
 async:

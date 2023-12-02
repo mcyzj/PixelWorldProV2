@@ -2,6 +2,7 @@ package com.mcyzj.pixelworldpro.expansion.core.gui
 
 import com.mcyzj.pixelworldpro.expansion.core.gui.worldcreate.WorldCreate
 import com.mcyzj.pixelworldpro.expansion.core.gui.worldlist.WorldList
+import com.mcyzj.pixelworldpro.expansion.core.gui.worldsearch.WorldSearch
 import com.mcyzj.pixelworldpro.file.Config
 import com.xbaimiao.easylib.module.chat.BuiltInConfiguration
 import org.bukkit.configuration.file.YamlConfiguration
@@ -19,6 +20,9 @@ object Open {
             "WorldList" -> {
                 WorldList().open(player, player, config, HashMap())
             }
+            "WorldSearch" -> {
+                WorldSearch().open(player, player, config, HashMap())
+            }
         }
     }
     fun open(player: Player, menu: String, cache: HashMap<String, Any>){
@@ -31,6 +35,9 @@ object Open {
             "WorldList" -> {
                 WorldList().open(player, player, config, cache)
             }
+            "WorldSearch" -> {
+                WorldSearch().open(player, player, config, cache)
+            }
         }
     }
     fun open(player: Player, menu: YamlConfiguration, cache: HashMap<String, Any>){
@@ -40,6 +47,9 @@ object Open {
             }
             "WorldList" -> {
                 WorldList().open(player, player, menu, cache)
+            }
+            "WorldSearch" -> {
+                WorldSearch().open(player, player, menu, cache)
             }
         }
     }

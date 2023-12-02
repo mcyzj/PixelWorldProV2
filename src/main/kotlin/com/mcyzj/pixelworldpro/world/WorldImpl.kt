@@ -47,6 +47,8 @@ object WorldImpl : WorldAPI {
                 future.complete(false)
                 return@submit
             }
+            //触发世界创建
+            com.mcyzj.pixelworldpro.expansion.listener.trigger.world.World.createWorld(owner, template)
             //获取time时间
             val time = System.currentTimeMillis()
             val date = Date(time)
@@ -103,6 +105,8 @@ object WorldImpl : WorldAPI {
                 future.complete(false)
                 return@submit
             }
+            //出发世界加载
+            com.mcyzj.pixelworldpro.expansion.listener.trigger.world.World.loadWorld(worldData)
             if (worldData in burialWorld){
                 logger.warning("$id ${lang.getString("world.warning.load.inBurial")}")
                 future.complete(false)
@@ -112,11 +116,15 @@ object WorldImpl : WorldAPI {
             unzipWorld(worldData.world, worldData.world)
             //加载世界
             val worldCreator = WorldCreator("PixelWorldPro/${worldData.world}/world")
+            //触发世界加载中
+            com.mcyzj.pixelworldpro.expansion.listener.trigger.world.World.onWorldFileLoad(worldData, worldCreator)
             val world = Bukkit.createWorld(worldCreator)
             if (world == null) {
                 future.complete(false)
                 return@submit
             }
+            //触发世界文件加载成功
+            com.mcyzj.pixelworldpro.expansion.listener.trigger.world.World.worldFileLoadSuccess(worldData, world)
             localWorld[worldData.id] = world
             World.setLock(worldData.id)
             world.keepSpawnInMemory = false
@@ -134,12 +142,14 @@ object WorldImpl : WorldAPI {
             logger.info("§aPixelWorldPro 使用线程：${Thread.currentThread().name} 进行世界加载操作")
             //拉取世界数据
             val worldData = database.getWorldData(owner)
-            if (worldData == null){
+            if (worldData == null) {
                 logger.warning("§aPixelWorldPro $owner ${lang.getString("world.warning.load.noWorldData")}")
                 future.complete(false)
                 return@submit
             }
-            if (worldData in burialWorld){
+            //出发世界加载
+            com.mcyzj.pixelworldpro.expansion.listener.trigger.world.World.loadWorld(worldData)
+            if (worldData in burialWorld) {
                 logger.warning("$owner ${lang.getString("world.warning.load.inBurial")}")
                 future.complete(false)
                 return@submit
@@ -148,11 +158,15 @@ object WorldImpl : WorldAPI {
             unzipWorld(worldData.world, worldData.world)
             //加载世界
             val worldCreator = WorldCreator("PixelWorldPro/${worldData.world}/world")
+            //触发世界加载中
+            com.mcyzj.pixelworldpro.expansion.listener.trigger.world.World.onWorldFileLoad(worldData, worldCreator)
             val world = Bukkit.createWorld(worldCreator)
             if (world == null) {
                 future.complete(false)
                 return@submit
             }
+            //触发世界文件加载成功
+            com.mcyzj.pixelworldpro.expansion.listener.trigger.world.World.worldFileLoadSuccess(worldData, world)
             localWorld[worldData.id] = world
             World.setLock(worldData.id)
             world.keepSpawnInMemory = false
@@ -175,6 +189,8 @@ object WorldImpl : WorldAPI {
                 future.complete(false)
                 return@submit
             }
+            //触发世界卸载
+            com.mcyzj.pixelworldpro.expansion.listener.trigger.world.World.unloadWorld(worldData)
             //获取世界
             val world = localWorld[worldData.id]
             if (world == null) {
@@ -223,6 +239,8 @@ object WorldImpl : WorldAPI {
                 future.complete(false)
                 return@submit
             }
+            //触发世界卸载
+            com.mcyzj.pixelworldpro.expansion.listener.trigger.world.World.unloadWorld(worldData)
             //获取世界
             val world = localWorld[worldData.id]
             if (world == null) {
@@ -268,6 +286,8 @@ object WorldImpl : WorldAPI {
             logger.warning("§aPixelWorldPro $id ${lang.getString("world.warning.unload.noWorldData")}")
             return
         }
+        //触发世界备份
+        com.mcyzj.pixelworldpro.expansion.listener.trigger.world.World.backupWorld(worldData, save)
         //备份世界文件
         val world = localWorld[worldData.id]
         if (world == null) {
@@ -296,6 +316,8 @@ object WorldImpl : WorldAPI {
             logger.warning("§aPixelWorldPro $owner ${lang.getString("world.warning.unload.noWorldData")}")
             return
         }
+        //触发世界备份
+        com.mcyzj.pixelworldpro.expansion.listener.trigger.world.World.backupWorld(worldData, save)
         //备份世界文件
         val world = localWorld[worldData.id]
         if (world == null) {

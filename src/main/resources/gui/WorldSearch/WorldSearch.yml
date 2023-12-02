@@ -1,0 +1,26 @@
+Type: WorldSearch
+Title: "搜索世界"
+
+Slots:
+  - 'BXA'
+
+Item:
+  B:
+    Material: GRASS_BLOCK
+    Name: '搜索世界'
+    Lore:
+      - '点击切换搜索模式'
+      - '当前搜索模式：{Menu.Cache.Mode}'
+  X:
+    Material: BARRIER
+    Name: '&c&l关闭'
+    Lore:
+      - '&f点击关闭'
+    Command:
+      - '[Close]'
+  A:
+    Type: Search
+    Material: PLAYER_HEAD
+    Name: '&a&l点击搜索'
+    Command:
+      - '[Menu][Cache]WorldSearch/WorldSearchList.yml'

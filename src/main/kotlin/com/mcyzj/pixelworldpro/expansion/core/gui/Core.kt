@@ -9,10 +9,12 @@ import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryCloseEvent
+import org.bukkit.event.inventory.PrepareAnvilEvent
 
 object Core {
     val logger = PixelWorldPro.instance.logger
-    val menuOpenMap = HashMap<Player, MenuData>()
+    private val menuOpenMap = HashMap<Player, MenuData>()
+    private val notClose = ArrayList<Player>()
     fun buildItem(menu: YamlConfiguration): HashMap<String, ConfigItemData>? {
         //初始化itemMap
         val itemMap = HashMap<String, ConfigItemData>()
@@ -55,10 +57,21 @@ object Core {
         event.isCancelled = true
         menu.menu.onClick(player, event.rawSlot, event.click, menu)
     }
+    fun menuClick(event: PrepareAnvilEvent) {
+        val player = event.view.player as Player
+        println(player.name)
+        val menu = menuOpenMap[player] ?: return
+        menu.cache["Rename"] = event.inventory.renameText ?: ""
+        val i = event.inventory
+    }
 
     fun menuClose(event: InventoryCloseEvent){
         val player = event.player
-        menuOpenMap.remove(player)
+        if (player !in notClose) {
+            menuOpenMap.remove(player)
+        } else {
+            notClose.remove(player)
+        }
     }
 
     fun runCommand(commandList: List<String>, player: Player, cache: HashMap<String, Any>){
@@ -98,11 +111,22 @@ object Core {
                 }
                 //跳转菜单
                 "Menu" -> {
-                    if (strList.last().endsWith(".yml")) {
-                        val config = BuiltInConfiguration("gui/${strList.last()}")
-                        Open.open(player, config, cache)
+                    notClose.add(player)
+                    val type = strList[1].replace("[", "")
+                    if (type == "Cache"){
+                        if (strList.last().endsWith(".yml")) {
+                            val config = BuiltInConfiguration("gui/${strList.last()}")
+                            Open.open(player, config, cache)
+                        } else {
+                            Open.open(player, strList.last(), cache)
+                        }
                     } else {
-                        Open.open(player, strList.last(), cache)
+                        if (strList.last().endsWith(".yml")) {
+                            val config = BuiltInConfiguration("gui/${strList.last()}")
+                            Open.open(player, config, HashMap())
+                        } else {
+                            Open.open(player, strList.last(), HashMap())
+                        }
                     }
                 }
             }

@@ -1,0 +1,54 @@
+Type: WorldList
+Title: "{Menu.Cache.Search}的搜索结果"
+
+Slots:
+  - 'BNNNONNNN'
+  - 'AAAAAAAAA'
+  - 'AAAAAAAAA'
+  - 'AAAAAAAAA'
+  - 'UNNNXNNND'
+
+Item:
+  B:
+    Material: GRASS_BLOCK
+    Name: '&a&l我的世界'
+    Lore:
+      - '返回%player_name%的世界'
+    Command:
+      - '[Player] pwp user tp id'
+  N:
+    Material: GLASS_PANE
+  X:
+    Material: BARRIER
+    Name: '&c&l关闭'
+    Lore:
+      - '&f点击关闭'
+    Command:
+      - '[Close]'
+  O:
+    Material: GLASS_PANE
+    Type: ChangeList
+    #value: public/trust
+    Value: public
+  A:
+    Type: List
+    Material: PLAYER_HEAD
+    Name: '&a&l{WorldData.Name}'
+    Lore:
+      - '&f你在该世界的身份为 {WorldData.Permission}'
+      - '&f该世界主人 {WorldData.Owner.Name}'
+      - '&f该世界等级 {WorldData.Level}'
+  U:
+    Type: Page
+    Value: Back
+    Material: GRASS_BLOCK
+    Name: '&a&l上一页'
+    Lore:
+      - '第{page}页'
+  D:
+    Type: Page
+    Value: Next
+    Material: GRASS_BLOCK
+    Name: '&a&l下一页'
+    Lore:
+      - '第{page}页'

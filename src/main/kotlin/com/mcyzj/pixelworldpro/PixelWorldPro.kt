@@ -36,7 +36,6 @@ class PixelWorldPro : EasyPlugin() {
     var config = BuiltInConfiguration("Config.yml")
     private var language = config.getString("lang")?:"zh_cn"
     var lang = BuiltInConfiguration("lang/${language}.yml")
-    var pwpDebug = config.getBoolean("debug")
     private var bungee = Config.bungee
     override fun onEnable() {
         instance = this
@@ -118,6 +117,10 @@ class PixelWorldPro : EasyPlugin() {
                     ExpansionManager.loadAllExpansion()
                     //注册命令
                     Register().command.register()
+                    //注册Papi
+                    if (config.getString("mainPapi") != null) {
+                        Papi.register()
+                    }
                 }
             }
         }
@@ -193,11 +196,11 @@ class PixelWorldPro : EasyPlugin() {
 
     private fun saveLang() {
         logger.info("§aPixelWorldPro ${lang.getString("lang.load")}")
-        val langs = listOf(
+        val language = listOf(
             //"en",
             "zh_cn"
         )
-        for (lang in langs) {
+        for (lang in language) {
             if (!File(dataFolder, "lang/$lang.yml").exists()) {
                 saveResource("lang/$lang.yml", false)
             }else{
