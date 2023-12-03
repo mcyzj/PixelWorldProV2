@@ -16,7 +16,7 @@ data class WorldData(
     //玩家权限表
     var player: HashMap<UUID, String>,
     //世界维度表
-    var dimension: HashMap<String, Boolean>
+    var dimension: HashMap<String, WorldDimensionData>
 )
 data class WorldCreateData(
     //世界主人
@@ -30,5 +30,5 @@ data class WorldCreateData(
     //玩家权限表
     var player: HashMap<UUID, String>,
     //世界维度表
-    var dimension: HashMap<String, Boolean>
+    var dimension: HashMap<String, WorldDimensionData>
 )

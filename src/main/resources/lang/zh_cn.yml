@@ -48,6 +48,12 @@ world:
       noWorldData: "无法命名世界：数据库中没有找到世界数据"
       notId: "无法命名世界：输入值不是一个有效的数字id"
       notEnough: "无法命名世界：所需的资源不足"
+    dimension:
+      create:
+        hasCreate: "无法创建维度：当前世界中该维度已经创建了"
+        noConfigData: "无法创建维度：配置文件中没有对应维度"
+      load:
+        noCreate: "无法加载维度：维度未创建"
   info:
     permission:
       set:
@@ -56,6 +62,9 @@ world:
         success: "成功扩展世界内权限组玩家槽位"
     name:
       success: "成功命名世界"
+    dimension:
+      create:
+        success: "成功创建维度"
 compress:
   info:
     success: "成功压缩世界 "

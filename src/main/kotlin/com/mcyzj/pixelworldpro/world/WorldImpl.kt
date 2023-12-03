@@ -9,6 +9,7 @@ import com.mcyzj.pixelworldpro.compress.Zip
 import com.mcyzj.pixelworldpro.file.Config
 import com.mcyzj.pixelworldpro.data.dataclass.WorldCreateData
 import com.mcyzj.pixelworldpro.data.dataclass.WorldData
+import com.mcyzj.pixelworldpro.data.dataclass.WorldDimensionData
 import com.mcyzj.pixelworldpro.expansion.listener.trigger.world.WorldSuccess
 import com.mcyzj.pixelworldpro.server.World
 import com.mcyzj.pixelworldpro.server.World.localWorld
@@ -81,7 +82,7 @@ object WorldImpl : WorldAPI {
                 worldName,
                 PermissionAPI.Factory.get().getConfigWorldPermission(),
                 HashMap<UUID, String>(),
-                HashMap<String, Boolean>()
+                HashMap<String, WorldDimensionData>()
             )
             val worldData = database.createWorldData(worldCreateData)
             localWorld[worldData.id] = world

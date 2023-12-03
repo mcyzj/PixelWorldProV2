@@ -14,6 +14,7 @@ object Config {
     var bungee = BuiltInConfiguration("BungeeSet.yml")
     var level = BuiltInConfiguration("Level.yml")
     var gui = BuiltInConfiguration("Gui.yml")
+    var dimension = BuiltInConfiguration("Dimension.yml")
     fun reload(){
         config = BuiltInConfiguration("Config.yml")
         file = BuiltInConfiguration("File.yml")
@@ -22,6 +23,7 @@ object Config {
         bungee = BuiltInConfiguration("BungeeSet.yml")
         level = BuiltInConfiguration("Level.yml")
         gui = BuiltInConfiguration("Gui.yml")
+        dimension = BuiltInConfiguration("Dimension.yml")
         PixelWorldPro.instance.reloadAll()
     }
     fun update(){
@@ -33,6 +35,10 @@ object Config {
                 file.set("Backup.number", 32)
                 file.saveToFile()
             }
+        }
+        val files = File(file.getString("World.Server")!!)
+        if (!files.exists()){
+            files.mkdirs()
         }
         //World配置文件更新
         while (world.getInt("Version") < 3) {

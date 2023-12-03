@@ -8,6 +8,7 @@ import com.mcyzj.pixelworldpro.api.interfaces.core.database.DatabaseAPI
 import com.mcyzj.pixelworldpro.data.dataclass.PlayerData
 import com.mcyzj.pixelworldpro.data.dataclass.WorldCreateData
 import com.mcyzj.pixelworldpro.data.dataclass.WorldData
+import com.mcyzj.pixelworldpro.data.dataclass.WorldDimensionData
 import com.xbaimiao.easylib.module.database.Ormlite
 import com.xbaimiao.easylib.module.utils.submit
 import org.json.simple.JSONObject
@@ -221,7 +222,7 @@ abstract class DatabaseImpl(ormlite: Ormlite) : DatabaseAPI {
             world,
             permissionMap,
             player as HashMap<UUID, String>,
-            dimension as HashMap<String, Boolean>
+            dimension as HashMap<String, WorldDimensionData>
         )
     }
 }
