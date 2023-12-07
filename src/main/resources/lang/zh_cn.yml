@@ -52,8 +52,19 @@ world:
       create:
         hasCreate: "无法创建维度：当前世界中该维度已经创建了"
         noConfigData: "无法创建维度：配置文件中没有对应维度"
+        notId: "无法创建维度：输入值不是一个有效的数字id"
       load:
-        noCreate: "无法加载维度：维度未创建"
+        noCreate: "无法加载维度：当前世界中没有创建这个维度"
+        noLoad: "无法加载维度：维度对应的主世界没有被加载"
+        notId: "无法加载维度：输入值不是一个有效的数字id"
+      tp:
+        noCreate: "无法传送维度：当前世界中没有创建这个维度"
+        noLoad: "无法传送维度：维度对应的主世界没有被加载"
+        notId: "无法传送维度：输入值不是一个有效的数字id"
+      unload:
+        noCreate: "无法卸载维度：当前世界中没有创建这个维度"
+        noLoad: "无法卸载维度：维度未加载"
+        notId: "无法卸载维度：输入值不是一个有效的数字id"
   info:
     permission:
       set:
@@ -65,6 +76,12 @@ world:
     dimension:
       create:
         success: "成功创建维度"
+      load:
+        success: "成功加载维度"
+      tp:
+        success: "成功传送维度"
+      unload:
+        success: "成功卸载维度"
 compress:
   info:
     success: "成功压缩世界 "

@@ -37,7 +37,7 @@ object Server {
             out.writeUTF("Connect")
             out.writeUTF(server)
         } catch (e: IOException) {
-            throw RuntimeException(e)
+            e.printStackTrace()
         }
         player.sendPluginMessage(PixelWorldPro.instance, "BungeeCord", byteArray.toByteArray())
     }

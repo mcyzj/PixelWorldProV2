@@ -1,10 +1,12 @@
 package com.mcyzj.pixelworldpro.world
 
 import com.mcyzj.pixelworldpro.PixelWorldPro
+import com.mcyzj.pixelworldpro.api.interfaces.core.world.DimensionAPI
 import com.mcyzj.pixelworldpro.api.interfaces.core.world.WorldAPI
 import com.mcyzj.pixelworldpro.bungee.Server
 import com.mcyzj.pixelworldpro.bungee.System
 import com.mcyzj.pixelworldpro.bungee.database.SocketClient.tpWorld
+import com.mcyzj.pixelworldpro.data.dataclass.ResultData
 import com.mcyzj.pixelworldpro.data.dataclass.WorldData
 import com.mcyzj.pixelworldpro.file.Config
 import com.mcyzj.pixelworldpro.server.World
@@ -27,7 +29,7 @@ object Local {
     private var file = Config.file
     private var worldConfig = Config.world
     private var bungee = Config.bungee
-    fun adminCreateWorld(owner: UUID, template: String?): CompletableFuture<Boolean>{
+    fun adminLoadDmiension(owner: UUID, template: String?): CompletableFuture<Boolean>{
         if (bungee.getBoolean("Enable")){
             return com.mcyzj.pixelworldpro.bungee.World.adminCreateWorld(owner, template)
         } else {
@@ -82,6 +84,80 @@ object Local {
             worldApi.unloadWorld(id)
         }
     }
+    private val dimensionAPI = DimensionAPI.Get.getLocal()
+    fun adminCreateDimension(id: Int, dimension: String): CompletableFuture<ResultData> {
+        val future = CompletableFuture<ResultData>()
+        val worldData = database.getWorldData(id)
+        if (worldData == null){
+            future.complete(ResultData(false, ""))
+            return future
+        }
+        return dimensionAPI.createDimension(worldData, dimension)
+    }
+    fun adminCreateDimension(owner: UUID, dimension: String): CompletableFuture<ResultData> {
+        val future = CompletableFuture<ResultData>()
+        val worldData = database.getWorldData(owner)
+        if (worldData == null){
+            future.complete(ResultData(false, ""))
+            return future
+        }
+        return dimensionAPI.createDimension(worldData, dimension)
+    }
+    fun adminLoadDimension(id: Int, dimension: String): CompletableFuture<ResultData> {
+        val future = CompletableFuture<ResultData>()
+        val worldData = database.getWorldData(id)
+        if (worldData == null){
+            future.complete(ResultData(false, ""))
+            return future
+        }
+        return dimensionAPI.loadDimension(worldData, dimension)
+    }
+    fun adminLoadDimension(owner: UUID, dimension: String): CompletableFuture<ResultData> {
+        val future = CompletableFuture<ResultData>()
+        val worldData = database.getWorldData(owner)
+        if (worldData == null){
+            future.complete(ResultData(false, ""))
+            return future
+        }
+        return dimensionAPI.loadDimension(worldData, dimension)
+    }
+    fun adminUnloadDimension(id: Int, dimension: String): CompletableFuture<ResultData> {
+        val future = CompletableFuture<ResultData>()
+        val worldData = database.getWorldData(id)
+        if (worldData == null){
+            future.complete(ResultData(false, ""))
+            return future
+        }
+        return dimensionAPI.unloadDimension(worldData, dimension)
+    }
+    fun adminUnloadDimension(owner: UUID, dimension: String): CompletableFuture<ResultData> {
+        val future = CompletableFuture<ResultData>()
+        val worldData = database.getWorldData(owner)
+        if (worldData == null){
+            future.complete(ResultData(false, ""))
+            return future
+        }
+        return dimensionAPI.unloadDimension(worldData, dimension)
+    }
+
+    fun adminTpDimension(player: Player, id: Int, dimension: String): CompletableFuture<ResultData> {
+        val future = CompletableFuture<ResultData>()
+        val worldData = database.getWorldData(id)
+        if (worldData == null){
+            future.complete(ResultData(false, ""))
+            return future
+        }
+        return dimensionAPI.tpDimension(player, worldData, dimension)
+    }
+    fun adminTpDimension(player: Player, owner: UUID, dimension: String): CompletableFuture<ResultData> {
+        val future = CompletableFuture<ResultData>()
+        val worldData = database.getWorldData(owner)
+        if (worldData == null){
+            future.complete(ResultData(false, ""))
+            return future
+        }
+        return dimensionAPI.tpDimension(player, worldData, dimension)
+    }
 
     fun unloadAllWorld(){
         val keys = ArrayList<Int>()
@@ -101,6 +177,10 @@ object Local {
             //获取世界
             val world = localWorld[key]!!
             if (Bukkit.unloadWorld(world, true)){
+                //卸载世界维度
+                for (dimension in worldData.dimension.keys){
+                    adminUnloadDimension(worldData.id, dimension)
+                }
                 WorldAPI.Factory.get().zipWorld(worldData.world, worldData.world)
                 localWorld.remove(key)
                 World.removeLock(key)
@@ -276,7 +356,8 @@ object Local {
             } else {
                 try {
                     Server.bungeeTp(player, server!!)
-                }catch (_: Exception){
+                }catch (e: Exception){
+                    e.printStackTrace()
                     logger.info(lang.getString("bungee.warning.messageError") ?: "发送bungee信息失败")
                 }
                 tpWorld(id, server!!, player)

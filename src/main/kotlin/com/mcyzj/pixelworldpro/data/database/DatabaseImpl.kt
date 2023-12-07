@@ -1,7 +1,9 @@
 package com.mcyzj.pixelworldpro.data.database
 
 import com.google.gson.Gson
+import com.google.gson.JsonElement
 import com.google.gson.JsonObject
+import com.google.gson.JsonParser
 import com.j256.ormlite.dao.Dao
 import com.mcyzj.pixelworldpro.PixelWorldPro
 import com.mcyzj.pixelworldpro.api.interfaces.core.database.DatabaseAPI
@@ -13,7 +15,6 @@ import com.xbaimiao.easylib.module.database.Ormlite
 import com.xbaimiao.easylib.module.utils.submit
 import org.json.simple.JSONObject
 import java.util.*
-import kotlin.collections.HashMap
 
 
 abstract class DatabaseImpl(ormlite: Ormlite) : DatabaseAPI {
@@ -161,7 +162,17 @@ abstract class DatabaseImpl(ormlite: Ormlite) : DatabaseAPI {
         json["permission"] = permissionData
         val player = JSONObject(worldData.player)
         json["player"] = player
-        val dimension = JSONObject(worldData.player)
+        val dimension = JSONObject()
+        for (key in worldData.dimension.keys){
+            val dimensionData = worldData.dimension[key]!!
+            val dimensionJson = JSONObject()
+            dimensionJson["name"] = dimensionData.name
+            dimensionJson["world"] = dimensionData.world
+            dimensionJson["environment"] = dimensionData.environment
+            dimensionJson["type"] = dimensionData.type
+            dimensionJson["creator"] = dimensionData.creator
+            dimension[key] = dimensionJson
+        }
         json["dimension"] = dimension
         return json
     }
@@ -178,7 +189,17 @@ abstract class DatabaseImpl(ormlite: Ormlite) : DatabaseAPI {
         json["permission"] = permissionData
         val player = JSONObject(worldData.player)
         json["player"] = player
-        val dimension = JSONObject(worldData.player)
+        val dimension = JSONObject()
+        for (key in worldData.dimension.keys){
+            val dimensionData = worldData.dimension[key]!!
+            val dimensionJson = JSONObject()
+            dimensionJson["name"] = dimensionData.name
+            dimensionJson["world"] = dimensionData.world
+            dimensionJson["environment"] = dimensionData.environment
+            dimensionJson["type"] = dimensionData.type
+            dimensionJson["creator"] = dimensionData.creator
+            dimension[key] = dimensionJson
+        }
         json["dimension"] = dimension
         return json
     }
@@ -210,10 +231,29 @@ abstract class DatabaseImpl(ormlite: Ormlite) : DatabaseAPI {
             logger.warning("§aPixelWorldPro ${lang.getString("database.warning.world.permissionIsNULL")}")
             return null
         }
-        val dimension = gson.fromJson(dataJson["dimension"].asJsonObject, HashMap::class.java)
-        if (dimension == null){
-            logger.warning("§aPixelWorldPro ${lang.getString("database.warning.world.permissionIsNULL")}")
-            return null
+        val dimension = HashMap<String, WorldDimensionData>()
+        val dimensionJson = gson.fromJson(dataJson["dimension"].asJsonObject, JsonObject::class.java)
+        for (key in dimensionJson.entrySet()){
+            val dimensionDataJson = (dimensionJson[key.key] ?: continue).asJsonObject
+            val dimensionData = if (dimensionDataJson.has("creator")) {
+                WorldDimensionData(
+                    dimensionDataJson["name"].asString,
+                    dimensionDataJson["world"].asString,
+                    dimensionDataJson["environment"].asString,
+                    dimensionDataJson["type"].asString,
+                    //dimensionDataJson["creator"].asString
+                    null
+                    )
+            }else{
+                WorldDimensionData(
+                    dimensionDataJson["name"].asString,
+                    dimensionDataJson["world"].asString,
+                    dimensionDataJson["environment"].asString,
+                    dimensionDataJson["type"].asString,
+                    null
+                    )
+            }
+            dimension[key.key] = dimensionData
         }
         return WorldData(
             id,
@@ -222,7 +262,7 @@ abstract class DatabaseImpl(ormlite: Ormlite) : DatabaseAPI {
             world,
             permissionMap,
             player as HashMap<UUID, String>,
-            dimension as HashMap<String, WorldDimensionData>
+            dimension
         )
     }
 }

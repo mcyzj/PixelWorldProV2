@@ -30,14 +30,14 @@ object Admin {
                         sender.sendMessage(lang.getString("world.warning.create.created")?:"无法创建世界：对象已经有一个世界了")
                         return@exec
                     }
-                    Local.adminCreateWorld((sender as Player).uniqueId, null)
+                    Local.adminLoadDmiension((sender as Player).uniqueId, null)
                 }
                 1 -> {
                     if (database.getWorldData((sender as Player).uniqueId) != null){
                         sender.sendMessage(lang.getString("world.warning.create.created")?:"无法创建世界：对象已经有一个世界了")
                         return@exec
                     }
-                    Local.adminCreateWorld((sender as Player).uniqueId, args[0])
+                    Local.adminLoadDmiension((sender as Player).uniqueId, args[0])
                 }
                 2 -> {
                     val player = com.mcyzj.pixelworldpro.server.Player.getOfflinePlayer(args[0])
@@ -46,9 +46,9 @@ object Admin {
                         return@exec
                     }
                     if (args[1] == "auto") {
-                        Local.adminCreateWorld(player.uniqueId, null)
+                        Local.adminLoadDmiension(player.uniqueId, null)
                     }else{
-                        Local.adminCreateWorld(player.uniqueId, args[1])
+                        Local.adminLoadDmiension(player.uniqueId, args[1])
                     }
                 }
                 else -> {
@@ -438,6 +438,314 @@ object Admin {
         }
     }
 
+    private val createDimensionPlayer = command<CommandSender>("player") {
+        permission = "pwp.admin.dimension.create"
+        exec{
+            if (!sender.hasPermission("pwp.admin.dimension.create")){
+                sender.sendMessage(lang.getString("command.warning.noPermission")?:"你没有权限执行这个命令")
+                return@exec
+            }
+            when(args.size){
+                1 -> {
+                    Local.adminCreateDimension((sender as Player).uniqueId, args[0]).thenApply {
+                        sender.sendMessage(it.reason)
+                    }
+                }
+                2 -> {
+                    val player = com.mcyzj.pixelworldpro.server.Player.getOfflinePlayer(args[0])
+                    Local.adminCreateDimension(player.uniqueId, args[1]).thenApply {
+                        sender.sendMessage(it.reason)
+                    }
+                }
+                else -> {
+                    sender.sendMessage(lang.getString("command.warning.formatError")?:"命令格式错误")
+                    sender.sendMessage(lang.getString("command.prompt.admin.create1")?:"???")
+                    sender.sendMessage(lang.getString("command.prompt.admin.create2")?:"???")
+                    sender.sendMessage(lang.getString("command.prompt.admin.create3")?:"???")
+                    sender.sendMessage(lang.getString("command.prompt.admin.create4")?:"???")
+                }
+            }
+        }
+    }
+    private val createDimensionId = command<CommandSender>("id") {
+        permission = "pwp.admin.dimension.create"
+        exec{
+            if (!sender.hasPermission("pwp.admin.dimension.create")){
+                sender.sendMessage(lang.getString("command.warning.noPermission")?:"你没有权限执行这个命令")
+                return@exec
+            }
+            when(args.size){
+                1 -> {
+                    Local.adminCreateDimension((sender as Player).uniqueId, args[0]).thenApply {
+                        sender.sendMessage(it.reason)
+                    }
+                }
+                2 -> {
+                    val id = try {
+                        args[0].toInt()
+                    }catch (_:Exception){
+                        sender.sendMessage(lang.getString("world.warning.dimension.create.notID")?:"无法加载维度：输入值不是一个有效的数字id")
+                        return@exec
+                    }
+                    Local.adminCreateDimension(id, args[1]).thenApply {
+                        sender.sendMessage(it.reason)
+                    }
+                }
+                else -> {
+                    sender.sendMessage(lang.getString("command.warning.formatError")?:"命令格式错误")
+                    sender.sendMessage(lang.getString("command.prompt.admin.create1")?:"???")
+                    sender.sendMessage(lang.getString("command.prompt.admin.create2")?:"???")
+                    sender.sendMessage(lang.getString("command.prompt.admin.create3")?:"???")
+                    sender.sendMessage(lang.getString("command.prompt.admin.create4")?:"???")
+                }
+            }
+        }
+    }
+    private val createDimension = command<CommandSender>("create") {
+        permission = "pwp.admin.dimension.create"
+        sub(createDimensionId)
+        sub(createDimensionPlayer)
+    }
+
+
+    private val loadDimensionPlayer = command<CommandSender>("player") {
+        permission = "pwp.admin.dimension.load"
+        exec{
+            if (!sender.hasPermission("pwp.admin.dimension.load")){
+                sender.sendMessage(lang.getString("command.warning.noPermission")?:"你没有权限执行这个命令")
+                return@exec
+            }
+            when(args.size){
+                1 -> {
+                    Local.adminLoadDimension((sender as Player).uniqueId, args[0]).thenApply {
+                        sender.sendMessage(it.reason)
+                    }
+                }
+                2 -> {
+                    val player = com.mcyzj.pixelworldpro.server.Player.getOfflinePlayer(args[0])
+                    Local.adminLoadDimension(player.uniqueId, args[1]).thenApply {
+                        sender.sendMessage(it.reason)
+                    }
+                }
+                else -> {
+                    sender.sendMessage(lang.getString("command.warning.formatError")?:"命令格式错误")
+                    sender.sendMessage(lang.getString("command.prompt.admin.create1")?:"???")
+                    sender.sendMessage(lang.getString("command.prompt.admin.create2")?:"???")
+                    sender.sendMessage(lang.getString("command.prompt.admin.create3")?:"???")
+                    sender.sendMessage(lang.getString("command.prompt.admin.create4")?:"???")
+                }
+            }
+        }
+    }
+    private val loadDimensionId = command<CommandSender>("id") {
+        permission = "pwp.admin.dimension.load"
+        exec{
+            if (!sender.hasPermission("pwp.admin.dimension.load")){
+                sender.sendMessage(lang.getString("command.warning.noPermission")?:"你没有权限执行这个命令")
+                return@exec
+            }
+            when(args.size){
+                1 -> {
+                    Local.adminLoadDimension((sender as Player).uniqueId, args[0]).thenApply {
+                        sender.sendMessage(it.reason)
+                    }
+                }
+                2 -> {
+                    val id = try {
+                        args[0].toInt()
+                    }catch (_:Exception){
+                        sender.sendMessage(lang.getString("world.warning.dimension.load.notID")?:"无法加载维度：输入值不是一个有效的数字id")
+                        return@exec
+                    }
+                    Local.adminLoadDimension(id, args[1]).thenApply {
+                        sender.sendMessage(it.reason)
+                    }
+                }
+                else -> {
+                    sender.sendMessage(lang.getString("command.warning.formatError")?:"命令格式错误")
+                    sender.sendMessage(lang.getString("command.prompt.admin.create1")?:"???")
+                    sender.sendMessage(lang.getString("command.prompt.admin.create2")?:"???")
+                    sender.sendMessage(lang.getString("command.prompt.admin.create3")?:"???")
+                    sender.sendMessage(lang.getString("command.prompt.admin.create4")?:"???")
+                }
+            }
+        }
+    }
+    private val loadDimension = command<CommandSender>("load") {
+        permission = "pwp.admin.dimension.load"
+        sub(loadDimensionId)
+        sub(loadDimensionPlayer)
+    }
+
+    private val unloadDimensionPlayer = command<CommandSender>("player") {
+        permission = "pwp.admin.dimension.unload"
+        exec{
+            if (!sender.hasPermission("pwp.admin.dimension.unload")){
+                sender.sendMessage(lang.getString("command.warning.noPermission")?:"你没有权限执行这个命令")
+                return@exec
+            }
+            when(args.size){
+                1 -> {
+                    Local.adminUnloadDimension((sender as Player).uniqueId, args[0]).thenApply {
+                        sender.sendMessage(it.reason)
+                    }
+                }
+                2 -> {
+                    val player = com.mcyzj.pixelworldpro.server.Player.getOfflinePlayer(args[0])
+                    Local.adminUnloadDimension(player.uniqueId, args[1]).thenApply {
+                        sender.sendMessage(it.reason)
+                    }
+                }
+                else -> {
+                    sender.sendMessage(lang.getString("command.warning.formatError")?:"命令格式错误")
+                    sender.sendMessage(lang.getString("command.prompt.admin.create1")?:"???")
+                    sender.sendMessage(lang.getString("command.prompt.admin.create2")?:"???")
+                    sender.sendMessage(lang.getString("command.prompt.admin.create3")?:"???")
+                    sender.sendMessage(lang.getString("command.prompt.admin.create4")?:"???")
+                }
+            }
+        }
+    }
+    private val unloadDimensionId = command<CommandSender>("id") {
+        permission = "pwp.admin.dimension.unload"
+        exec{
+            if (!sender.hasPermission("pwp.admin.dimension.unload")){
+                sender.sendMessage(lang.getString("command.warning.noPermission")?:"你没有权限执行这个命令")
+                return@exec
+            }
+            when(args.size){
+                1 -> {
+                    Local.adminUnloadDimension((sender as Player).uniqueId, args[0]).thenApply {
+                        sender.sendMessage(it.reason)
+                    }
+                }
+                2 -> {
+                    val id = try {
+                        args[0].toInt()
+                    }catch (_:Exception){
+                        sender.sendMessage(lang.getString("world.warning.dimension.unload.notID")?:"无法卸载维度：输入值不是一个有效的数字id")
+                        return@exec
+                    }
+                    Local.adminUnloadDimension(id, args[1]).thenApply {
+                        sender.sendMessage(it.reason)
+                    }
+                }
+                else -> {
+                    sender.sendMessage(lang.getString("command.warning.formatError")?:"命令格式错误")
+                    sender.sendMessage(lang.getString("command.prompt.admin.create1")?:"???")
+                    sender.sendMessage(lang.getString("command.prompt.admin.create2")?:"???")
+                    sender.sendMessage(lang.getString("command.prompt.admin.create3")?:"???")
+                    sender.sendMessage(lang.getString("command.prompt.admin.create4")?:"???")
+                }
+            }
+        }
+    }
+    private val unloadDimension = command<CommandSender>("unload") {
+        permission = "pwp.admin.dimension.unload"
+        sub(unloadDimensionId)
+        sub(unloadDimensionPlayer)
+    }
+
+    private val tpDimensionPlayer = command<CommandSender>("player") {
+        permission = "pwp.admin.dimension.tp"
+        exec{
+            if (!sender.hasPermission("pwp.admin.dimension.tp")){
+                sender.sendMessage(lang.getString("command.warning.noPermission")?:"你没有权限执行这个命令")
+                return@exec
+            }
+            when(args.size){
+                1 -> {
+                    Local.adminTpDimension((sender as Player), (sender as Player).uniqueId, args[0]).thenApply {
+                        sender.sendMessage(it.reason)
+                    }
+                }
+                2 -> {
+                    val player = com.mcyzj.pixelworldpro.server.Player.getOfflinePlayer(args[0])
+                    Local.adminTpDimension((sender as Player), player.uniqueId, args[1]).thenApply {
+                        sender.sendMessage(it.reason)
+                    }
+                }
+                3 -> {
+                    val player = com.mcyzj.pixelworldpro.server.Player.getOfflinePlayer(args[0])
+                    val toPlayer = com.mcyzj.pixelworldpro.server.Player.getOfflinePlayer(args[2])
+                    if (toPlayer.isOnline) {
+                        Local.adminTpDimension(toPlayer.player!!, player.uniqueId, args[1]).thenApply {
+                            sender.sendMessage(it.reason)
+                        }
+                    }
+                }
+                else -> {
+                    sender.sendMessage(lang.getString("command.warning.formatError")?:"命令格式错误")
+                    sender.sendMessage(lang.getString("command.prompt.admin.create1")?:"???")
+                    sender.sendMessage(lang.getString("command.prompt.admin.create2")?:"???")
+                    sender.sendMessage(lang.getString("command.prompt.admin.create3")?:"???")
+                    sender.sendMessage(lang.getString("command.prompt.admin.create4")?:"???")
+                }
+            }
+        }
+    }
+    private val tpDimensionId = command<CommandSender>("id") {
+        permission = "pwp.admin.dimension.tp"
+        exec{
+            if (!sender.hasPermission("pwp.admin.dimension.tp")){
+                sender.sendMessage(lang.getString("command.warning.noPermission")?:"你没有权限执行这个命令")
+                return@exec
+            }
+            when(args.size){
+                1 -> {
+                    Local.adminTpDimension((sender as Player), (sender as Player).uniqueId, args[0]).thenApply {
+                        sender.sendMessage(it.reason)
+                    }
+                }
+                2 -> {
+                    val id = try {
+                        args[0].toInt()
+                    }catch (_:Exception){
+                        sender.sendMessage(lang.getString("world.warning.dimension.tp.notID")?:"无法传送维度：输入值不是一个有效的数字id")
+                        return@exec
+                    }
+                    Local.adminTpDimension((sender as Player), id, args[1]).thenApply {
+                        sender.sendMessage(it.reason)
+                    }
+                }
+                3 -> {
+                    val id = try {
+                        args[0].toInt()
+                    }catch (_:Exception){
+                        sender.sendMessage(lang.getString("world.warning.dimension.tp.notID")?:"无法传送维度：输入值不是一个有效的数字id")
+                        return@exec
+                    }
+                    val toPlayer = com.mcyzj.pixelworldpro.server.Player.getOfflinePlayer(args[2])
+                    if (toPlayer.isOnline) {
+                        Local.adminTpDimension(toPlayer.player!!, id, args[1]).thenApply {
+                            sender.sendMessage(it.reason)
+                        }
+                    }
+                }
+                else -> {
+                    sender.sendMessage(lang.getString("command.warning.formatError")?:"命令格式错误")
+                    sender.sendMessage(lang.getString("command.prompt.admin.create1")?:"???")
+                    sender.sendMessage(lang.getString("command.prompt.admin.create2")?:"???")
+                    sender.sendMessage(lang.getString("command.prompt.admin.create3")?:"???")
+                    sender.sendMessage(lang.getString("command.prompt.admin.create4")?:"???")
+                }
+            }
+        }
+    }
+    private val tpDimension = command<CommandSender>("tp") {
+        permission = "pwp.admin.dimension.tp"
+        sub(tpDimensionId)
+        sub(tpDimensionPlayer)
+    }
+
+    private val dimension = command<CommandSender>("dimension") {
+        permission = "pwp.admin.dimension"
+        sub(createDimension)
+        sub(loadDimension)
+        sub(unloadDimension)
+        sub(tpDimension)
+    }
+
     private var admin = command<CommandSender>("admin") {
         permission = "pwp.admin"
         sub(create)
@@ -447,6 +755,7 @@ object Admin {
         sub(expansion)
         sub(group)
         sub(name)
+        sub(dimension)
         sub(reload)
     }
 

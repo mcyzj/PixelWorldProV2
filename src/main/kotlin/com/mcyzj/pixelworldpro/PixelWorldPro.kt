@@ -121,6 +121,8 @@ class PixelWorldPro : EasyPlugin() {
                     if (config.getString("mainPapi") != null) {
                         Papi.register()
                     }
+                    //注册bungee信道
+                    this@PixelWorldPro.server.messenger.registerOutgoingPluginChannel(this@PixelWorldPro, "BungeeCord")
                 }
             }
         }

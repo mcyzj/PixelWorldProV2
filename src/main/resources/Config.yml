@@ -32,8 +32,6 @@ async:
     load: false
     #卸载世界
     unload: false
-    #设置边界
-    barrier: false
 #开启后控制台会输出更多debug信息，有助于错误排查
 debug: false
 

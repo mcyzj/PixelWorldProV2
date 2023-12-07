@@ -39,6 +39,16 @@ object Papi: PlaceholderExpansion() {
                         val worldData = database.getWorldData(p.uniqueId) ?: return null
                         return worldData.id.toString()
                     }
+                    "WorldGroup" -> {
+                        val worldData = database.getWorldData(p.uniqueId) ?: return null
+                        if (p.uniqueId == worldData.owner){
+                            val groupData = worldData.permission["Owner"] ?: return null
+                            return groupData["Name"]
+                        }
+                        val group = worldData.player[p.uniqueId] ?: "Visitor"
+                        val groupData = worldData.permission[group] ?: return null
+                        return groupData["Name"]
+                    }
                     "WorldPermission" -> {
                         if (paramsList.size < 4){
                             return null
@@ -73,28 +83,33 @@ object Papi: PlaceholderExpansion() {
                 if (paramsList.size < 2){
                     return null
                 }
+                val worldData = database.getWorldData(uuid) ?: return null
                 when(paramsList[1]){
                     "WorldCreate" -> {
-                        val worldData = database.getWorldData(uuid)
                         return (worldData != null).toString()
                     }
                     "WorldName" -> {
-                        val worldData = database.getWorldData(uuid) ?: return null
                         return worldData.name
                     }
                     "WorldRealName" -> {
-                        val worldData = database.getWorldData(uuid) ?: return null
                         return worldData.world
                     }
                     "WorldId" -> {
-                        val worldData = database.getWorldData(uuid) ?: return null
                         return worldData.id.toString()
+                    }
+                    "WorldGroup" -> {
+                        if (p.uniqueId == worldData.owner){
+                            val groupData = worldData.permission["Owner"] ?: return null
+                            return groupData["Name"]
+                        }
+                        val group = worldData.player[p.uniqueId] ?: "Visitor"
+                        val groupData = worldData.permission[group] ?: return null
+                        return groupData["Name"]
                     }
                     "WorldPermission" -> {
                         if (paramsList.size < 4){
                             return null
                         }
-                        val worldData = database.getWorldData(uuid) ?: return null
                         val group = paramsList[2]
                         val permissionData = worldData.permission[group] ?: return null
                         val key = paramsList[3]
@@ -104,7 +119,6 @@ object Papi: PlaceholderExpansion() {
                         if (paramsList.size < 3){
                             return null
                         }
-                        val worldData = database.getWorldData(uuid) ?: return null
                         val value = paramsList[2]
                         val offlinePlayer = Player.getOfflinePlayer(value)
                         if (offlinePlayer.uniqueId == worldData.owner){
@@ -140,6 +154,16 @@ object Papi: PlaceholderExpansion() {
                     "WorldId" -> {
                         val worldData = database.getWorldData(uuid) ?: return null
                         return worldData.id.toString()
+                    }
+                    "WorldGroup" -> {
+                        val worldData = database.getWorldData(player.uniqueId) ?: return null
+                        if (p.uniqueId == worldData.owner){
+                            val groupData = worldData.permission["Owner"] ?: return null
+                            return groupData["Name"]
+                        }
+                        val group = worldData.player[p.uniqueId] ?: "Visitor"
+                        val groupData = worldData.permission[group] ?: return null
+                        return groupData["Name"]
                     }
                     "WorldPermission" -> {
                         if (paramsList.size < 5){
@@ -194,6 +218,16 @@ object Papi: PlaceholderExpansion() {
                     "WorldId" -> {
                         val worldData = database.getWorldData(id) ?: return null
                         return worldData.id.toString()
+                    }
+                    "WorldGroup" -> {
+                        val worldData = database.getWorldData(id) ?: return null
+                        if (p.uniqueId == worldData.owner){
+                            val groupData = worldData.permission["Owner"] ?: return null
+                            return groupData["Name"]
+                        }
+                        val group = worldData.player[p.uniqueId] ?: "Visitor"
+                        val groupData = worldData.permission[group] ?: return null
+                        return groupData["Name"]
                     }
                     "WorldPermission" -> {
                         if (paramsList.size < 5){

@@ -174,6 +174,10 @@ object WorldImpl : WorldAPI {
             submit {
                 WorldSuccess.loadWorldSuccess(worldData)
             }
+            //加载世界维度
+            for (dimension in worldData.dimension.keys){
+                Local.adminLoadDimension(worldData.id, dimension)
+            }
             future.complete(true)
         }
         return future
@@ -210,6 +214,10 @@ object WorldImpl : WorldAPI {
                 }
                 submit {
                     WorldSuccess.unloadWorldSuccess(worldData)
+                }
+                //卸载世界维度
+                for (dimension in worldData.dimension.keys){
+                    Local.adminUnloadDimension(worldData.id, dimension)
                 }
                 Thread{
                     burialWorld.add(worldData)
@@ -260,6 +268,10 @@ object WorldImpl : WorldAPI {
                 }
                 submit {
                     WorldSuccess.unloadWorldSuccess(worldData)
+                }
+                //卸载世界维度
+                for (dimension in worldData.dimension.keys){
+                    Local.adminUnloadDimension(worldData.id, dimension)
                 }
                 Thread{
                     burialWorld.add(worldData)
