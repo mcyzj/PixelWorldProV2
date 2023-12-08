@@ -112,7 +112,7 @@ object DimensionImpl : DimensionAPI {
                     worldCreator.generateStructures(true)
                 }
                 //进行world正式加载
-                worldCreator.createWorld()
+                worldCreator.createWorld()!!.keepSpawnInMemory = false
             }
             //完成维度创建
             val reason = lang.getString("world.info.dimension.create.success") ?: "成功创建维度"
@@ -190,7 +190,7 @@ object DimensionImpl : DimensionAPI {
                     worldCreator.generateStructures(true)
                 }
                 //进行world正式加载
-                worldCreator.createWorld()
+                worldCreator.createWorld()!!.keepSpawnInMemory = false
                 //完成维度加载
                 val reason = lang.getString("world.info.dimension.load.success") ?: "成功加载维度"
                 val resultData = ResultData(true, reason)
