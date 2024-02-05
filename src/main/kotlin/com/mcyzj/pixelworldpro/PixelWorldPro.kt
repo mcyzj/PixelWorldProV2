@@ -11,7 +11,7 @@ import com.mcyzj.pixelworldpro.data.database.MysqlDatabaseAPI
 import com.mcyzj.pixelworldpro.data.database.SQLiteDatabaseAPI
 import com.mcyzj.pixelworldpro.expansion.ExpansionManager
 import com.mcyzj.pixelworldpro.expansion.core.Core
-import com.mcyzj.pixelworldpro.expansion.core.gui.listener.MenuListen
+import com.mcyzj.pixelworldpro.gui.MenuListen
 import com.mcyzj.pixelworldpro.file.Config
 import com.mcyzj.pixelworldpro.listener.World
 import com.mcyzj.pixelworldpro.server.Icon
@@ -55,7 +55,7 @@ class PixelWorldPro : EasyPlugin() {
         })
         //开始插件加载
         Icon.pixelWorldPro()
-        Icon.v2Alpha()
+        Icon.v2()
         val jdkVersion = System.getProperty("java.version") // jdk 版本
         logger.info("§aPixelWorldPro 开始加载于JDK${jdkVersion}上")
         //加载默认配置文件

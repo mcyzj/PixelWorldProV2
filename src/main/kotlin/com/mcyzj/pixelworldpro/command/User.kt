@@ -2,13 +2,12 @@ package com.mcyzj.pixelworldpro.command
 
 import com.mcyzj.pixelworldpro.PixelWorldPro
 import com.mcyzj.pixelworldpro.api.interfaces.core.world.WorldAPI
-import com.mcyzj.pixelworldpro.expansion.core.gui.Open
+import com.mcyzj.pixelworldpro.gui.OpenGui
 import com.mcyzj.pixelworldpro.file.Config
 import com.mcyzj.pixelworldpro.world.Local
 import com.xbaimiao.easylib.module.command.ArgNode
 import com.xbaimiao.easylib.module.command.CommandSpec
 import com.xbaimiao.easylib.module.command.command
-import org.bukkit.OfflinePlayer
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
@@ -200,7 +199,7 @@ object User {
                     }
 
                     1 -> {
-                        Open.open(sender as Player, valueOf(gui))
+                        OpenGui.open(sender as Player, valueOf(gui))
                     }
 
                     else -> {

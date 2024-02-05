@@ -1,24 +1,24 @@
-package com.mcyzj.pixelworldpro.expansion.core.gui.worldlist
+@file:Suppress("DEPRECATION")
+
+package com.mcyzj.pixelworldpro.gui.type
 
 import com.mcyzj.pixelworldpro.PixelWorldPro
 import com.mcyzj.pixelworldpro.api.interfaces.core.gui.Menu
 import com.mcyzj.pixelworldpro.data.dataclass.WorldData
-import com.mcyzj.pixelworldpro.expansion.core.gui.Core
-import com.mcyzj.pixelworldpro.expansion.core.gui.dataclass.ConfigItemData
-import com.mcyzj.pixelworldpro.expansion.core.gui.dataclass.MenuData
-import com.mcyzj.pixelworldpro.expansion.core.gui.dataclass.MenuItemData
-import com.mcyzj.pixelworldpro.expansion.core.gui.worldcreate.WorldCreate
+import com.mcyzj.pixelworldpro.data.dataclass.gui.MenuData
+import com.mcyzj.pixelworldpro.data.dataclass.gui.MenuItemData
 import com.mcyzj.pixelworldpro.expansion.core.level.admin.Admin
+import com.mcyzj.pixelworldpro.gui.GuiCore
 import com.mcyzj.pixelworldpro.world.Local
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.OfflinePlayer
+import org.bukkit.configuration.ConfigurationSection
 import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.ClickType
 import org.bukkit.inventory.ItemStack
 import java.util.*
-import kotlin.collections.HashMap
 
 
 class WorldList : Menu {
@@ -34,7 +34,7 @@ class WorldList : Menu {
             Bukkit.createInventory(null, slots.size * 9, title.replace("{Menu.Cache.Search}", this.cache["Search"].toString()))
         }
         //构建物品Map
-        val configItemMap = Core.buildItem(menu) ?: return null
+        val configItemMap = GuiCore.buildItem(menu) ?: return null
         val menuItemMap = HashMap<Int, MenuItemData>()
         //填充物品Map
         //初始化菜单格子数
@@ -73,27 +73,23 @@ class WorldList : Menu {
         )
     }
 
-    private fun buildItem(item: String, player: OfflinePlayer, configItemMap: HashMap<String, ConfigItemData>, menu: YamlConfiguration, cache: HashMap<String, Any>): MenuItemData? {
+    private fun buildItem(item: String, player: OfflinePlayer, configItemMap: HashMap<String, ConfigurationSection>, menu: YamlConfiguration, cache: HashMap<String, Any>): MenuItemData? {
         val configItemData = configItemMap[item] ?: return null
-        return when (configItemData.type){
+        val command = if (configItemData.getList("Command") != null){
+            configItemData.getStringList("Command")
+        }else{
+            ArrayList()
+        }
+        return when (configItemData.getString("Type")){
             "List" -> {
                 val worldData = getList(player)
                 if (worldData != null) {
-                    val material = Material.getMaterial(configItemData.material)
-                    if (material == null) {
-                        logger.warning("有问题的菜单文件 ${menu.name} : Item模块中的${item}指定的Material内容无法从服务端内获取为一个有效的物品")
-                        return null
-                    }
-                    val itemStack = ItemStack(material)
+                    val itemStack = GuiCore.buildItem(configItemData, player)!!
                     val itemMeta = itemStack.itemMeta
-                    if (configItemData.name != null) {
-                        itemMeta.setDisplayName(replaceList(worldData, configItemData.name, player))
-                    } else {
-                        itemMeta.setDisplayName(worldData.name)
-                    }
-                    if (configItemData.lore.isNotEmpty()) {
+                    itemMeta.setDisplayName(replaceList(worldData, configItemData.name, player))
+                    if (itemMeta.lore != null) {
                         val menuItemLore = ArrayList<String>()
-                        for (str in configItemData.lore){
+                        for (str in itemMeta.lore!!){
                             menuItemLore.add(replaceList(worldData, str, player))
                         }
                         itemMeta.lore = menuItemLore
@@ -104,40 +100,32 @@ class WorldList : Menu {
                     this.cache["FillNumber"] = (this.cache["FillNumber"].toString()).toInt() + 1
                     MenuItemData(
                         itemStack,
-                        configItemData.type,
-                        configItemData.command,
-                        configItemData.value,
+                        configItemData.getString("Type"),
+                        command,
+                        configItemData.getString("Value"),
                         itemCache
                     )
                 } else {
                     val itemStack = ItemStack(Material.AIR)
                     MenuItemData(
                         itemStack,
-                        configItemData.type,
-                        configItemData.command,
-                        configItemData.value,
+                        configItemData.getString("Type"),
+                        command,
+                        configItemData.getString("Value"),
                         HashMap()
                     )
                 }
             }
 
             "Page" -> {
-                when (configItemData.value){
+                when (configItemData.getString("Value")){
                     "Next" -> {
                         if (this.cache["Last"] == "true"){
-                            val material = Material.getMaterial(configItemData.material)
-                            if (material == null){
-                                logger.warning("有问题的菜单文件 ${menu.name} : Item模块中的${item}指定的Material内容无法从服务端内获取为一个有效的物品")
-                                return null
-                            }
-                            val itemStack = ItemStack(material)
+                            val itemStack = GuiCore.buildItem(configItemData, player)!!
                             val itemMeta = itemStack.itemMeta
-                            if (configItemData.name != null){
-                                itemMeta.setDisplayName(configItemData.name)
-                            }
-                            if (configItemData.lore.isNotEmpty()) {
+                            if (itemMeta.lore != null) {
                                 val menuItemLore = ArrayList<String>()
-                                for (str in configItemData.lore){
+                                for (str in itemMeta.lore!!){
                                     menuItemLore.add(str.replace("{page}", "末"))
                                 }
                                 itemMeta.lore = menuItemLore
@@ -145,25 +133,17 @@ class WorldList : Menu {
                             itemStack.setItemMeta(itemMeta)
                             MenuItemData(
                                 itemStack,
-                                configItemData.type,
-                                configItemData.command,
-                                configItemData.value,
+                                configItemData.getString("Type"),
+                                command,
+                                configItemData.getString("Value"),
                                 HashMap()
                             )
                         } else {
-                            val material = Material.getMaterial(configItemData.material)
-                            if (material == null){
-                                logger.warning("有问题的菜单文件 ${menu.name} : Item模块中的${item}指定的Material内容无法从服务端内获取为一个有效的物品")
-                                return null
-                            }
-                            val itemStack = ItemStack(material)
+                            val itemStack = GuiCore.buildItem(configItemData, player)!!
                             val itemMeta = itemStack.itemMeta
-                            if (configItemData.name != null){
-                                itemMeta.setDisplayName(configItemData.name)
-                            }
-                            if (configItemData.lore.isNotEmpty()) {
+                            if (itemMeta.lore != null) {
                                 val menuItemLore = ArrayList<String>()
-                                for (str in configItemData.lore){
+                                for (str in itemMeta.lore!!){
                                     menuItemLore.add(str.replace("{page}", (((this.cache["Page"]?:"1").toString().toInt()) + 1).toString()))
                                 }
                                 itemMeta.lore = menuItemLore
@@ -171,9 +151,9 @@ class WorldList : Menu {
                             itemStack.setItemMeta(itemMeta)
                             MenuItemData(
                                 itemStack,
-                                configItemData.type,
-                                configItemData.command,
-                                configItemData.value,
+                                configItemData.getString("Type"),
+                                command,
+                                configItemData.getString("Value"),
                                 HashMap()
                             )
                         }
@@ -184,19 +164,11 @@ class WorldList : Menu {
                             this.cache["Page"] = "1"
                         }
                         if ((this.cache["Page"]!!.toString().toInt()) < 2){
-                            val material = Material.getMaterial(configItemData.material)
-                            if (material == null){
-                                logger.warning("有问题的菜单文件 ${menu.name} : Item模块中的${item}指定的Material内容无法从服务端内获取为一个有效的物品")
-                                return null
-                            }
-                            val itemStack = ItemStack(material)
+                            val itemStack = GuiCore.buildItem(configItemData, player)!!
                             val itemMeta = itemStack.itemMeta
-                            if (configItemData.name != null){
-                                itemMeta.setDisplayName(configItemData.name)
-                            }
-                            if (configItemData.lore.isNotEmpty()) {
+                            if (itemMeta.lore != null) {
                                 val menuItemLore = ArrayList<String>()
-                                for (str in configItemData.lore){
+                                for (str in itemMeta.lore!!){
                                     menuItemLore.add(str.replace("{page}", "首"))
                                 }
                                 itemMeta.lore = menuItemLore
@@ -204,25 +176,17 @@ class WorldList : Menu {
                             itemStack.setItemMeta(itemMeta)
                             MenuItemData(
                                 itemStack,
-                                configItemData.type,
-                                configItemData.command,
-                                configItemData.value,
+                                configItemData.getString("Type"),
+                                command,
+                                configItemData.getString("Value"),
                                 HashMap()
                             )
                         } else {
-                            val material = Material.getMaterial(configItemData.material)
-                            if (material == null){
-                                logger.warning("有问题的菜单文件 ${menu.name} : Item模块中的${item}指定的Material内容无法从服务端内获取为一个有效的物品")
-                                return null
-                            }
-                            val itemStack = ItemStack(material)
+                            val itemStack = GuiCore.buildItem(configItemData, player)!!
                             val itemMeta = itemStack.itemMeta
-                            if (configItemData.name != null){
-                                itemMeta.setDisplayName(configItemData.name)
-                            }
-                            if (configItemData.lore.isNotEmpty()) {
+                            if (itemStack.lore != null) {
                                 val menuItemLore = ArrayList<String>()
-                                for (str in configItemData.lore){
+                                for (str in itemStack.lore!!){
                                     menuItemLore.add(str.replace("{page}", ((this.cache["Page"].toString().toInt()) - 1).toString()))
                                 }
                                 itemMeta.lore = menuItemLore
@@ -230,34 +194,26 @@ class WorldList : Menu {
                             itemStack.setItemMeta(itemMeta)
                             MenuItemData(
                                 itemStack,
-                                configItemData.type,
-                                configItemData.command,
-                                configItemData.value,
+                                configItemData.getString("Type"),
+                                command,
+                                configItemData.getString("Value"),
                                 HashMap()
                             )
                         }
                     }
 
                     else -> {
-                        val material = Material.getMaterial(configItemData.material)
-                        if (material == null){
-                            logger.warning("有问题的菜单文件 ${menu.name} : Item模块中的${item}指定的Material内容无法从服务端内获取为一个有效的物品")
-                            return null
-                        }
-                        val itemStack = ItemStack(material)
+                        val itemStack = GuiCore.buildItem(configItemData, player)!!
                         val itemMeta = itemStack.itemMeta
-                        if (configItemData.name != null){
-                            itemMeta.setDisplayName(configItemData.name)
-                        }
-                        if (configItemData.lore.isNotEmpty()){
-                            itemMeta.lore = configItemData.lore
+                        if (itemMeta.lore != null){
+                            itemMeta.lore = itemMeta.lore
                         }
                         itemStack.setItemMeta(itemMeta)
                         MenuItemData(
                             itemStack,
-                            configItemData.type,
-                            configItemData.command,
-                            configItemData.value,
+                            configItemData.getString("Type"),
+                            command,
+                            configItemData.getString("Value"),
                             HashMap()
                         )
                     }
@@ -265,25 +221,17 @@ class WorldList : Menu {
             }
 
             else -> {
-                val material = Material.getMaterial(configItemData.material)
-                if (material == null){
-                    logger.warning("有问题的菜单文件 ${menu.name} : Item模块中的${item}指定的Material内容无法从服务端内获取为一个有效的物品")
-                    return null
-                }
-                val itemStack = ItemStack(material)
+                val itemStack = GuiCore.buildItem(configItemData, player)!!
                 val itemMeta = itemStack.itemMeta
-                if (configItemData.name != null){
-                    itemMeta.setDisplayName(configItemData.name)
-                }
-                if (configItemData.lore.isNotEmpty()){
-                    itemMeta.lore = configItemData.lore
+                if (itemMeta.lore != null){
+                    itemMeta.lore = itemMeta.lore
                 }
                 itemStack.setItemMeta(itemMeta)
                 MenuItemData(
                     itemStack,
-                    configItemData.type,
-                    configItemData.command,
-                    configItemData.value,
+                    configItemData.getString("Type"),
+                    command,
+                    configItemData.getString("Value"),
                     HashMap()
                 )
             }
@@ -291,11 +239,10 @@ class WorldList : Menu {
     }
 
     private fun getList(player: OfflinePlayer): WorldData? {
-        var number = this.cache["Number"]
-        number = if (number == null){
+        var number = if (this.cache["Number"] == null){
             0
         } else {
-            number.toString().toInt()
+            this.cache["Number"].toString().toInt()
         }
         val worldMap = getWorldList()
         while ((number + 1) <= worldMap.size) {
@@ -352,7 +299,7 @@ class WorldList : Menu {
         this.cache["UUID"] = player.uniqueId.toString()
         this.cache["FillNumber"] = "0"
         val menuData = buildMenu(player, menu, cache) ?: return
-        Core.setOpenMenu(opener, menuData)
+        GuiCore.setOpenMenu(opener, menuData)
         opener.openInventory(menuData.inventory)
     }
 
@@ -399,7 +346,7 @@ class WorldList : Menu {
                 }
             }
         }
-        Core.runCommand(itemData.command, player, menuData.cache)
+        GuiCore.runCommand(itemData.command, player, menuData.cache)
     }
 
 }

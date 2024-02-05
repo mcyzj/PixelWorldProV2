@@ -1,20 +1,17 @@
-package com.mcyzj.pixelworldpro.expansion.core.gui.worldcreate
+package com.mcyzj.pixelworldpro.gui.type
 
 import com.mcyzj.pixelworldpro.PixelWorldPro
 import com.mcyzj.pixelworldpro.api.interfaces.core.gui.Menu
-import com.mcyzj.pixelworldpro.data.dataclass.WorldData
-import com.mcyzj.pixelworldpro.expansion.core.gui.Core
-import com.mcyzj.pixelworldpro.expansion.core.gui.dataclass.ConfigItemData
-import com.mcyzj.pixelworldpro.expansion.core.gui.dataclass.MenuData
-import com.mcyzj.pixelworldpro.expansion.core.gui.dataclass.MenuItemData
-import com.mcyzj.pixelworldpro.expansion.core.level.admin.Admin
+import com.mcyzj.pixelworldpro.gui.GuiCore
+import com.mcyzj.pixelworldpro.data.dataclass.gui.ConfigItemData
+import com.mcyzj.pixelworldpro.data.dataclass.gui.MenuData
+import com.mcyzj.pixelworldpro.data.dataclass.gui.MenuItemData
 import com.mcyzj.pixelworldpro.file.Config
 import com.mcyzj.pixelworldpro.world.Local
-import com.xbaimiao.easylib.bridge.economy.PlayerPoints
-import com.xbaimiao.easylib.bridge.economy.Vault
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.OfflinePlayer
+import org.bukkit.configuration.ConfigurationSection
 import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.ClickType
@@ -38,7 +35,7 @@ class WorldCreate : Menu {
             Bukkit.createInventory(null, slots.size * 9, title)
         }
         //构建物品Map
-        val configItemMap = Core.buildItem(menu) ?: return null
+        val configItemMap = GuiCore.buildItem(menu) ?: return null
         val menuItemMap = HashMap<Int, MenuItemData>()
         //填充物品Map
         //初始化菜单格子数
@@ -77,23 +74,23 @@ class WorldCreate : Menu {
         )
     }
 
-    private fun buildItem(item: String, player: OfflinePlayer, configItemMap: HashMap<String, ConfigItemData>, menu: YamlConfiguration, cache: HashMap<String, Any>): MenuItemData? {
+    private fun buildItem(item: String, player: OfflinePlayer, configItemMap: HashMap<String, ConfigurationSection>, menu: YamlConfiguration, cache: HashMap<String, Any>): MenuItemData? {
         val configItemData = configItemMap[item] ?: return null
-        return when (configItemData.type){
+        val command = if (configItemData.getList("Command") != null){
+            configItemData.getStringList("Command")
+        }else{
+            java.util.ArrayList()
+        }
+        return when (configItemData.getString("Type")){
             else -> {
-                val material = Material.getMaterial(configItemData.material)
-                if (material == null){
-                    logger.warning("有问题的菜单文件 ${menu.name} : Item模块中的${item}指定的Material内容无法从服务端内获取为一个有效的物品")
-                    return null
-                }
-                val itemStack = ItemStack(material)
+                val itemStack = GuiCore.buildItem(configItemData, player)!!
                 val itemMeta = itemStack.itemMeta
-                if (configItemData.name != null){
-                    itemMeta.setDisplayName(replaceCreate(configItemData.name, player, menu))
+                if (configItemData.getString("name") != null){
+                    itemMeta.setDisplayName(replaceCreate(configItemData.getString("name")!!, player, menu))
                 }
                 val newLore = ArrayList<String>()
-                if (configItemData.lore.isNotEmpty()){
-                    for (lore in configItemData.lore){
+                if (itemMeta.lore != null){
+                    for (lore in itemMeta.lore!!){
                         newLore.add(replaceCreate(lore, player, menu))
                     }
                     itemMeta.lore = newLore
@@ -101,10 +98,10 @@ class WorldCreate : Menu {
                 itemStack.setItemMeta(itemMeta)
                 MenuItemData(
                     itemStack,
-                    configItemData.type,
-                    configItemData.command,
-                    configItemData.value,
-                    HashMap()
+                    configItemData.getString("Type"),
+                    command,
+                    configItemData.getString("Value"),
+                    java.util.HashMap()
                 )
             }
         }
@@ -152,7 +149,7 @@ class WorldCreate : Menu {
         }
         this.cache["UUID"] = player.uniqueId.toString()
         val menuData = buildMenu(player, menu, cache) ?: return
-        Core.setOpenMenu(opener, menuData)
+        GuiCore.setOpenMenu(opener, menuData)
         opener.openInventory(menuData.inventory)
     }
 
@@ -191,7 +188,7 @@ class WorldCreate : Menu {
                 WorldCreate().open(player, offlinePlayer, menuData.config, menuData.cache)
             }
         }
-        Core.runCommand(itemData.command, player, menuData.cache)
+        GuiCore.runCommand(itemData.command, player, menuData.cache)
     }
 
 }

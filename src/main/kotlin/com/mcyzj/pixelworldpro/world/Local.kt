@@ -29,7 +29,7 @@ object Local {
     private var file = Config.file
     private var worldConfig = Config.world
     private var bungee = Config.bungee
-    fun adminLoadDmiension(owner: UUID, template: String?): CompletableFuture<Boolean>{
+    fun adminLoadDimension(owner: UUID, template: String?): CompletableFuture<Boolean>{
         if (bungee.getBoolean("Enable")){
             return com.mcyzj.pixelworldpro.bungee.World.adminCreateWorld(owner, template)
         } else {
@@ -56,8 +56,16 @@ object Local {
         return if (bungee.getBoolean("Enable")){
             com.mcyzj.pixelworldpro.bungee.World.loadWorld(owner)
         } else {
+            //拉取世界数据
+            val worldData = database.getWorldData(owner)
+            if (worldData == null){
+                val future = CompletableFuture<Boolean>()
+                logger.warning("§aPixelWorldPro $owner ${lang.getString("world.warning.unload.noWorldData")}")
+                future.complete(false)
+                return future
+            }
             val worldApi = WorldAPI.Factory.get()
-            worldApi.loadWorld(owner)
+            worldApi.loadWorld(worldData.id)
         }
     }
     fun adminLoadWorld(id: Int): CompletableFuture<Boolean>{
@@ -72,8 +80,16 @@ object Local {
         return if (bungee.getBoolean("Enable")){
             com.mcyzj.pixelworldpro.bungee.World.unloadWorld(owner)
         } else {
+            //拉取世界数据
+            val worldData = database.getWorldData(owner)
+            if (worldData == null){
+                val future = CompletableFuture<Boolean>()
+                logger.warning("§aPixelWorldPro $owner ${lang.getString("world.warning.unload.noWorldData")}")
+                future.complete(false)
+                return future
+            }
             val worldApi = WorldAPI.Factory.get()
-            worldApi.unloadWorld(owner)
+            worldApi.unloadWorld(worldData.id)
         }
     }
     fun adminUnloadWorld(id: Int): CompletableFuture<Boolean>{
@@ -555,6 +571,27 @@ object Local {
             PlayerPoints().take(player, worldConfig.getDouble("Name.Use.Default.Point"))
         }
         return true
+    }
+
+    fun adminRestoreBackupId(id: Int, backup: String){
+        val worldData = database.getWorldData(id) ?: return
+        adminRestoreBackup(worldData, backup)
+    }
+    fun adminRestoreBackupPlayer(player: String, backup: String){
+        val uuid = com.mcyzj.pixelworldpro.server.Player.getOfflinePlayer(player).uniqueId
+        val worldData = database.getWorldData(uuid) ?: return
+        adminRestoreBackup(worldData, backup)
+    }
+
+    private fun adminRestoreBackup(worldData: WorldData, backup: String): CompletableFuture<Boolean> {
+        val future = CompletableFuture<Boolean>()
+        val worldFile = File(file.getString("World.Path")!!, worldData.world)
+        val backupFile = File(worldFile, "backup/$backup")
+        if (!backupFile.exists()){
+            future.complete(false)
+            return future
+        }
+        return WorldAPI.Factory.get().restoreBackup(worldData, backupFile)
     }
 
     fun getWorldNameUUID(worldName: String): UUID? {

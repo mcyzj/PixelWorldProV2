@@ -1,8 +1,8 @@
 package com.mcyzj.pixelworldpro.bungee
 
 import com.mcyzj.pixelworldpro.PixelWorldPro
-import com.mcyzj.pixelworldpro.file.Config
 import com.mcyzj.pixelworldpro.data.dataclass.ServerData
+import com.mcyzj.pixelworldpro.file.Config
 import com.mcyzj.pixelworldpro.server.World
 import com.xbaimiao.easylib.module.utils.submit
 import org.bukkit.Bukkit
@@ -11,16 +11,24 @@ import java.io.ByteArrayOutputStream
 import java.io.DataOutputStream
 import java.io.IOException
 import java.lang.Thread.sleep
-import java.util.UUID
+import java.util.*
+
 
 object Server {
     private val localServer = hashMapOf<String, String>()
     private var bungeeConfig = Config.bungee
-    private var online = HashMap<String, Boolean>()
-    private val debug = bungeeConfig.getBoolean("Debug")
     val playerTp = HashMap<UUID, String>()
+
+    private var TICK_COUNT = 0
+    private var TICKS = LongArray(600)
     private fun getTps(): Double {
-        return Bukkit.getServer().tps.first()
+        val ticks = 100
+        if (TICK_COUNT < ticks) {
+            return 20.0
+        }
+        val target: Int = (TICK_COUNT - 1 - ticks) % TICKS.size
+        val elapsed: Long = java.lang.System.currentTimeMillis() - TICKS[target]
+        return ticks / (elapsed / 1000.0)
     }
 
     fun bungeeTp(player: Player, server: String) {
@@ -157,7 +165,7 @@ object Server {
                 for (uuid in playerTp.keys){
                     val player = Bukkit.getPlayer(uuid) ?: continue
                     val worldName = "PixelWorldPro/${playerTp[player.uniqueId]}/world"
-                    val world = Bukkit.getWorld(worldName.toLowerCase()) ?: continue
+                    val world = Bukkit.getWorld(worldName.lowercase(Locale.getDefault())) ?: continue
                     submit {
                         player.teleport(world.spawnLocation)
                     }

@@ -1,5 +1,7 @@
 package com.mcyzj.pixelworldpro.world
 
+import com.google.gson.Gson
+import com.google.gson.JsonObject
 import com.mcyzj.pixelworldpro.PixelWorldPro
 import com.mcyzj.pixelworldpro.api.interfaces.core.permission.PermissionAPI
 import com.mcyzj.pixelworldpro.api.interfaces.core.world.WorldAPI
@@ -25,6 +27,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.CompletableFuture
 import kotlin.collections.ArrayList
+import kotlin.concurrent.thread
 
 
 object WorldImpl : WorldAPI {
@@ -137,52 +140,6 @@ object WorldImpl : WorldAPI {
         return future
     }
 
-    override fun loadWorld(owner: UUID): CompletableFuture<Boolean> {
-        val future = CompletableFuture<Boolean>()
-        submit(async = asyncLoad) {
-            logger.info("§aPixelWorldPro 使用线程：${Thread.currentThread().name} 进行世界加载操作")
-            //拉取世界数据
-            val worldData = database.getWorldData(owner)
-            if (worldData == null) {
-                logger.warning("§aPixelWorldPro $owner ${lang.getString("world.warning.load.noWorldData")}")
-                future.complete(false)
-                return@submit
-            }
-            //出发世界加载
-            com.mcyzj.pixelworldpro.expansion.listener.trigger.world.World.loadWorld(worldData)
-            if (worldData in burialWorld) {
-                logger.warning("$owner ${lang.getString("world.warning.load.inBurial")}")
-                future.complete(false)
-                return@submit
-            }
-            //解压世界数据
-            unzipWorld(worldData.world, worldData.world)
-            //加载世界
-            val worldCreator = WorldCreator("PixelWorldPro/${worldData.world}/world")
-            //触发世界加载中
-            com.mcyzj.pixelworldpro.expansion.listener.trigger.world.World.onWorldFileLoad(worldData, worldCreator)
-            val world = Bukkit.createWorld(worldCreator)
-            if (world == null) {
-                future.complete(false)
-                return@submit
-            }
-            //触发世界文件加载成功
-            com.mcyzj.pixelworldpro.expansion.listener.trigger.world.World.worldFileLoadSuccess(worldData, world)
-            localWorld[worldData.id] = world
-            World.setLock(worldData.id)
-            world.keepSpawnInMemory = false
-            submit {
-                WorldSuccess.loadWorldSuccess(worldData)
-            }
-            //加载世界维度
-            for (dimension in worldData.dimension.keys){
-                Local.adminLoadDimension(worldData.id, dimension)
-            }
-            future.complete(true)
-        }
-        return future
-    }
-
     override fun unloadWorld(id: Int): CompletableFuture<Boolean> {
         val future = CompletableFuture<Boolean>()
         submit(async = asyncLoad) {
@@ -237,59 +194,6 @@ object WorldImpl : WorldAPI {
         return future
     }
 
-    override fun unloadWorld(owner: UUID): CompletableFuture<Boolean> {
-        val future = CompletableFuture<Boolean>()
-        submit(async = asyncLoad) {
-            logger.info("§aPixelWorldPro 使用线程：${Thread.currentThread().name} 进行世界卸载操作")
-            //拉取世界数据
-            val worldData = database.getWorldData(owner)
-            if (worldData == null){
-                logger.warning("§aPixelWorldPro $owner ${lang.getString("world.warning.unload.noWorldData")}")
-                future.complete(false)
-                return@submit
-            }
-            //触发世界卸载
-            com.mcyzj.pixelworldpro.expansion.listener.trigger.world.World.unloadWorld(worldData)
-            //获取世界
-            val world = localWorld[worldData.id]
-            if (world == null) {
-                localWorld.remove(worldData.id)
-                future.complete(true)
-                return@submit
-            }
-            for (player in world.players){
-                player.teleport(Bukkit.getWorld(worldConfig.getString("Unload.world")?: "world")!!.spawnLocation)
-            }
-            if (Bukkit.unloadWorld(world, true)){
-                localWorld.remove(worldData.id)
-                World.removeLock(worldData.id)
-                if (bungee.getBoolean("Enable")){
-                    com.mcyzj.pixelworldpro.bungee.System.removeWorldLock(worldData)
-                }
-                submit {
-                    WorldSuccess.unloadWorldSuccess(worldData)
-                }
-                //卸载世界维度
-                for (dimension in worldData.dimension.keys){
-                    Local.adminUnloadDimension(worldData.id, dimension)
-                }
-                Thread{
-                    burialWorld.add(worldData)
-                    World.setDeleteLock(File(fileConfig.getString("World.Server"), worldData.world).path)
-                    sleep(30000)
-                    zipWorld(worldData.world, worldData.world)
-                    checkBackUp(worldData)
-                    File(fileConfig.getString("World.Server"), worldData.world).deleteRecursively()
-                    World.removeDeleteLock(File(fileConfig.getString("World.Server"), worldData.world).path)
-                    burialWorld.remove(worldData)
-                }.start()
-                future.complete(true)
-            }else{
-                future.complete(false)
-            }
-        }
-        return future
-    }
 
     override fun backupWorld(id: Int, save: Boolean?) {
         val isSave = save ?: true
@@ -297,36 +201,6 @@ object WorldImpl : WorldAPI {
         val worldData = database.getWorldData(id)
         if (worldData == null){
             logger.warning("§aPixelWorldPro $id ${lang.getString("world.warning.unload.noWorldData")}")
-            return
-        }
-        //触发世界备份
-        com.mcyzj.pixelworldpro.expansion.listener.trigger.world.World.backupWorld(worldData, save)
-        //备份世界文件
-        val world = localWorld[worldData.id]
-        if (world == null) {
-            localWorld.remove(worldData.id)
-            return
-        }
-        val future = CompletableFuture<Boolean>()
-        submit {
-            if (isSave) {
-                world.save()
-            }
-            future.complete(true)
-        }
-        future.thenApply {
-            zipWorld(worldData.world, worldData.world)
-            checkBackUp(worldData)
-            WorldSuccess.backupWorldSuccess(worldData, save)
-        }
-    }
-
-    override fun backupWorld(owner: UUID, save: Boolean?) {
-        val isSave = save ?: true
-        //拉取世界数据
-        val worldData = database.getWorldData(owner)
-        if (worldData == null){
-            logger.warning("§aPixelWorldPro $owner ${lang.getString("world.warning.unload.noWorldData")}")
             return
         }
         //触发世界备份
@@ -425,6 +299,30 @@ object WorldImpl : WorldAPI {
                 SevenZip.unZip(zip, to)
             }
         }
+    }
+
+    override fun restoreBackup(worldData: WorldData, backup: File): CompletableFuture<Boolean> {
+        val future = CompletableFuture<Boolean>()
+        val worldConfig = getWorldConfig(worldData.world)
+        val worldFile = File(fileConfig.getString("World.Path")!!, worldData.world)
+        when (worldConfig.getString("Zip")){
+            "None" -> {
+                //File(worldFile, "world").deleteRecursively()
+            }
+            "Zip" -> {
+                //File(worldFile, "${worldData.world}.zip").deleteRecursively()
+            }
+            "7z" -> {
+                //File(worldFile, "${worldData.world}.7z").deleteRecursively()
+            }
+        }
+        //backup.copyTo(worldFile)
+        val dataFile = File(worldFile, "database.json")
+        if (dataFile.exists()){
+            println(dataFile.readText())
+            val json = Gson().fromJson(dataFile.readText(), JsonObject::class.java)
+        }
+        return future
     }
     private fun getWorldConfig(world: String): YamlConfiguration {
         val file = File(fileConfig.getString("World.Path")!!, "$world/World.yml")

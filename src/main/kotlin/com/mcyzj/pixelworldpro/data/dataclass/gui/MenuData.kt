@@ -1,4 +1,4 @@
-package com.mcyzj.pixelworldpro.expansion.core.gui.dataclass
+package com.mcyzj.pixelworldpro.data.dataclass.gui
 
 import com.mcyzj.pixelworldpro.api.interfaces.core.gui.Menu
 import org.bukkit.configuration.file.YamlConfiguration

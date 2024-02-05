@@ -30,14 +30,14 @@ object Admin {
                         sender.sendMessage(lang.getString("world.warning.create.created")?:"无法创建世界：对象已经有一个世界了")
                         return@exec
                     }
-                    Local.adminLoadDmiension((sender as Player).uniqueId, null)
+                    Local.adminLoadDimension((sender as Player).uniqueId, null)
                 }
                 1 -> {
                     if (database.getWorldData((sender as Player).uniqueId) != null){
                         sender.sendMessage(lang.getString("world.warning.create.created")?:"无法创建世界：对象已经有一个世界了")
                         return@exec
                     }
-                    Local.adminLoadDmiension((sender as Player).uniqueId, args[0])
+                    Local.adminLoadDimension((sender as Player).uniqueId, args[0])
                 }
                 2 -> {
                     val player = com.mcyzj.pixelworldpro.server.Player.getOfflinePlayer(args[0])
@@ -46,9 +46,9 @@ object Admin {
                         return@exec
                     }
                     if (args[1] == "auto") {
-                        Local.adminLoadDmiension(player.uniqueId, null)
+                        Local.adminLoadDimension(player.uniqueId, null)
                     }else{
-                        Local.adminLoadDmiension(player.uniqueId, args[1])
+                        Local.adminLoadDimension(player.uniqueId, args[1])
                     }
                 }
                 else -> {
@@ -744,6 +744,84 @@ object Admin {
         sub(loadDimension)
         sub(unloadDimension)
         sub(tpDimension)
+    }
+
+    private val restoreBackupPlayer = command<CommandSender>("player") {
+        permission = "pwp.admin.restoreBackup"
+        exec{
+            if (!sender.hasPermission("pwp.admin.restoreBackup")){
+                sender.sendMessage(lang.getString("command.warning.noPermission")?:"你没有权限执行这个命令")
+                return@exec
+            }
+            when(args.size){
+                2 -> {
+                    val player = com.mcyzj.pixelworldpro.server.Player.getOfflinePlayer(args[0])
+                    Local.adminTpDimension((sender as Player), player.uniqueId, args[1]).thenApply {
+                        sender.sendMessage(it.reason)
+                    }
+                }
+                else -> {
+                    sender.sendMessage(lang.getString("command.warning.formatError")?:"命令格式错误")
+                    sender.sendMessage(lang.getString("command.prompt.admin.create1")?:"???")
+                    sender.sendMessage(lang.getString("command.prompt.admin.create2")?:"???")
+                    sender.sendMessage(lang.getString("command.prompt.admin.create3")?:"???")
+                    sender.sendMessage(lang.getString("command.prompt.admin.create4")?:"???")
+                }
+            }
+        }
+    }
+    private val restoreBackupId = command<CommandSender>("id") {
+        permission = "pwp.admin.restoreBackup"
+        exec{
+            if (!sender.hasPermission("pwp.admin.restoreBackup")){
+                sender.sendMessage(lang.getString("command.warning.noPermission")?:"你没有权限执行这个命令")
+                return@exec
+            }
+            when(args.size){
+                1 -> {
+                    Local.adminTpDimension((sender as Player), (sender as Player).uniqueId, args[0]).thenApply {
+                        sender.sendMessage(it.reason)
+                    }
+                }
+                2 -> {
+                    val id = try {
+                        args[0].toInt()
+                    }catch (_:Exception){
+                        sender.sendMessage(lang.getString("world.warning.dimension.tp.notID")?:"无法传送维度：输入值不是一个有效的数字id")
+                        return@exec
+                    }
+                    Local.adminTpDimension((sender as Player), id, args[1]).thenApply {
+                        sender.sendMessage(it.reason)
+                    }
+                }
+                3 -> {
+                    val id = try {
+                        args[0].toInt()
+                    }catch (_:Exception){
+                        sender.sendMessage(lang.getString("world.warning.dimension.tp.notID")?:"无法传送维度：输入值不是一个有效的数字id")
+                        return@exec
+                    }
+                    val toPlayer = com.mcyzj.pixelworldpro.server.Player.getOfflinePlayer(args[2])
+                    if (toPlayer.isOnline) {
+                        Local.adminTpDimension(toPlayer.player!!, id, args[1]).thenApply {
+                            sender.sendMessage(it.reason)
+                        }
+                    }
+                }
+                else -> {
+                    sender.sendMessage(lang.getString("command.warning.formatError")?:"命令格式错误")
+                    sender.sendMessage(lang.getString("command.prompt.admin.create1")?:"???")
+                    sender.sendMessage(lang.getString("command.prompt.admin.create2")?:"???")
+                    sender.sendMessage(lang.getString("command.prompt.admin.create3")?:"???")
+                    sender.sendMessage(lang.getString("command.prompt.admin.create4")?:"???")
+                }
+            }
+        }
+    }
+    private val restoreBackup = command<CommandSender>("restoreBackup") {
+        permission = "pwp.admin.restoreBackup"
+        sub(restoreBackupId)
+        sub(restoreBackupPlayer)
     }
 
     private var admin = command<CommandSender>("admin") {

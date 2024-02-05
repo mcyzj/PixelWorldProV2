@@ -1,4 +1,4 @@
-package com.mcyzj.pixelworldpro.expansion.core.gui.dataclass
+package com.mcyzj.pixelworldpro.data.dataclass.gui
 
 data class ConfigItemData(
     val material: String,

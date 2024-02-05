@@ -27,6 +27,8 @@ repositories {
 
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.9.20")
+    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2")
+    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.2")
     compileOnly("redis.clients:jedis:3.7.0")
     compileOnly("com.github.oshi:oshi-core:3.12.2")
     compileOnly("com.google.code.gson:gson:2.10")

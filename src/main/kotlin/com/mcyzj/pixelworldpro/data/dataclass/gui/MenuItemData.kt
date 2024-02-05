@@ -1,4 +1,4 @@
-package com.mcyzj.pixelworldpro.expansion.core.gui.dataclass
+package com.mcyzj.pixelworldpro.data.dataclass.gui
 
 import org.bukkit.inventory.ItemStack
 

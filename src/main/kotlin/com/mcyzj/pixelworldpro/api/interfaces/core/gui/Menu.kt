@@ -1,6 +1,6 @@
 package com.mcyzj.pixelworldpro.api.interfaces.core.gui
 
-import com.mcyzj.pixelworldpro.expansion.core.gui.dataclass.MenuData
+import com.mcyzj.pixelworldpro.data.dataclass.gui.MenuData
 import org.bukkit.OfflinePlayer
 import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.entity.Player

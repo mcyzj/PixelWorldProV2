@@ -1,23 +1,29 @@
-package com.mcyzj.pixelworldpro.expansion.core.gui
+package com.mcyzj.pixelworldpro.gui
 
 import com.mcyzj.pixelworldpro.PixelWorldPro
-import com.mcyzj.pixelworldpro.expansion.core.gui.dataclass.ConfigItemData
-import com.mcyzj.pixelworldpro.expansion.core.gui.dataclass.MenuData
+import com.mcyzj.pixelworldpro.data.dataclass.gui.ConfigItemData
+import com.mcyzj.pixelworldpro.data.dataclass.gui.MenuData
+import com.xbaimiao.easylib.bridge.replacePlaceholder
 import com.xbaimiao.easylib.module.chat.BuiltInConfiguration
+import com.xbaimiao.easylib.module.utils.colored
+import com.xbaimiao.easylib.xseries.XItemStack
 import org.bukkit.Bukkit
+import org.bukkit.OfflinePlayer
+import org.bukkit.configuration.ConfigurationSection
 import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryCloseEvent
 import org.bukkit.event.inventory.PrepareAnvilEvent
+import org.bukkit.inventory.ItemStack
 
-object Core {
+object GuiCore {
     val logger = PixelWorldPro.instance.logger
     private val menuOpenMap = HashMap<Player, MenuData>()
     private val notClose = ArrayList<Player>()
-    fun buildItem(menu: YamlConfiguration): HashMap<String, ConfigItemData>? {
+    fun buildItem(menu: YamlConfiguration): HashMap<String, ConfigurationSection>? {
         //初始化itemMap
-        val itemMap = HashMap<String, ConfigItemData>()
+        val itemMap = HashMap<String, ConfigurationSection>()
         //读取item模块
         val itemConfig = menu.getConfigurationSection("Item")
         if (itemConfig == null){
@@ -25,26 +31,38 @@ object Core {
             return null
         }
         //历遍item模块中的键值进行item模块读取
-        for (itemKey in itemConfig.getKeys(true)){
+        for (itemKey in itemConfig.getKeys(true)) {
             val item = itemConfig.getConfigurationSection(itemKey) ?: continue
             val material = item.getString("Material")
-            if (material == null){
+            if (material == null) {
                 logger.warning("有问题的菜单文件 ${menu.name} : Item模块中的${itemKey}没有指定Material")
                 continue
             }
-            val menuItemMap = ConfigItemData(
-                material,
-                item.getString("Name"),
-                item.getStringList("Lore"),
-                item.getString("Type"),
-                item.getStringList("Command"),
-                item.getString("Value"),
-                HashMap()
-            )
-            itemMap[itemKey] = menuItemMap
+            itemMap[itemKey] = item
         }
         //返回item数据
         return itemMap
+    }
+
+    fun buildItem(configuration: ConfigurationSection, player: OfflinePlayer): ItemStack? {
+        val name = configuration.getString("Name")
+        val lore = configuration.getStringList("Lore")
+        val skull = configuration.getString("Skull")
+        if (configuration.getString("Material") == null)
+            return null
+        if (configuration.contains("Name"))
+            configuration.set("name",configuration.getString("Name")!!.replacePlaceholder(player).colored())
+        if (configuration.contains("Lore"))
+            configuration.set("lore",configuration.getStringList("Lore").replacePlaceholder(player).colored())
+        if (configuration.contains("Skull"))
+            configuration.set("skull",configuration.getString("Skull")!!.replacePlaceholder(player))
+        if (configuration.contains("Custom-Model-Data"))
+            configuration.set("custom-model-data",configuration.getStringList("Custom-Model-Data").replacePlaceholder(player).colored())
+        val item = XItemStack.deserialize(configuration)
+        configuration.set("name",name)
+        configuration.set("lore",lore)
+        configuration.set("skull",skull)
+        return item
     }
 
     fun setOpenMenu(player: Player, menuData: MenuData){
@@ -80,8 +98,7 @@ object Core {
         }
         for (command in commandList){
             val strList = command.split("]")
-            val runner = strList.first().replace("[", "")
-            when (runner){
+            when (strList.first().replace("[", "")){
                 //执行命令
                 "Player" -> {
                     player.performCommand(strList.last())
@@ -116,16 +133,16 @@ object Core {
                     if (type == "Cache"){
                         if (strList.last().endsWith(".yml")) {
                             val config = BuiltInConfiguration("gui/${strList.last()}")
-                            Open.open(player, config, cache)
+                            OpenGui.open(player, config, cache)
                         } else {
-                            Open.open(player, strList.last(), cache)
+                            OpenGui.open(player, strList.last(), cache)
                         }
                     } else {
                         if (strList.last().endsWith(".yml")) {
                             val config = BuiltInConfiguration("gui/${strList.last()}")
-                            Open.open(player, config, HashMap())
+                            OpenGui.open(player, config, HashMap())
                         } else {
-                            Open.open(player, strList.last(), HashMap())
+                            OpenGui.open(player, strList.last(), HashMap())
                         }
                     }
                 }

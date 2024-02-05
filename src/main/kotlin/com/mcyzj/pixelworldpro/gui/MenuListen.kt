@@ -1,6 +1,6 @@
-package com.mcyzj.pixelworldpro.expansion.core.gui.listener
+package com.mcyzj.pixelworldpro.gui
 
-import com.mcyzj.pixelworldpro.expansion.core.gui.Core
+import com.mcyzj.pixelworldpro.gui.GuiCore
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.inventory.InventoryClickEvent
@@ -11,15 +11,15 @@ import org.bukkit.event.inventory.PrepareAnvilEvent
 class MenuListen : Listener {
     @EventHandler
     fun check(e: InventoryClickEvent) {
-        Core.menuClick(e)
+        GuiCore.menuClick(e)
     }
 
     @EventHandler
     fun check(e: InventoryCloseEvent) {
-        Core.menuClose(e)
+        GuiCore.menuClose(e)
     }
     @EventHandler
     fun checkAnvil(e: PrepareAnvilEvent) {
-        Core.menuClick(e)
+        GuiCore.menuClick(e)
     }
 }

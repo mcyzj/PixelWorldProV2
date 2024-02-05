@@ -11,18 +11,18 @@ object Icon {
         Bukkit.getConsoleSender().sendMessage("§a| |    | | >  < |  __/| |\\  /\\  /| (_) || |   | || (_| || |    | |   | (_) |")
         Bukkit.getConsoleSender().sendMessage("§a\\_|    |_|/_/\\_\\ \\___||_| \\/  \\/  \\___/ |_|   |_| \\__,_|\\_|    |_|    \\___/ ")
     }
-    fun v2Alpha(){
-        Bukkit.getConsoleSender().sendMessage("§e                      §c  .----------------.  .----------------.  .----------------.  .----------------.  .----------------. ")
-        Bukkit.getConsoleSender().sendMessage("§e __     __   ______   §c | .--------------. || .--------------. || .--------------. || .--------------. || .--------------. |")
-        Bukkit.getConsoleSender().sendMessage("§e|  \\   |  \\ /      \\  §c | |      __      | || |   _____      | || |   ______     | || |  ____  ____  | || |      __      | |")
-        Bukkit.getConsoleSender().sendMessage("§e| \$\$   | \$\$|  \$\$\$\$\$\$\\ §c | |     /  \\     | || |  |_   _|     | || |  |_   __ \\   | || | |_   ||   _| | || |     /  \\     | |")
-        Bukkit.getConsoleSender().sendMessage("§e| \$\$   | \$\$ \\\$${"$"}__| \$\$ §c | |    / /\\ \\    | || |    | |       | || |    | |__) |  | || |   | |__| |   | || |    / /\\ \\    | |")
-        Bukkit.getConsoleSender().sendMessage("§e \\\$\$\\ /  \$\$ /      \$\$ §c | |   / ____ \\   | || |    | |   _   | || |    |  ___/   | || |   |  __  |   | || |   / ____ \\   | |")
-        Bukkit.getConsoleSender().sendMessage("§e  \\\$\$\\  \$\$ |  \$\$\$\$\$\$  §c | | _/ /    \\ \\_ | || |   _| |__/ |  | || |   _| |_      | || |  _| |  | |_  | || | _/ /    \\ \\_ | |")
-        Bukkit.getConsoleSender().sendMessage("§e   \\\$\$ \$\$  | \$${"$"}_____  §c | ||____|  |____|| || |  |________|  | || |  |_____|     | || | |____||____| | || ||____|  |____|| |")
-        Bukkit.getConsoleSender().sendMessage("§e    \\\$\$\$   | \$\$     \\ §c | |              | || |              | || |              | || |              | || |              | |")
-        Bukkit.getConsoleSender().sendMessage("§e     \\\$     \\\$\$\$\$\$\$\$\$ §c | '--------------' || '--------------' || '--------------' || '--------------' || '--------------' |")
-        Bukkit.getConsoleSender().sendMessage("§e                      §c  '----------------'  '----------------'  '----------------'  '----------------'  '----------------' ")
+    fun v2(){
+        Bukkit.getConsoleSender().sendMessage("")
+        Bukkit.getConsoleSender().sendMessage("§e __     __   ______ ")
+        Bukkit.getConsoleSender().sendMessage("§e|  \\   |  \\ /      \\")
+        Bukkit.getConsoleSender().sendMessage("§e| \$\$   | \$\$|  \$\$\$\$\$\$\\")
+        Bukkit.getConsoleSender().sendMessage("§e| \$\$   | \$\$ \\\$${"$"}__| \$\$")
+        Bukkit.getConsoleSender().sendMessage("§e \\\$\$\\ /  \$\$ /      \$\$")
+        Bukkit.getConsoleSender().sendMessage("§e  \\\$\$\\  \$\$ |  \$\$\$\$\$\$")
+        Bukkit.getConsoleSender().sendMessage("§e   \\\$\$ \$\$  | \$${"$"}_____")
+        Bukkit.getConsoleSender().sendMessage("§e    \\\$\$\$   | \$\$     \\")
+        Bukkit.getConsoleSender().sendMessage("§e     \\\$     \\\$\$\$\$\$\$\$\$")
+        Bukkit.getConsoleSender().sendMessage("")
     }
     fun warning(){
         Bukkit.getConsoleSender().sendMessage("§c .----------------.  .----------------.  .----------------.  .-----------------. .----------------.  .-----------------. .----------------. ")
