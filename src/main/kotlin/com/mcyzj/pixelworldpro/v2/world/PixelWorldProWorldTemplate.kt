@@ -18,7 +18,7 @@ import java.util.UUID
  */
 @Suppress("unused")
 class PixelWorldProWorldTemplate(template: String) {
-    private val templateConfig = BuiltOutConfiguration("./PixelWorldPro/template/$template/template.yml")
+    val templateConfig = BuiltOutConfiguration("./PixelWorldPro/template/$template/template.yml")
     private val templateFile = File("./PixelWorldPro/template/$template")
     private val log = PixelWorldPro.instance.log
     private val lang = Config.getLang()

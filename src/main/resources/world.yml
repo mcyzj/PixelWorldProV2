@@ -14,3 +14,35 @@ create:
   #默认世界名字
   #Defcult world name
   name: "%player_name%的世界"
+  #创建消耗
+  #优先级低于世界模板内的设置
+  use:
+    #默认权限组
+    default:
+      points: 200
+      #0为不需要
+      money: 0
+      #创建所需的物品，在配置文件下方item配置
+      #留空为不需要
+      item:
+        #格式按照 item内名称: 数量 来填写
+        diamond: 8
+    #特殊权限组，权重由上到下依次递减
+    vip:
+      permission: "pwp.vip"
+      points: 0
+      #0为不需要
+      money: 0
+      #创建所需的物品，在配置文件下方item配置
+      #留空为不需要
+      item:
+        #格式按照 item内名称: 数量 来填写
+        diamond: 0
+#消耗物品配置
+item:
+  diamond:
+    #消耗的物品
+    material: "diamond"
+    #物品的特殊lore，none为关闭
+    lore:
+      - "none"

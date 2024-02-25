@@ -3,6 +3,7 @@ plugin:
   disable: "正在卸载PixelWorldProV2"
   install:
     successful: "成功安装pwp"
+  needPlayer: "需要玩家操作"
 world:
   load: "加载世界"
   unload: "卸载世界"
@@ -10,3 +11,19 @@ world:
   decompression: "解压世界"
   addToUnUse: "添加世界至冷却列表"
   removeUnUse: "世界完成冷却"
+  createSuccess: "成功创建世界"
+check:
+  notEnough:
+    request: "短时间内不得多次提交请求"
+    points: "没有足够的点券，你需要{member}个点券"
+    money: "没有足够的金币，你需要{member}个金币"
+    item: "没有足够的物品，你需要{member}个{item}"
+    seed: "种子不合法"
+  template:
+    empty: "没有模板"
+    notFind: "没有找到模板"
+teleport:
+  successful: "传送中"
+  notLoad: "世界还未加载"
+  noPermission: "没有权限进入该世界"
+  notFound: "没有找到世界"

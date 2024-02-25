@@ -151,7 +151,8 @@ object LocalPermission {
     }
 
     private fun checkPlayerPermission(player: Player, permissionData: HashMap<String, String>, worldData: WorldData){
-        if (player.world.name.contains(worldData.id.toString())){
+        val worldNameList = player.world.name.split("/")
+        if (worldData.id.toString() in worldNameList){
             if (permissionData["teleport"] == "false"){
                 player.teleport(Bukkit.getWorld(worldConfig.getString("Unload.world")?: "world")!!.spawnLocation)
                 return

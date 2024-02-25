@@ -64,7 +64,7 @@ world:
     changeWorld: False
     #更改独立世界的权限
     changePermission: False
-  #游客权限，可不删除
+  #游客权限，不可删除
   visitor:
     #权限组名称
     name: "参观者"
@@ -94,7 +94,7 @@ world:
     changeWorld: False
     #更改独立世界的权限
     changePermission: False
-  #黑名单用户权限，可不删除
+  #黑名单用户权限，不可删除
   blackList:
     #权限组名称
     name: "黑名单"
