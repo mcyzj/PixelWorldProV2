@@ -1,6 +1,6 @@
 package com.mcyzj.lib.plugin
 
-import com.mcyzj.lib.plugin.file.BuiltInConfiguration
+import com.xbaimiao.easylib.module.chat.BuiltInConfiguration
 import org.bukkit.Bukkit
 
 object Logger {

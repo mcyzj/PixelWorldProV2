@@ -26,7 +26,6 @@ object None {
             if (cacheFile.exists()){
                 cacheFile.deleteRecursively()
             }
-            cacheFile.mkdirs()
             worldFile.copyRecursively(cacheFile)
         } catch (e: IOException) {
             e.printStackTrace()

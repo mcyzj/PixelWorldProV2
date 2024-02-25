@@ -1,4 +1,4 @@
-package com.mcyzj.pixelworldpro.v2.world.permission
+package com.mcyzj.pixelworldpro.v2.permission.dataclass
 
 data class PermissionUpData(
     val points: Double,

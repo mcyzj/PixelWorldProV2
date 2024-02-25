@@ -54,7 +54,7 @@ object Install {
             Runtime.getRuntime().exec("cmd /c MKLINK /d /j $local\\PixelWorldPro ${path.replace("/", "\\")}")
             Runtime.getRuntime().exec("cmd /c MKLINK /d /j $local\\world\\PixelWorldPro ${path.replace("/", "\\")}")
         }
-        PixelWorldPro.log.info(Config.getLang().getString("plugin.install.successful"))
+        PixelWorldPro.instance.log.info(Config.getLang().getString("plugin.install.successful"))
         config.set("install", null)
         config.saveToFile()
     }

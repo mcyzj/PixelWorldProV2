@@ -3,7 +3,6 @@ package com.mcyzj.pixelworldpro.v2.database
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.j256.ormlite.dao.Dao
-import com.mcyzj.lib.plugin.database.SQLite
 import com.mcyzj.pixelworldpro.v2.PixelWorldPro
 import com.mcyzj.pixelworldpro.v2.database.dao.WorldDao
 import com.mcyzj.pixelworldpro.v2.util.Config
@@ -17,7 +16,7 @@ import java.util.*
 
 abstract class DatabaseImpl(ormlite: Ormlite) : DatabaseAPI {
     private val worldDaoTable: Dao<WorldDao, Int> = ormlite.createDao(WorldDao::class.java)
-    private val logger = PixelWorldPro().logger
+    private val logger = PixelWorldPro.instance.logger
     private val lang = Config.getLang()
     private val config = Config.config
 
@@ -142,7 +141,6 @@ abstract class DatabaseImpl(ormlite: Ormlite) : DatabaseAPI {
     override fun joinToJson(worldData: WorldData): JSONObject {
         val json = JSONObject()
         json["name"] = worldData.name
-        json["world"] = worldData.world
         val permissionData = JSONObject()
         val permissionList = worldData.permission.keys
         for (key in permissionList){
@@ -169,7 +167,6 @@ abstract class DatabaseImpl(ormlite: Ormlite) : DatabaseAPI {
     private fun createJoinToJson(worldData: WorldCreateData): JSONObject {
         val json = JSONObject()
         json["name"] = worldData.name
-        json["world"] = worldData.world
         val permissionData = JSONObject()
         val permissionList = worldData.permission.keys
         for (key in permissionList){
@@ -201,11 +198,6 @@ abstract class DatabaseImpl(ormlite: Ormlite) : DatabaseAPI {
         val gson = Gson()
         val dataJson = gson.fromJson(dataString, JsonObject::class.java)
         val name = dataJson["name"].asString
-        val world = dataJson["world"].asString
-        if (world == null){
-            logger.warning("§aPixelWorldPro ${lang.getString("database.warning.world.worldIsNULL")}")
-            return null
-        }
         val permission = gson.fromJson(dataJson["permission"].asJsonObject, JsonObject::class.java)
         if (permission == null){
             logger.warning("§aPixelWorldPro ${lang.getString("database.warning.world.permissionIsNULL")}")
@@ -252,7 +244,6 @@ abstract class DatabaseImpl(ormlite: Ormlite) : DatabaseAPI {
             id,
             owner,
             name,
-            world,
             permissionMap,
             player as HashMap<UUID, String>,
             //dimension

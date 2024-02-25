@@ -13,4 +13,4 @@ compress:
 create:
   #默认世界名字
   #Defcult world name
-  name: "[uuid]的世界"
+  name: "%player_name%的世界"

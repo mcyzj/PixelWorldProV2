@@ -1,8 +1,10 @@
-package com.mcyzj.pixelworldpro.v2.world.permission
+package com.mcyzj.pixelworldpro.v2.permission
 
 import com.mcyzj.pixelworldpro.v2.PixelWorldPro
+import com.mcyzj.pixelworldpro.v2.permission.dataclass.*
 import com.mcyzj.pixelworldpro.v2.util.Config
 import com.mcyzj.pixelworldpro.v2.world.dataclass.WorldData
+import com.mcyzj.pixelworldpro.v2.world.PixelWorldProWorld
 import com.xbaimiao.easylib.bridge.economy.PlayerPoints
 import com.xbaimiao.easylib.bridge.economy.Vault
 import com.xbaimiao.easylib.module.item.hasItem
@@ -17,7 +19,7 @@ import org.bukkit.inventory.ItemStack
 import java.util.*
 import kotlin.collections.HashMap
 
-object Local {
+object LocalPermission {
     private var config = Config.permission
     private val database = PixelWorldPro.databaseApi
     private var worldConfig = Config.world
@@ -97,11 +99,11 @@ object Local {
         return permissionMap
     }
 
-    fun setGroup(worldData: WorldData, player: OfflinePlayer, permission: String): ResultData {
+    fun setGroup(world: PixelWorldProWorld, player: OfflinePlayer, permission: String): ResultData {
+        val worldData = world.worldData
         val worldPermissionData = worldData.permission[permission] ?: return ResultData(false, (lang.getString("world.warning.permission.set.noGroup") ?: "无法找到对应世界内权限组名：") + permission)
         val playerMap = worldData.player
-        val worldPermissionConfig =
-            Config.getWorldConfig(worldData).getConfigurationSection("Permission") ?: YamlConfiguration()
+        val worldPermissionConfig = world.getDataConfig("permission")
         val permissionMap = buildPermission()
         var number = 0
         //循环历遍获取已经有的人数
@@ -130,9 +132,7 @@ object Local {
             max = permissionData.group[playerPermission]!!.least
             worldPermissionConfig.set("$permission.Max", max)
         }
-        val config = Config.getWorldConfig(worldData)
-        config.set("Permission", worldPermissionConfig)
-        Config.saveWorldConfig(worldData, config)
+        worldPermissionConfig.saveToFile()
         if (max <= number){
             return ResultData(
                 false,
@@ -151,7 +151,7 @@ object Local {
     }
 
     private fun checkPlayerPermission(player: Player, permissionData: HashMap<String, String>, worldData: WorldData){
-        if (player.world.name.contains(worldData.world)){
+        if (player.world.name.contains(worldData.id.toString())){
             if (permissionData["teleport"] == "false"){
                 player.teleport(Bukkit.getWorld(worldConfig.getString("Unload.world")?: "world")!!.spawnLocation)
                 return
@@ -184,13 +184,13 @@ object Local {
         }
     }
 
-    fun upPermission(worldData: WorldData, permission: String): ResultData {
+    fun upPermission(world: PixelWorldProWorld, permission: String): ResultData {
+        val worldData = world.worldData
         //检查操作是否合法
         worldData.permission[permission]
             ?: return ResultData(false,
                 (lang.getString("world.warning.permission.add.noGroup") ?: "无法找到对应世界内权限组名：") + permission)
-        val worldPermissionConfig =
-            Config.getWorldConfig(worldData).getConfigurationSection("Permission") ?: YamlConfiguration()
+        val worldPermissionConfig = world.getDataConfig("permission")
         val permissionMap = buildPermission()
         val permissionData = permissionMap[permission] ?: permissionMap["Default"]!!
         var playerPermission = worldPermissionConfig.getString("Permission")?:"Default"
@@ -206,7 +206,7 @@ object Local {
             max = permissionData.group[playerPermission]!!.least
             if (max + 1 > permissionData.group[playerPermission]!!.max){
                 worldPermissionConfig.set("$permission.Max", max)
-                Config.saveWorldConfig(worldData, config)
+                worldPermissionConfig.saveToFile()
                 return ResultData(
                     false,
                     lang.getString("world.warning.permission.add.max") ?: "已达到该权限组最大人数上限"
@@ -283,9 +283,7 @@ object Local {
         }
         //进行升级操作
         worldPermissionConfig.set("$permission.Max", max + 1)
-        val config = Config.getWorldConfig(worldData)
-        config.set("Permission", worldPermissionConfig)
-        Config.saveWorldConfig(worldData, config)
+        worldPermissionConfig.saveToFile()
         return ResultData(
             true,
             lang.getString("world.info.permission.add.success") ?: "成功扩展世界内权限组玩家槽位"

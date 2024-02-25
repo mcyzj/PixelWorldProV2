@@ -11,7 +11,7 @@ import java.util.zip.ZipOutputStream
 
 
 object Zip {
-    private val logger = PixelWorldPro.log
+    private val logger = PixelWorldPro.instance.log
     private val lang = Config.getLang()
     @JvmStatic
     fun toZip(worldData: WorldData) {

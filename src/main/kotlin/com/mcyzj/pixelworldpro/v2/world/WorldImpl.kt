@@ -1,7 +1,6 @@
 package com.mcyzj.pixelworldpro.v2.world
 
 import com.mcyzj.pixelworldpro.v2.PixelWorldPro
-import com.mcyzj.pixelworldpro.v2.world.data.WorldLocalData
 import com.mcyzj.pixelworldpro.v2.util.Config
 import com.mcyzj.pixelworldpro.v2.world.compress.None
 import com.mcyzj.pixelworldpro.v2.world.compress.Zip
@@ -20,21 +19,11 @@ class WorldImpl: WorldAPI{
     private val config = Config.config
 
     private val lang = Config.getLang()
-    private val log = PixelWorldPro.log
+    private val log = PixelWorldPro.instance.log
 
     private val asyncLoad = config.getBoolean("async.worldLoad")
     override fun createWorld(owner: UUID, template: String): CompletableFuture<Boolean> {
-        val future = CompletableFuture<Boolean>()
-        submit(async = asyncLoad) {
-            log.info(lang.getString("world.load")!!.replace("[0]", Thread.currentThread().name))
-            val offlinePlayer = Bukkit.getOfflinePlayer(owner)
-            val name = (worldConfig.getString("create.name") ?: "[uuid]的世界").replacePlaceholder(offlinePlayer).colored()
-            WorldCreateData(
-                owner = owner,
-                name = name
-            )
-        }
-        return future
+        TODO("Not yet implemented")
     }
 
     override fun loadWorld(id: Int): CompletableFuture<Boolean> {
@@ -51,11 +40,11 @@ class WorldImpl: WorldAPI{
 
     override fun zipWorld(world: PixelWorldProWorld) {
         //开启压缩
-        world.compress
+        world.compress()
     }
 
     override fun unzipWorld(world: PixelWorldProWorld) {
-        world.decompression
+        world.decompression()
     }
 
     override fun restoreBackup(worldData: WorldData, backup: File): CompletableFuture<Boolean> {

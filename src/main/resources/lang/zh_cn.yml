@@ -4,4 +4,9 @@ plugin:
   install:
     successful: "成功安装pwp"
 world:
-  load: "使用[0]进行世界加载操作"
+  load: "加载世界"
+  unload: "卸载世界"
+  compress: "压缩世界"
+  decompression: "解压世界"
+  addToUnUse: "添加世界至冷却列表"
+  removeUnUse: "世界完成冷却"
