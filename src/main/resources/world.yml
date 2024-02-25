@@ -1,0 +1,16 @@
+#配置文件版本号,用于更新配置文件，请勿修改
+#Configuration file version number, used to update the configuration file, please do not modify
+version: 1
+#压缩设置
+#Compression settings
+compress:
+  #压缩方式
+  #Compression method
+  #None[不压缩]，Zip, 7z
+  method: None
+#创建设置
+#World create setting
+create:
+  #默认世界名字
+  #Defcult world name
+  name: "[uuid]的世界"

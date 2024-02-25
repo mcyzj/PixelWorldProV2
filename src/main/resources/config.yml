@@ -1,0 +1,38 @@
+#配置文件版本号,用于更新配置文件，请勿修改
+#Configuration file version number, used to update the configuration file, please do not modify
+version: 1
+#开启后控制台会输出更多debug信息，有助于错误排查
+#After opening, the console will output more debug information to help troubleshoot errors
+debug: false
+#开启pwp安装
+#Start PixelWorldPro install
+install: false
+#可以在lang文件夹查看已有的语言文件，如果你想要新增语言文件，请联系我
+#You can view the existing language files in the lang folder. If you want to add a new language file, please contact me
+lang: zh_cn
+#随意，看自身需求，Bungee也不是一定需要mysql
+#Depending on your own needs, Bungee doesn't necessarily need MySQL
+database: db
+#如果你不知道数据库对应的配置，那么只需要改host,port,database,user,passwd即可
+#If you don't know the configuration corresponding to the database, you only need to change host, port, database, user, passwd
+mysql:
+  host: 127.0.0.1
+  port: 3306
+  database: PixelWorldPro
+  user: Adear
+  passwd: '123456'
+  ssl: false
+  HikariCP: true
+#PWP数据存放处
+dataPath: "./PixelWorldPro"
+#PWP主命令
+#The main command
+mainCommand: "pwp"
+#PWP变量开头
+#The headline of papi
+mainPapi: "pixelworldpro"
+#线程设置
+#Thread setting
+async:
+  database: true
+  worldLoad: false

@@ -1,0 +1,253 @@
+#配置文件版本号,用于更新配置文件，请勿修改
+#Configuration file version number, used to update the configuration file, please do not modify
+version: 2
+#世界内权限设置
+world:
+  #可以更具相同的格式添加新的用户组，但不会同步到已经创建的世界中，只有后面创建的世界会依据此用户组
+  #拥有者权限，不得删除
+  owner:
+    #权限组名称
+    name: "拥有者"
+    #游戏模式
+    gameMode: SURVIVAL
+    #是否能右击方块[与方块交互]
+    blockRightClick: True
+    #是否能更改方块状态
+    blockDamage: True
+    #是否能右击实体[与实体交互]
+    rightClickEntity: True
+    #是否能攻击实体[包括动物/怪物/矿车等]
+    attackEntity: True
+    #是否能攻击玩家
+    attackPlayer: True
+    #是否能被实体锁定
+    entityLock: True
+    #是否能传送到指定世界[当然这一项对于拥有者肯定没有用]
+    teleport: True
+    #是否能更改游戏模式
+    changeGameMode: False
+    #是否能更改世界内玩家的游戏模式
+    changePlayerGameMode: False
+    #能否飞行
+    fly: False
+    #更改独立世界的设置[当然这一项对于拥有者肯定没有用]
+    changeWorld: True
+    #更改独立世界的权限
+    changePermission: False
+  #信任者权限，可删除
+  member:
+    #权限组名称
+    name: "信任者"
+    #游戏模式
+    gameMode: SURVIVAL
+    #是否能右击方块[与方块交互]
+    blockRightClick: True
+    #是否能更改方块状态
+    blockDamage: True
+    #是否能右击实体[与实体交互]
+    rightClickEntity: True
+    #是否能攻击实体[包括动物/怪物/矿车等]
+    attackEntity: True
+    #是否能攻击玩家
+    attackPlayer: True
+    #是否能被实体锁定
+    entityLock: True
+    #是否能传送到指定世界
+    teleport: True
+    #是否能更改游戏模式
+    changeGameMode: False
+    #是否能更改世界内玩家的游戏模式
+    changePlayerGameMode: False
+    #能否飞行
+    fly: False
+    #更改独立世界的设置
+    changeWorld: False
+    #更改独立世界的权限
+    changePermission: False
+  #游客权限，可不删除
+  visitor:
+    #权限组名称
+    name: "参观者"
+    #游戏模式
+    gameMode: ADVENTURE
+    #是否能右击方块[与方块交互]
+    blockRightClick: False
+    #是否能更改方块状态
+    blockDamage: False
+    #是否能右击实体[与实体交互]
+    rightClickEntity: False
+    #是否能攻击实体[包括动物/怪物/矿车等]
+    attackEntity: False
+    #是否能攻击玩家
+    attackPlayer: False
+    #是否能被实体锁定
+    entityLock: False
+    #是否能传送到指定世界
+    teleport: True
+    #是否能更改游戏模式
+    changeGameMode: False
+    #是否能更改世界内玩家的游戏模式
+    changePlayerGameMode: False
+    #能否飞行
+    fly: False
+    #更改独立世界的设置
+    changeWorld: False
+    #更改独立世界的权限
+    changePermission: False
+  #黑名单用户权限，可不删除
+  blackList:
+    #权限组名称
+    name: "黑名单"
+    #游戏模式
+    gameMode: ADVENTURE
+    #是否能右击方块[与方块交互]
+    blockRightClick: False
+    #是否能更改方块状态
+    blockDamage: False
+    #是否能右击实体[与实体交互]
+    rightClickEntity: False
+    #是否能攻击实体[包括动物/怪物/矿车等]
+    attackEntity: False
+    #是否能攻击玩家
+    attackPlayer: False
+    #是否能被实体锁定
+    entityLock: False
+    #是否能传送到指定世界
+    teleport: False
+    #是否能更改游戏模式
+    changeGameMode: False
+    #是否能更改世界内玩家的游戏模式
+    changePlayerGameMode: False
+    #能否飞行
+    fly: False
+    #更改独立世界的设置
+    changeWorld: False
+    #更改独立世界的权限
+    changePermission: False
+#权限组细节设定
+permission:
+  #默认，即这里找不到对应权限组名时以此为准
+  default:
+    #默认权限组
+    default:
+      #单个独立世界拥有此权限的基础最大人数
+      least: 5
+      #单个独立世界拥有此权限的最扩展大人数
+      max: 30
+      use:
+        #当解锁槽位大于1个人时，扩展槽位的花费
+        1:
+          points: 100
+          #0为不需要
+          money: 0
+          #升级所需的物品，在配置文件下方item配置
+          #留空为不需要
+          item:
+            #格式按照 item内名称: 数量 来填写
+            diamond: 4
+        #当解锁槽位大于20个人时，扩展槽位的花费
+        20:
+          points: 200
+          #0为不需要
+          money: 0
+          #升级所需的物品，在配置文件下方item配置
+          #留空为不需要
+          item:
+            #格式按照 item内名称: 数量 来填写
+            diamond: 8
+    #拥有指定权限
+    #优先级从上往下
+    vip:
+      #权限组
+      permission: "pwp.vip"
+      #单个独立世界拥有此权限的基础最大人数
+      least: 10
+      #单个独立世界拥有此权限的最扩展大人数
+      max: 100
+      use:
+        #当解锁槽位大于1个人时，扩展槽位的花费
+        1:
+          points: 50
+          #0为不需要
+          money: 0
+          #升级所需的物品，在配置文件下方item配置
+          #留空为不需要
+          item:
+            #格式按照 item内名称: 数量 来填写
+            diamond: 4
+        #当解锁槽位大于20个人时，扩展槽位的花费
+        20:
+          points: 100
+          #0为不需要
+          money: 0
+          #升级所需的物品，在配置文件下方item配置
+          #留空为不需要
+          item:
+            #格式按照 item内名称: 数量 来填写
+            diamond: 8
+  member:
+    #默认权限组
+    default:
+      #单个独立世界拥有此权限的基础最大人数
+      least: 5
+      #单个独立世界拥有此权限的最扩展大人数
+      max: 30
+      use:
+        #当解锁槽位大于1个人时，扩展槽位的花费
+        1:
+          points: 100
+          #0为不需要
+          money: 0
+          #升级所需的物品，在配置文件下方item配置
+          #留空为不需要
+          item:
+            #格式按照 item内名称: 数量 来填写
+            diamond: 4
+        #当解锁槽位大于20个人时，扩展槽位的花费
+        20:
+          points: 200
+          #0为不需要
+          money: 0
+          #升级所需的物品，在配置文件下方item配置
+          #留空为不需要
+          item:
+            #格式按照 item内名称: 数量 来填写
+            diamond: 8
+    #拥有指定权限
+    #优先级从上往下
+    vip:
+      #权限组
+      permission: "pwp.vip"
+      #单个独立世界拥有此权限的基础最大人数
+      least: 10
+      #单个独立世界拥有此权限的最扩展大人数
+      max: 100
+      use:
+        #当解锁槽位大于1个人时，扩展槽位的花费
+        1:
+          points: 50
+          #0为不需要
+          money: 0
+          #升级所需的物品，在配置文件下方item配置
+          #留空为不需要
+          item:
+            #格式按照 item内名称: 数量 来填写
+            diamond: 4
+        #当解锁槽位大于20个人时，扩展槽位的花费
+        20:
+          points: 100
+          #0为不需要
+          money: 0
+          #升级所需的物品，在配置文件下方item配置
+          #留空为不需要
+          item:
+            #格式按照 item内名称: 数量 来填写
+            diamond: 8
+#消耗物品配置
+item:
+  diamond:
+    #消耗的物品
+    material: "diamond"
+    #物品的特殊lore，none为关闭
+    lore:
+      - "none"
