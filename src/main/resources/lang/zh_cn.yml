@@ -27,3 +27,10 @@ teleport:
   notLoad: "世界还未加载"
   noPermission: "没有权限进入该世界"
   notFound: "没有找到世界"
+expansion:
+  load:
+    read: "读取扩展{file}"
+    notFoundData: "{file}不是一个有效的扩展：包内PixelWorldPro.yml无效"
+  enable:
+    tip: "加载扩展{expansion.name}\n作者：{expansion.auther}\n版本：{expansion.version}"
+    crash: "{expansion.name}崩溃了！"
