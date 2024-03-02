@@ -11,13 +11,13 @@ import java.util.zip.ZipOutputStream
 
 
 object Zip {
-    private val logger = com.mcyzj.pixelworldpro.v2.core.PixelWorldPro.instance.log
+    private val logger = PixelWorldPro.instance.log
     private val lang = Config.getLang()
     @JvmStatic
     fun toZip(worldData: WorldData) {
         try {
             //拉取并清除旧世界数据
-            val worldFile = File(File("./PixelWorldPro/world", worldData.id.toString()), "world")
+            val worldFile = File(File("./PixelWorldPro/world/${worldData.type}", worldData.id.toString()), "world")
             if (worldFile.exists()){
                 worldFile.deleteRecursively()
             }
@@ -25,11 +25,11 @@ object Zip {
             val zipFIle = File("${worldFile.path}/world.zip")
             ZipOutputStream(FileOutputStream(zipFIle)).use { zipOutputStream ->
                 // 压缩文件夹
-                compressFolder(worldData.id.toString(), worldData.id.toString(), zipOutputStream)
+                compressFolder(worldData.type+ "/" + worldData.id.toString(), worldData.id.toString(), zipOutputStream)
                 logger.info("${lang.getString("compress.info.success")} ${worldData.id}")
                 //zipOutputStream.closeEntry()
             }
-            File("./PixelWorldPro/cache/world", worldData.id.toString()).deleteRecursively()
+            File("./PixelWorldPro/cache/world/${worldData.type}", worldData.id.toString()).deleteRecursively()
         } catch (e: IOException) {
             e.printStackTrace()
         }
@@ -37,7 +37,7 @@ object Zip {
 
     @Throws(IOException::class)
     private fun compressFolder(sourceFolder: String, folderName: String, zipOutputStream: ZipOutputStream) {
-        val folder = File("./PixelWorldPro/cache/world", sourceFolder)
+        val folder = File("./PixelWorldPro/cache/world/", sourceFolder)
         val files = folder.listFiles()
         if (files != null) {
             for (file in files) {
@@ -73,14 +73,14 @@ object Zip {
     @JvmStatic
     fun unZip(worldData: WorldData) {
         //targetPath输出文件路径
-        val targetFile = File("./PixelWorldPro/cache/world", worldData.id.toString())
+        val targetFile = File("./PixelWorldPro/cache/world/${worldData.type}", worldData.id.toString())
         // 如果目录不存在，则创建
         if (!targetFile.exists()) {
             targetFile.mkdirs()
         }
         //sourcePath压缩包文件路径
         try {
-            ZipFile(File("./PixelWorldPro/world/${worldData.id}/world", "world.zip")).use { zipFile ->
+            ZipFile(File("./PixelWorldPro/world/${worldData.type}/${worldData.id}/world", "world.zip")).use { zipFile ->
                 val enumeration: Enumeration<*> = zipFile.entries()
                 while (enumeration.hasMoreElements()) {
                     //依次获取压缩包内的文件实体对象
@@ -91,10 +91,10 @@ object Zip {
                     }
                     BufferedInputStream(zipFile.getInputStream(entry)).use { inputStream ->
                         // 需要判断文件所在的目录是否存在，处理压缩包里面有文件夹的情况
-                        val outFile = File("./PixelWorldPro/cache/world", name)
+                        val outFile = File("./PixelWorldPro/cache/world/${worldData.type}", name)
                         val pathList = name.split("/") as ArrayList
                         pathList.removeAt(name.split("/").size - 1)
-                        val temp = File("./PixelWorldPro/cache/world", pathList.joinToString("/"))
+                        val temp = File("./PixelWorldPro/cache/world/${worldData.type}", pathList.joinToString("/"))
                         if (!temp.exists()) {
                             temp.mkdirs()
                         }

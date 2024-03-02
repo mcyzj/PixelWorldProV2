@@ -38,6 +38,32 @@ create:
       item:
         #格式按照 item内名称: 数量 来填写
         diamond: 0
+#世界卸载设置
+unload:
+  #世界闲置后，卸载等待时间
+  wait:
+    #优先级高于tickets
+    #到达一定时间就卸载[单位：秒]
+    #-1关闭
+    time: 60
+    #到达指定tickets就卸载
+    tickets: 10000
+#世界性能点数设置
+#点数越高则表明世界占用的资源消耗越大
+#计算公式：initial + ({tps.max} - {tps.world}) * {tps.weight} + {world.number} * world + {player.number} * player
+tickets:
+  #初始点数
+  initial: 1000
+  #tps点数
+  tps:
+    #最大tps，得到的tps基础点数为 max-世界tps
+    max: 30.0
+    #权重
+    weight: 100
+  #世界基数
+  world: 100
+  #玩家基数
+  player: 100
 #消耗物品配置
 item:
   diamond:

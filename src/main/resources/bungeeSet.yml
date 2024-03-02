@@ -4,3 +4,19 @@ version: 1
 #是否启用群组模式
 #Enable bungee mod
 enable: false
+#服务器对玩家显示的名称
+name: "大厅1"
+#服务器在bungee中的名称
+server: "lobby"
+#服务器运行模式
+#lobby不加载也不创建世界 load负责加载世界
+mode: "lobby"
+
+#以下为世界加载设置
+#当前服务器最大加载世界数
+#-1为不限制
+maxWorld: -1
+#当PixelWorldPro世界tickets总和大于以下指定值时，停止世界加载
+#需要指定值保留到小数点后一位
+#-1不限制
+maxTickets: 270000.0

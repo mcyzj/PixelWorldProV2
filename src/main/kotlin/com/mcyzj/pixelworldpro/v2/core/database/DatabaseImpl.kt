@@ -212,6 +212,11 @@ abstract class DatabaseImpl(ormlite: Ormlite) : DatabaseAPI {
             logger.warning("§aPixelWorldPro ${lang.getString("database.warning.world.permissionIsNULL")}")
             return null
         }
+        val type = try {
+            dataJson["type"].asString
+        } catch (_:Exception) {
+            "local"
+        }
         /*
         val dimension = HashMap<String, WorldDimensionData>()
         val dimensionJson = gson.fromJson(dataJson["dimension"].asJsonObject, JsonObject::class.java)
@@ -245,7 +250,8 @@ abstract class DatabaseImpl(ormlite: Ormlite) : DatabaseAPI {
             name,
             permissionMap,
             player as HashMap<UUID, String>,
-            //dimension
+            //dimension,
+            type
         )
     }
 }

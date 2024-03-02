@@ -1,7 +1,7 @@
 package com.mcyzj.pixelworldpro.v2.core.world
 
 import com.mcyzj.lib.plugin.PlayerFound
-import com.mcyzj.pixelworldpro.v2.core.PixelWorldPro
+import com.mcyzj.pixelworldpro.v2.core.bungee.BungeeWorld
 import com.mcyzj.pixelworldpro.v2.core.permission.dataclass.ResultData
 import com.mcyzj.pixelworldpro.v2.core.util.Config
 import com.xbaimiao.easylib.bridge.economy.PlayerPoints
@@ -10,17 +10,30 @@ import com.xbaimiao.easylib.module.item.hasItem
 import com.xbaimiao.easylib.module.item.takeItem
 import org.bukkit.Bukkit
 import org.bukkit.Material
+import org.bukkit.World
 import org.bukkit.configuration.ConfigurationSection
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import java.io.File
+import java.lang.Thread.sleep
 import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 object LocalWorld {
     private val worldConfig = Config.world
     private val lang = Config.getLang()
 
     private val createList = ArrayList<UUID>()
+
+    val loadWorld = HashMap<Int, PixelWorldProWorld>()
+    val onlinePlayer = HashMap<Int, ArrayList<Player>>()
+    var worldTickets = HashMap<Int, Double>()
+    var serverTickets = 0.0
+    private val unloadMap = HashMap<Int, Thread>()
+
+    var worldUpdateThread: Thread? = null
+
     @Suppress("DEPRECATION")
     fun createWorld(owner: Player, template: String?, seed: Long?): ResultData {
         if (owner.uniqueId in createList) {
@@ -156,7 +169,7 @@ object LocalWorld {
 
     fun teleport(value: String, player: Player): ResultData {
         try {
-            val id = value.toInt()
+            value.toInt()
         } catch (_:Exception) {
             val owner = PlayerFound.getOfflinePlayer(value)
             val worldData = com.mcyzj.pixelworldpro.v2.core.PixelWorldPro.databaseApi.getWorldData(owner.uniqueId)
@@ -208,5 +221,87 @@ object LocalWorld {
             false,
             msg
         )
+    }
+
+    fun getWorldID(worldName: String): Int? {
+        if (!worldName.startsWith("PixelWorldPro")) {
+            return null
+        }
+        val realNameList = worldName.split("/").size
+        if (realNameList < 2) {
+            return null
+        }
+        val realName = worldName.split("/")[realNameList - 2]
+        return try{
+            realName.toInt()
+        }catch (_:Exception){
+            null
+        }
+    }
+
+    fun updateAllWorlds() {
+        worldUpdateThread?.stop()
+        worldUpdateThread = Thread{
+            while (true) {
+                var newServerTickets = 0.0
+                val newWorldTickets = HashMap<Int, Double>()
+                for (world in loadWorld.values) {
+                    val tickets = world.tickets()
+                    newServerTickets += tickets
+                    newWorldTickets[world.worldData.id] = tickets
+                    updateWorldPlayer(world)
+                }
+                serverTickets = newServerTickets
+                worldTickets = newWorldTickets
+                if (Config.bungee.getBoolean("enable")) {
+                    BungeeWorld.saveServerData()
+                }
+                sleep(5*60*1000)
+            }
+        }
+        worldUpdateThread!!.start()
+    }
+
+    fun updateWorldPlayer(world: PixelWorldProWorld) {
+        val worldMap = world.getWorlds()
+        val playerList = ArrayList<Player>()
+        for (worlds in worldMap.values) {
+            for (player in worlds.players) {
+                playerList.add(player)
+            }
+        }
+        if (playerList.isNotEmpty()) {
+            onlinePlayer[world.worldData.id] = playerList
+            val thread = unloadMap[world.worldData.id]
+            if (thread != null) {
+                Thread {
+                    thread.stop()
+                    unloadMap.remove(world.worldData.id)
+                }.start()
+            }
+        } else {
+            checkUnload(world)
+        }
+    }
+
+    private fun checkUnload(world: PixelWorldProWorld) {
+        val thread = unloadMap[world.worldData.id]
+        if (thread == null) {
+            Thread {
+                val maxTime = worldConfig.getInt("unload.wait.time")
+                val maxTickets = worldConfig.getDouble("unload.wait.tickets")
+                var time = 0
+                while (time < maxTime) {
+                    sleep(1 * 1000)
+                    time ++
+                    updateWorldPlayer(world)
+                    val tickets = world.tickets()
+                    if (maxTickets < tickets) {
+                        break
+                    }
+                }
+                world.unload()
+            }.start()
+        }
     }
 }

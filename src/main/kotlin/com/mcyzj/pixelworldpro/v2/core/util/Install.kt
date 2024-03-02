@@ -1,7 +1,10 @@
 package com.mcyzj.pixelworldpro.v2.core.util
 
 import com.mcyzj.lib.plugin.file.Path
+import com.mcyzj.pixelworldpro.v2.core.PixelWorldPro
 import java.io.File
+import java.util.*
+import kotlin.collections.ArrayList
 
 object Install {
     private val config = Config.config
@@ -49,11 +52,19 @@ object Install {
         if (path != "./PixelWorldPro") {
             val pathList = Path().getJarPath(this::class.java)!!.split("\\") as ArrayList
             pathList.removeLast()
-            val local = pathList.joinToString("\\")
-            Runtime.getRuntime().exec("cmd /c MKLINK /d /j $local\\PixelWorldPro ${path.replace("/", "\\")}")
-            Runtime.getRuntime().exec("cmd /c MKLINK /d /j $local\\world\\PixelWorldPro ${path.replace("/", "\\")}")
+            if(System.getProperty("os.name").lowercase(Locale.getDefault()).contains("win")){
+                //Windows映射
+                val local = pathList.joinToString("\\")
+                Runtime.getRuntime().exec("cmd /c MKLINK /d /j $local\\PixelWorldPro ${path.replace("/", "\\")}")
+                Runtime.getRuntime().exec("cmd /c MKLINK /d /j $local\\world\\PixelWorldPro ${path.replace("/", "\\")}")
+            } else {
+                //Linux映射
+                val local = pathList.joinToString("/")
+                Runtime.getRuntime().exec("ln -s $local/PixelWorldPro $path")
+                Runtime.getRuntime().exec("ln -s $local/world/PixelWorldPro $path")
+            }
         }
-        com.mcyzj.pixelworldpro.v2.core.PixelWorldPro.instance.log.info(Config.getLang().getString("plugin.install.successful"))
+        PixelWorldPro.instance.log.info(Config.getLang().getString("plugin.install.successful"))
         config.set("install", null)
         config.saveToFile()
     }

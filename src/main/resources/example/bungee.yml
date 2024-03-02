@@ -1,0 +1,15 @@
+version: 1
+#服务器分组
+group:
+  #默认组，不可删除
+  default:
+    #处于该分组下的服务器，可以和其他组的重复，优先级低于其他组
+    server:
+      - load_1
+      - load_2
+  #权限优先级，由上往下依次排列
+  vip:
+    permission: "pixelworldpro.vip"
+    server:
+      - vip_load_1
+      - vip_load_2
