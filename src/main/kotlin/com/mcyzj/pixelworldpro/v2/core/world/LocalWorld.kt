@@ -10,7 +10,6 @@ import com.xbaimiao.easylib.module.item.hasItem
 import com.xbaimiao.easylib.module.item.takeItem
 import org.bukkit.Bukkit
 import org.bukkit.Material
-import org.bukkit.World
 import org.bukkit.configuration.ConfigurationSection
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
@@ -23,6 +22,7 @@ import kotlin.collections.HashMap
 object LocalWorld {
     private val worldConfig = Config.world
     private val lang = Config.getLang()
+    private val bungeeConfig = Config.bungee
 
     private val createList = ArrayList<UUID>()
 
@@ -45,74 +45,41 @@ object LocalWorld {
         } else {
             createList.add(owner.uniqueId)
         }
-        val templates = if (template == null) {
-            val templateFileList = File("./PixelWorldPro/template").listFiles()
-            if (templateFileList == null) {
-                val msg = lang.getString("check.template.empty") ?: "没有模板"
-                createList.remove(owner.uniqueId)
-                return ResultData(
-                    false,
-                    msg
-                )
-            }
-            templateFileList[(Math.random() * templateFileList.size).toInt()].name
-        } else {
-            if (!File("./PixelWorldPro/template/$template").exists()) {
-                val msg = lang.getString("check.template.notFind") ?: "没有找到模板"
-                createList.remove(owner.uniqueId)
-                return ResultData(
-                    false,
-                    msg
-                )
-            }
-            template
-        }
-        val templateData = PixelWorldProWorldTemplate(templates)
-        val templateConfig = templateData.templateConfig
-        val group = if (templateConfig.getConfigurationSection("use") != null) {
-            createUse(owner, templateConfig.getConfigurationSection("use")!!)
-        } else {
-            createUse(owner, worldConfig.getConfigurationSection("create.use")!!)
-        }
-        val points = group.getDouble("points")
-        if (points > 0.0) {
-            if (!PlayerPoints().has(owner, points)) {
-                var msg = lang.getString("check.notEnough.points") ?: "没有足够的点券，你需要{member}个点券"
-                msg = msg.replace("{member}", points.toString())
-                createList.remove(owner.uniqueId)
-                return ResultData(
-                    false,
-                    msg
-                )
-            }
-        }
-        val money = group.getDouble("money")
-        if (money > 0.0) {
-            if (!Vault().has(owner, money)) {
-                var msg = lang.getString("check.notEnough.money") ?: "没有足够的金币，你需要{member}个金币"
-                msg = msg.replace("{member}", money.toString())
-                createList.remove(owner.uniqueId)
-                return ResultData(
-                    false,
-                    msg
-                )
-            }
-        }
-        //检验物品
-        val itemConfig = group.getConfigurationSection("item")
-        if (itemConfig != null) {
-            val itemMap = Config.buildItemMap(worldConfig.getConfigurationSection("item")!!)
-            for (key in itemConfig.getKeys(false)) {
-                val itemData = itemMap[key]!!
-                val material = Material.getMaterial(itemData.material)!!
-                val item = ItemStack(material)
-                for (lore in itemData.lore) {
-                    item.lore?.add(lore)
+        try {
+            val templates = if (template == null) {
+                val templateFileList = File("./PixelWorldPro/template").listFiles()
+                if (templateFileList == null) {
+                    val msg = lang.getString("check.template.empty") ?: "没有模板"
+                    createList.remove(owner.uniqueId)
+                    return ResultData(
+                        false,
+                        msg
+                    )
                 }
-                if (!owner.inventory.hasItem(item, itemConfig.getInt(key))) {
-                    var msg = lang.getString("check.notEnough.item") ?: "没有足够的物品，你需要{member}个{item}"
-                    msg = msg.replace("{member}", itemConfig.getInt(key).toString())
-                    msg = msg.replace("{item}", material.name)
+                templateFileList[(Math.random() * templateFileList.size).toInt()].name
+            } else {
+                if (!File("./PixelWorldPro/template/$template").exists()) {
+                    val msg = lang.getString("check.template.notFind") ?: "没有找到模板"
+                    createList.remove(owner.uniqueId)
+                    return ResultData(
+                        false,
+                        msg
+                    )
+                }
+                template
+            }
+            val templateData = PixelWorldProWorldTemplate(templates)
+            val templateConfig = templateData.templateConfig
+            val group = if (templateConfig.getConfigurationSection("use") != null) {
+                createUse(owner, templateConfig.getConfigurationSection("use")!!)
+            } else {
+                createUse(owner, worldConfig.getConfigurationSection("create.use")!!)
+            }
+            val points = group.getDouble("points")
+            if (points > 0.0) {
+                if (!PlayerPoints().has(owner, points)) {
+                    var msg = lang.getString("check.notEnough.points") ?: "没有足够的点券，你需要{member}个点券"
+                    msg = msg.replace("{member}", points.toString())
                     createList.remove(owner.uniqueId)
                     return ResultData(
                         false,
@@ -120,25 +87,67 @@ object LocalWorld {
                     )
                 }
             }
-            //拿走物品
-            for (key in itemConfig.getKeys(false)) {
-                val itemData = itemMap[key]!!
-                owner.inventory.takeItem(itemConfig.getInt(key)) {
-                    return@takeItem this.type == Material.getMaterial(itemData.material)!!
+            val money = group.getDouble("money")
+            if (money > 0.0) {
+                if (!Vault().has(owner, money)) {
+                    var msg = lang.getString("check.notEnough.money") ?: "没有足够的金币，你需要{member}个金币"
+                    msg = msg.replace("{member}", money.toString())
+                    createList.remove(owner.uniqueId)
+                    return ResultData(
+                        false,
+                        msg
+                    )
                 }
             }
+            //检验物品
+            val itemConfig = group.getConfigurationSection("item")
+            if (itemConfig != null) {
+                val itemMap = Config.buildItemMap(worldConfig.getConfigurationSection("item")!!)
+                for (key in itemConfig.getKeys(false)) {
+                    val itemData = itemMap[key]!!
+                    val material = Material.getMaterial(itemData.material)!!
+                    val item = ItemStack(material)
+                    for (lore in itemData.lore) {
+                        item.lore?.add(lore)
+                    }
+                    if (!owner.inventory.hasItem(item, itemConfig.getInt(key))) {
+                        var msg = lang.getString("check.notEnough.item") ?: "没有足够的物品，你需要{member}个{item}"
+                        msg = msg.replace("{member}", itemConfig.getInt(key).toString())
+                        msg = msg.replace("{item}", material.name)
+                        createList.remove(owner.uniqueId)
+                        return ResultData(
+                            false,
+                            msg
+                        )
+                    }
+                }
+                //拿走物品
+                for (key in itemConfig.getKeys(false)) {
+                    val itemData = itemMap[key]!!
+                    owner.inventory.takeItem(itemConfig.getInt(key)) {
+                        return@takeItem this.type == Material.getMaterial(itemData.material)!!
+                    }
+                }
+            }
+            if (bungeeConfig.getBoolean("enable")) {
+                BungeeWorld.createWorld(owner.uniqueId, template, seed)
+            } else {
+                createWorldLocal(owner.uniqueId, templates, seed)
+            }
+            val msg = lang.getString("world.createSuccess") ?: "成功创建世界"
+            createList.remove(owner.uniqueId)
+            return ResultData(
+                true,
+                msg
+            )
+        } catch (e: Exception) {
+            createList.remove(owner.uniqueId)
+            throw e
         }
-        createWorldLocal(owner.uniqueId, templates, seed)
-        val msg = lang.getString("world.createSuccess") ?: "成功创建世界"
-        createList.remove(owner.uniqueId)
-        return ResultData(
-            true,
-            msg
-        )
     }
 
     private fun createUse(player: Player, config: ConfigurationSection): ConfigurationSection {
-        val groupList = config.getKeys(false) as ArrayList<*>
+        val groupList = config.getKeys(false)
         groupList.remove("default")
         for (key in groupList) {
             val group = config.getConfigurationSection(key.toString())!!
@@ -239,6 +248,7 @@ object LocalWorld {
         }
     }
 
+    @Suppress("DEPRECATION")
     fun updateAllWorlds() {
         worldUpdateThread?.stop()
         worldUpdateThread = Thread{
@@ -262,6 +272,7 @@ object LocalWorld {
         worldUpdateThread!!.start()
     }
 
+    @Suppress("DEPRECATION")
     fun updateWorldPlayer(world: PixelWorldProWorld) {
         val worldMap = world.getWorlds()
         val playerList = ArrayList<Player>()

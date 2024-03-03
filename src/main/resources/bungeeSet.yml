@@ -11,6 +11,14 @@ server: "lobby"
 #服务器运行模式
 #lobby不加载也不创建世界 load负责加载世界
 mode: "lobby"
+#redis设置
+#为什么不选择bungee通讯？
+#因为bungee下档一个服务器没有人时，bungee通讯的信息就不会传达到，这是一个大聪明的设计！
+redis:
+  host: 127.0.0.1
+  port: 6379
+  password: ""
+  channel: "PixelWorldPro"
 
 #以下为世界加载设置
 #当前服务器最大加载世界数

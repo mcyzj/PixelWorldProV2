@@ -3,6 +3,7 @@ package com.mcyzj.pixelworldpro.v2.core.world
 import com.mcyzj.lib.plugin.file.BuiltOutConfiguration
 import com.mcyzj.pixelworldpro.v2.core.api.PixelWorldProApi
 import com.mcyzj.pixelworldpro.v2.core.util.Config
+import java.io.File
 import java.lang.Thread.sleep
 
 object WorldCache {
@@ -15,19 +16,28 @@ object WorldCache {
     }
 
     fun cleanWorldCache() {
-        val worldCacheConfig = getCacheConfig("world/unUse.yml")
-        for (key in worldCacheConfig.getKeys(false)) {
-            val time = worldCacheConfig.getLong(key)
-            if (time < System.currentTimeMillis()) {
-                val world = PixelWorldProApi().getWorld(key.toInt()) ?: continue
-                try {
-                    Thread {
-                        world.compress()
-                    }.start()
-                    worldCacheConfig.set(key, null)
-                    worldCacheConfig.saveToFile()
-                    log.info(lang.getString("world.removeUnUse") + "${world.worldData.name}[${world.worldData.id}]")
-                }catch (_:Exception){}
+        val worldSave = File("./PixelWorldPro/cache/world")
+        worldSave.mkdirs()
+        val fileList = worldSave.listFiles() ?: return
+        for (file in fileList) {
+            if (file.isFile) {
+                return
+            }
+            val worldCacheConfig = getCacheConfig("world/${file.name}/unUse.yml")
+            for (key in worldCacheConfig.getKeys(false)) {
+                val time = worldCacheConfig.getLong(key)
+                if (time < System.currentTimeMillis()) {
+                    val world = PixelWorldProApi().getWorld(key.toInt()) ?: continue
+                    try {
+                        Thread {
+                            world.compress()
+                        }.start()
+                        worldCacheConfig.set(key, null)
+                        worldCacheConfig.saveToFile()
+                        log.info(lang.getString("world.removeUnUse") + "${world.worldData.name}[${world.worldData.id}]")
+                    } catch (_: Exception) {
+                    }
+                }
             }
         }
     }
@@ -35,7 +45,7 @@ object WorldCache {
     fun setUnUseWorld(world: PixelWorldProWorld) {
         Thread {
             val worldData = world.worldData
-            val worldCacheConfig = getCacheConfig("world/unUse.yml")
+            val worldCacheConfig = getCacheConfig("world/${world.worldData.type}/unUse.yml")
             worldCacheConfig.set(worldData.id.toString(), System.currentTimeMillis() + (5 * 60 * 1000))
             worldCacheConfig.saveToFile()
             unUseList.add(worldData.id)

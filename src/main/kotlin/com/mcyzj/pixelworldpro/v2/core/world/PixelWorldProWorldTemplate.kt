@@ -16,7 +16,7 @@ import java.util.UUID
  * @return: PixelWorldProWorld
  */
 @Suppress("unused")
-class PixelWorldProWorldTemplate(template: String) {
+class PixelWorldProWorldTemplate(template: String, val type: String? = "local") {
     val templateConfig = BuiltOutConfiguration("./PixelWorldPro/template/$template/template.yml")
     private val templateFile = File("./PixelWorldPro/template/$template")
     private val log = com.mcyzj.pixelworldpro.v2.core.PixelWorldPro.instance.log
@@ -77,7 +77,7 @@ class PixelWorldProWorldTemplate(template: String) {
                 player = HashMap()
             )
         )
-        val worldDataFile = File("./PixelWorldPro/world/${worldData.id}")
+        val worldDataFile = File("./PixelWorldPro/world/$type/${worldData.id}")
         if (worldDataFile.exists()) {
             worldDataFile.deleteRecursively()
         }

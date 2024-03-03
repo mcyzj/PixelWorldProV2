@@ -1,68 +1,66 @@
+@file:Suppress("SameParameterValue")
 package com.mcyzj.pixelworldpro.v2.core.bungee
 
-import com.google.common.collect.Iterables
-import com.google.common.io.ByteStreams
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.mcyzj.pixelworldpro.v2.core.PixelWorldPro
-import org.bukkit.Bukkit
+import com.xbaimiao.easylib.module.utils.submit
 import org.bukkit.entity.Player
-import org.bukkit.plugin.messaging.PluginMessageListener
 import org.json.simple.JSONObject
-import java.io.ByteArrayInputStream
+import redis.clients.jedis.JedisPubSub
 import java.io.ByteArrayOutputStream
-import java.io.DataInputStream
 import java.io.DataOutputStream
+import java.io.IOException
 
 
-object Communicate: PluginMessageListener {
+object Communicate : JedisPubSub() {
+    private val jedisPool = PixelWorldPro.jedisPool
     val listener = HashMap<String, DataProcessingAPI>()
-    override fun onPluginMessageReceived(channel: String, player: Player, message: ByteArray?) {
-        if (channel != "BungeeCord") {
+    val log = PixelWorldPro.instance.log
+    override fun onMessage(channel: String?, message: String?) {
+        log.info(channel + message.toString(), true)
+        if (channel != PixelWorldPro.redisConfig.channel) {
             return
         }
-        val receive = ByteStreams.newDataInput(message)
-        val msgChannel = receive.readUTF()
-        if (msgChannel != "PixelWorldProV2") {
-            return
-        }
-        val type = receive.readUTF()
-        val len = receive.readShort()
-        val msgBytes = ByteArray(len.toInt())
-        receive.readFully(msgBytes)
-
-        val msgin = DataInputStream(ByteArrayInputStream(msgBytes))
-        val msg = msgin.readUTF() // 以与写入数据相同的顺序读取数据
         val g = Gson()
-        val back: JsonObject = g.fromJson(msg, JsonObject::class.java)
-        receive(type, back)
+        val back: JsonObject = g.fromJson(message, JsonObject::class.java)
+        if (back["server"].asString != BungeeWorld.getBungeeData().server) {
+            return
+        }
+        receive(back["plugin"].asString, back)
     }
 
-    fun send(player: Player?, type: String, msg: JSONObject) {
-        val out = ByteStreams.newDataOutput()
-        out.writeUTF("Forward") // 这样写BungeeCord就知道要转发它
+    fun send(player: Player?, server: String, type: String, msg: JSONObject) {
+        msg["server"] = server
+        msg["plugin"] = type
+        push(msg.toString())
+    }
 
-        out.writeUTF("ALL")
-        out.writeUTF("PixelWorldProV2")
-        out.writeUTF(type)
-
-
-        val msgbytes = ByteArrayOutputStream()
-        val msgout = DataOutputStream(msgbytes)
-        msgout.writeUTF(msg.toString()) // 你可以用msgout发送任何你想发送的数据
-
-        out.writeShort(msgbytes.toByteArray().size)
-        out.write(msgbytes.toByteArray())
-        if (player == null) {
-            Iterables.getFirst(Bukkit.getOnlinePlayers(), null)
-                ?.sendPluginMessage(PixelWorldPro.instance, "BungeeCord", out.toByteArray())
-        } else {
-            player.sendPluginMessage(PixelWorldPro.instance, "BungeeCord", out.toByteArray())
-        }
+    private fun push(message: String) {
+        jedisPool.resource.use { jedis -> jedis.publish(PixelWorldPro.redisConfig.channel, message) }
     }
 
     private fun receive(type: String, msg: JsonObject) {
-        val listen = listener[type] ?: return
-        listen.receive(msg)
+        try {
+            log.info(type + msg.toString(), true)
+            val listen = listener[type] ?: return
+            submit {
+                listen.receive(msg)
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    fun connect(player: Player, server: String) {
+        val byteArray = ByteArrayOutputStream()
+        val out = DataOutputStream(byteArray)
+        try {
+            out.writeUTF("Connect")
+            out.writeUTF(server)
+        } catch (e: IOException) {
+            throw RuntimeException(e)
+        }
+        player.sendPluginMessage(PixelWorldPro.instance, "BungeeCord", byteArray.toByteArray())
     }
 }

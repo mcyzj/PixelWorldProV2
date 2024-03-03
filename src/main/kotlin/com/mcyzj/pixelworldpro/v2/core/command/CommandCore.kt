@@ -1,6 +1,7 @@
 package com.mcyzj.pixelworldpro.v2.core.command
 
 import com.mcyzj.pixelworldpro.v2.core.api.PixelWorldProApi
+import com.mcyzj.pixelworldpro.v2.core.bungee.BungeeWorld
 import com.mcyzj.pixelworldpro.v2.core.util.Config
 import com.mcyzj.pixelworldpro.v2.core.world.LocalWorld
 import com.xbaimiao.easylib.module.command.command
@@ -64,7 +65,7 @@ class CommandCore {
     }
 
     private val unload = command<CommandSender>("unload") {
-        permission = "pixelworldpro.tp"
+        permission = "pixelworldpro.unload"
         exec {
             if (sender !is Player) {
                 sender.sendMessage(lang.getString("plugin.needPlayer") ?: "需要玩家操作")
@@ -72,7 +73,11 @@ class CommandCore {
             }
             val player = sender as Player
             val world = PixelWorldProApi().getWorld(player.uniqueId) ?: return@exec
-            world.unload()
+            if (Config.bungee.getBoolean("enable")) {
+                BungeeWorld.unloadWorld(world)
+            } else {
+                world.unload()
+            }
         }
     }
 

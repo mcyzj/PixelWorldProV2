@@ -112,7 +112,7 @@ class PixelWorldProWorld(val worldData: WorldData) {
      */
     fun isLoad(): Boolean {
         return if (bungeeConfig.getBoolean("enable")) {
-            false
+            BungeeWorld.checkWorld(this).get()
         } else {
             val world = Bukkit.getWorld("PixelWorldPro/cache/world/${worldData.type}/${worldData.id}/world")
             world != null
@@ -145,7 +145,7 @@ class PixelWorldProWorld(val worldData: WorldData) {
             world.keepSpawnInMemory = false
             LocalWorld.loadWorld[worldData.id] = this
             if (bungee) {
-                val bungeeData = getDataConfig("example")
+                val bungeeData = getDataConfig("bungee")
                 bungeeData.set("load.server", BungeeWorld.getBungeeData().server)
                 bungeeData.saveToFile()
             }
@@ -169,7 +169,7 @@ class PixelWorldProWorld(val worldData: WorldData) {
             WorldCache.setUnUseWorld(this)
             LocalWorld.loadWorld.remove(worldData.id)
             if (bungee) {
-                val bungeeData = getDataConfig("example")
+                val bungeeData = getDataConfig("bungee")
                 bungeeData.set("load.server", null)
                 bungeeData.saveToFile()
             }
@@ -192,7 +192,11 @@ class PixelWorldProWorld(val worldData: WorldData) {
      */
     fun teleport(player: Player) {
         if (!isLoad()) {
-            load()
+            if (bungeeConfig.getBoolean("enable")) {
+                BungeeWorld.loadWorld(this)
+            } else {
+                load()
+            }
         }
         val world = Bukkit.getWorld("PixelWorldPro/cache/world/${worldData.type}/${worldData.id}/world")
         if (world != null) {
@@ -213,6 +217,8 @@ class PixelWorldProWorld(val worldData: WorldData) {
             } else {
                 player.teleport(world.spawnLocation)
             }
+        } else if (Config.bungee.getBoolean("enable")) {
+            BungeeWorld.teleport(this, player)
         }
     }
 
