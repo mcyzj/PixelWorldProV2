@@ -2,9 +2,9 @@ package com.mcyzj.pixelworldpro.v2.core
 
 import com.mcyzj.lib.plugin.JiangLib
 import com.mcyzj.lib.plugin.Logger
-import com.mcyzj.pixelworldpro.v2.core.bungee.Communicate
-import com.mcyzj.pixelworldpro.v2.core.bungee.DataProcessing
-import com.mcyzj.pixelworldpro.v2.core.bungee.RedisConfig
+import com.mcyzj.pixelworldpro.v2.core.bungee.redis.Communicate
+import com.mcyzj.pixelworldpro.v2.core.bungee.redis.DataProcessing
+import com.mcyzj.pixelworldpro.v2.core.bungee.redis.RedisConfig
 import com.mcyzj.pixelworldpro.v2.core.command.CommandCore
 import com.mcyzj.pixelworldpro.v2.core.database.DatabaseAPI
 import com.mcyzj.pixelworldpro.v2.core.database.MysqlDatabaseAPI
@@ -14,6 +14,8 @@ import com.mcyzj.pixelworldpro.v2.core.util.Config
 import com.mcyzj.pixelworldpro.v2.core.util.Icon
 import com.mcyzj.pixelworldpro.v2.core.util.Install
 import com.mcyzj.pixelworldpro.v2.core.world.LocalWorld
+import com.mcyzj.pixelworldpro.v2.core.world.WorldCache
+import com.mcyzj.pixelworldpro.v2.core.world.WorldImpl
 import com.mcyzj.pixelworldpro.v2.core.world.WorldCache.cleanWorldCache
 import com.mcyzj.pixelworldpro.v2.core.world.WorldListener
 import com.xbaimiao.easylib.EasyPlugin
@@ -52,9 +54,10 @@ class PixelWorldPro: EasyPlugin() {
             log.info("加载MySQL数据库", true)
             databaseApi = MysqlDatabaseAPI()
         }
+        //注册世界驱动
+        WorldCache.regWorldDriver("local", LocalWorld())
         //注册扩展
         ExpansionManager.loadAllExpansion()
-
         //注册指令
         CommandCore().commandRoot.register()
         //启动回收线程
@@ -80,7 +83,7 @@ class PixelWorldPro: EasyPlugin() {
             //注册监听
             Communicate.listener["local"] = DataProcessing
             //注册世界tickets计算
-            LocalWorld.updateAllWorlds()
+            WorldImpl.updateAllWorlds()
         }
     }
 

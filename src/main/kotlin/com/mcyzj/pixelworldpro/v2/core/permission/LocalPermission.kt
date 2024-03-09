@@ -2,6 +2,7 @@ package com.mcyzj.pixelworldpro.v2.core.permission
 
 import com.mcyzj.pixelworldpro.v2.core.permission.dataclass.*
 import com.mcyzj.pixelworldpro.v2.core.util.Config
+import com.mcyzj.pixelworldpro.v2.core.world.LocalWorld
 import com.mcyzj.pixelworldpro.v2.core.world.PixelWorldProWorld
 import com.mcyzj.pixelworldpro.v2.core.world.dataclass.WorldData
 import com.xbaimiao.easylib.bridge.economy.PlayerPoints

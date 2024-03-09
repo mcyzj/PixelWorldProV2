@@ -2,36 +2,26 @@ package com.mcyzj.pixelworldpro.v2.core.world
 
 import com.mcyzj.lib.plugin.file.BuiltOutConfiguration
 import com.mcyzj.pixelworldpro.v2.core.PixelWorldPro
-import com.mcyzj.pixelworldpro.v2.core.bungee.BungeeWorld
+import com.mcyzj.pixelworldpro.v2.core.permission.dataclass.ResultData
 import com.mcyzj.pixelworldpro.v2.core.util.Config
 import com.mcyzj.pixelworldpro.v2.core.world.compress.None
 import com.mcyzj.pixelworldpro.v2.core.world.compress.Zip
-import com.mcyzj.pixelworldpro.v2.core.world.dataclass.LocationData
 import com.mcyzj.pixelworldpro.v2.core.world.dataclass.WorldData
 import org.bukkit.Bukkit
-import org.bukkit.Location
 import org.bukkit.World
-import org.bukkit.WorldCreator
 import org.bukkit.entity.Player
 import java.io.File
+import java.util.concurrent.CompletableFuture
 
-
-/**
- * PixelWorldPro世界
- * @return: PixelWorldProWorld
- */
-@Suppress("unused")
-class PixelWorldProWorld(val worldData: WorldData) {
+class PixelWorldProWorld(val worldData: WorldData, val bungeeExecution: Boolean = Config.bungee.getBoolean("enable")){
     private val log = PixelWorldPro.instance.log
     private val lang = Config.getLang()
     private val worldConfig = Config.world
-    private val bungeeConfig = Config.bungee
-    private val bungee = bungeeConfig.getBoolean("enable")
 
     /**
      * 获取世界压缩锁
      */
-    fun isCompress(): Boolean {
+    private fun isCompress(): Boolean {
         val compressConfig = getDataConfig("compress")
         return compressConfig.getBoolean("block")
     }
@@ -108,74 +98,6 @@ class PixelWorldProWorld(val worldData: WorldData) {
     }
 
     /**
-     * 是否已加载
-     */
-    fun isLoad(): Boolean {
-        return if (bungeeConfig.getBoolean("enable")) {
-            BungeeWorld.checkWorld(this).get()
-        } else {
-            val world = Bukkit.getWorld("PixelWorldPro/cache/world/${worldData.type}/${worldData.id}/world")
-            world != null
-        }
-    }
-
-    /**
-     * 加载世界
-     */
-    fun load(): World? {
-        if (WorldCache.isInUnUse(this)){
-            return null
-        }
-        if (!isLoad()) {
-            decompression()
-            log.info(lang.getString("world.load") + "${worldData.name}[${worldData.id}]")
-            val worldCreator = WorldCreator("PixelWorldPro/cache/world/${worldData.type}/${worldData.id}/world")
-            val worldDataConfig = getDataConfig("world")
-            when (worldDataConfig.getString("worldCreator")) {
-                "auto" -> {}
-                else -> {
-                    worldCreator.generator(worldDataConfig.getString("worldCreator"))
-                }
-            }
-            val seed = worldDataConfig.getString("seed")
-            if (seed != null) {
-                worldCreator.seed(seed.toLong())
-            }
-            val world = Bukkit.createWorld(worldCreator) ?: return null
-            world.keepSpawnInMemory = false
-            LocalWorld.loadWorld[worldData.id] = this
-            if (bungee) {
-                val bungeeData = getDataConfig("bungee")
-                bungeeData.set("load.server", BungeeWorld.getBungeeData().server)
-                bungeeData.saveToFile()
-            }
-            return world
-        }
-        return null
-    }
-
-    /**
-     * 卸载世界
-     */
-    fun unload() {
-        if (isLoad()) {
-            log.info(lang.getString("world.unload") + "${worldData.name}[${worldData.id}]")
-            val world = Bukkit.getWorld("PixelWorldPro/cache/world/${worldData.type}/${worldData.id}/world")!!
-            val mainWorld = Bukkit.getWorld("world")!!
-            for (player in world.players) {
-                player.teleport(mainWorld.spawnLocation)
-            }
-            Bukkit.unloadWorld(world, true)
-            WorldCache.setUnUseWorld(this)
-            LocalWorld.loadWorld.remove(worldData.id)
-            if (bungee) {
-                val bungeeData = getDataConfig("bungee")
-                bungeeData.set("load.server", null)
-                bungeeData.saveToFile()
-            }
-        }
-    }
-    /**
      * 获取数据文件
      */
     fun getDataFile(file: String): File {
@@ -187,66 +109,39 @@ class PixelWorldProWorld(val worldData: WorldData) {
     fun getDataConfig(file: String): BuiltOutConfiguration {
         return BuiltOutConfiguration("./PixelWorldPro/world/${worldData.type}/${worldData.id}/data/${file}.yml")
     }
-    /**
-     * 传送
-     */
-    fun teleport(player: Player) {
-        if (!isLoad()) {
-            if (bungeeConfig.getBoolean("enable")) {
-                BungeeWorld.loadWorld(this)
-            } else {
-                load()
-            }
-        }
-        val world = Bukkit.getWorld("PixelWorldPro/cache/world/${worldData.type}/${worldData.id}/world")
-        if (world != null) {
-            val worldDataConfig = getDataConfig("world")
-            val location = if (worldDataConfig.getConfigurationSection("location") != null) {
-                LocationData(
-                    worldDataConfig.getDouble("location.x"),
-                    worldDataConfig.getDouble("location.y"),
-                    worldDataConfig.getDouble("location.z")
-                )
-            } else {
-                null
-            }
-            if (location != null) {
-                player.teleport(
-                    Location(world,location.x, location.y, location.z)
-                )
-            } else {
-                player.teleport(world.spawnLocation)
-            }
-        } else if (Config.bungee.getBoolean("enable")) {
-            BungeeWorld.teleport(this, player)
-        }
-    }
 
     fun tickets(): Double {
-        if (!isLoad()) {
+        if (!isLoad().get()) {
             return 0.0
         }
-        return if (bungeeConfig.getBoolean("enable")) {
-            0.0
-        } else {
-            val initial = worldConfig.getDouble("tickets.initial")
-            val tpsMax = worldConfig.getDouble("tickets.tps.max")
-            val tpsWeight = worldConfig.getDouble("tickets.tps.weight")
-            val world = worldConfig.getDouble("tickets.world")
-            val player = worldConfig.getDouble("tickets.player")
-            val tpsTickets = (tpsMax - Bukkit.getTPS().first()) * tpsWeight
-            val playerList = LocalWorld.onlinePlayer[worldData.id] ?: ArrayList<Player>()
-            val playerTickets = playerList.size* player
-            initial + tpsTickets + world + playerTickets
-        }
+        val initial = worldConfig.getDouble("tickets.initial")
+        val tpsMax = worldConfig.getDouble("tickets.tps.max")
+        val tpsWeight = worldConfig.getDouble("tickets.tps.weight")
+        val world = worldConfig.getDouble("tickets.world")
+        val player = worldConfig.getDouble("tickets.player")
+        val tpsTickets = (tpsMax - Bukkit.getTPS().first()) * tpsWeight
+        val playerList = WorldImpl.onlinePlayer[worldData.id] ?: ArrayList<Player>()
+        val playerTickets = playerList.size * player
+        return initial + tpsTickets + world + playerTickets
     }
 
-    fun getWorlds(): HashMap<String, World> {
-        val worldMap = HashMap<String, World>()
-        if (isLoad()) {
-            val world = Bukkit.getWorld("PixelWorldPro/cache/world/${worldData.type}/${worldData.id}/world")!!
-            worldMap["world"] = world
-        }
-        return worldMap
+    fun load(): CompletableFuture<ResultData> {
+        TODO("Not yet implemented")
+    }
+
+    fun unload(): CompletableFuture<ResultData> {
+        TODO("Not yet implemented")
+    }
+
+    fun isLoad(): CompletableFuture<Boolean> {
+        TODO("Not yet implemented")
+    }
+
+    fun teleport(player: Player) {
+        TODO("Not yet implemented")
+    }
+
+    fun getWorlds(): HashMap<String, World>? {
+        return null
     }
 }

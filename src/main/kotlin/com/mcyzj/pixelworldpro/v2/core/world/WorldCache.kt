@@ -10,6 +10,15 @@ object WorldCache {
     private val lang = Config.getLang()
     private val log = com.mcyzj.pixelworldpro.v2.core.PixelWorldPro.instance.log
     private val unUseList = ArrayList<Int>()
+    private val worldDriver = HashMap<String, PixelWorldProWorldAPI>()
+
+    fun regWorldDriver(name: String, driver: PixelWorldProWorldAPI) {
+        worldDriver[name] = driver
+    }
+
+    fun getWorldDriver(name: String): PixelWorldProWorldAPI? {
+        return worldDriver[name]
+    }
 
     fun getCacheConfig(file: String): BuiltOutConfiguration {
         return BuiltOutConfiguration("./PixelWorldPro/cache/$file")

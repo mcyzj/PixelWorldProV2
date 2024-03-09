@@ -1,9 +1,8 @@
 package com.mcyzj.pixelworldpro.v2.core.command
 
 import com.mcyzj.pixelworldpro.v2.core.api.PixelWorldProApi
-import com.mcyzj.pixelworldpro.v2.core.bungee.BungeeWorld
 import com.mcyzj.pixelworldpro.v2.core.util.Config
-import com.mcyzj.pixelworldpro.v2.core.world.LocalWorld
+import com.mcyzj.pixelworldpro.v2.core.world.WorldImpl
 import com.xbaimiao.easylib.module.command.command
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
@@ -21,10 +20,10 @@ class CommandCore {
             val player = sender as Player
             when (args.size) {
                 0 -> {
-                    sender.sendMessage(LocalWorld.createWorld(player, null, null).reason)
+                    sender.sendMessage(WorldImpl.createWorld(player, null, null).reason)
                 }
                 1 -> {
-                    sender.sendMessage(LocalWorld.createWorld(player, args[0], null).reason)
+                    sender.sendMessage(WorldImpl.createWorld(player, args[0], null).reason)
                 }
                 2 -> {
                     val template = if (args[0] =="auto") {
@@ -38,7 +37,7 @@ class CommandCore {
                         sender.sendMessage(lang.getString("check.notEnough.seed") ?: "种子不合法")
                         return@exec
                     }
-                    sender.sendMessage(LocalWorld.createWorld(player, template, seed).reason)
+                    sender.sendMessage(WorldImpl.createWorld(player, template, seed).reason)
                 }
             }
         }
@@ -58,7 +57,7 @@ class CommandCore {
                     world.teleport(player)
                 }
                 1 -> {
-                    sender.sendMessage(LocalWorld.teleport(args[0], player).reason)
+                    sender.sendMessage(WorldImpl.teleport(args[0], player).reason)
                 }
             }
         }
@@ -73,11 +72,7 @@ class CommandCore {
             }
             val player = sender as Player
             val world = PixelWorldProApi().getWorld(player.uniqueId) ?: return@exec
-            if (Config.bungee.getBoolean("enable")) {
-                BungeeWorld.unloadWorld(world)
-            } else {
-                world.unload()
-            }
+            world.unload()
         }
     }
 

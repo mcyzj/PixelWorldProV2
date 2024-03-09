@@ -1,13 +1,14 @@
-package com.mcyzj.pixelworldpro.v2.core.bungee
+package com.mcyzj.pixelworldpro.v2.core.bungee.redis
 
 import com.google.gson.JsonObject
 import com.mcyzj.lib.plugin.file.BuiltOutConfiguration
 import com.mcyzj.pixelworldpro.v2.core.PixelWorldPro
 import com.mcyzj.pixelworldpro.v2.core.api.PixelWorldProApi
-import com.mcyzj.pixelworldpro.v2.core.world.LocalWorld
+import com.mcyzj.pixelworldpro.v2.core.bungee.BungeeWorldImpl
+import com.mcyzj.pixelworldpro.v2.core.world.WorldImpl
 import com.xbaimiao.easylib.module.utils.submit
 import org.bukkit.Bukkit
-import org.bukkit.Location
+import org.json.simple.JSONObject
 import java.util.*
 
 object DataProcessing : DataProcessingAPI {
@@ -17,10 +18,10 @@ object DataProcessing : DataProcessingAPI {
         when (data["type"].asString) {
             "UpdateServer" -> {
                 val id = data["id"].asInt
-                val config = BuiltOutConfiguration("./PixelWorldPro/cache/bungee/server/$id.yml")
+                val config = BuiltOutConfiguration("./PixelWorldPro/cache/bungee/response/$id.yml")
                 config.set("return", true)
                 config.saveToFile()
-                BungeeWorld.saveServerData()
+                BungeeWorldImpl.saveServerData()
                 return
             }
             "WorldCreate" -> {
@@ -35,23 +36,23 @@ object DataProcessing : DataProcessingAPI {
                 } catch (_:Exception) {
                     null
                 }
-                LocalWorld.createWorldLocal(owner, template, seed)
+                WorldImpl.createWorldLocal(owner, template, seed)
                 return
             }
             "WorldLoad" -> {
                 val id = data["id"].asInt
-                PixelWorldProApi().getWorld(id)!!.load()
+                PixelWorldProApi().getWorld(id, false)!!.load()
                 return
             }
             "WorldUnload" -> {
                 val id = data["id"].asInt
-                PixelWorldProApi().getWorld(id)!!.unload()
+                PixelWorldProApi().getWorld(id, false)!!.unload()
                 return
             }
             "WorldTeleport" -> {
                 val id = data["id"].asInt
                 val uuid = UUID.fromString(data["player"].asString)
-                val world = PixelWorldProApi().getWorld(id)!!
+                val world = PixelWorldProApi().getWorld(id, false)!!
                 Thread {
                     var times = 0
                     while (times < 1000) {

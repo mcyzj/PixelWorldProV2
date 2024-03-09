@@ -1,22 +1,22 @@
 package com.mcyzj.pixelworldpro.v2.core.world
 
 import com.mcyzj.lib.plugin.file.BuiltOutConfiguration
-import com.mcyzj.pixelworldpro.v2.core.util.Config
 import com.mcyzj.pixelworldpro.v2.core.permission.PermissionImpl
+import com.mcyzj.pixelworldpro.v2.core.util.Config
 import com.mcyzj.pixelworldpro.v2.core.world.dataclass.LocationData
 import com.mcyzj.pixelworldpro.v2.core.world.dataclass.WorldCreateData
 import com.xbaimiao.easylib.bridge.replacePlaceholder
-import com.xbaimiao.easylib.module.utils.colored
+import com.xbaimiao.easylib.module.chat.colored
 import org.bukkit.Bukkit
 import java.io.File
-import java.util.UUID
+import java.util.*
 
 /**
  * 创建PixelWorldPro世界
  * @return: PixelWorldProWorld
  */
 @Suppress("unused")
-class PixelWorldProWorldTemplate(template: String, val type: String? = "local") {
+class TemplateWorld(template: String, val type: String? = "local") {
     val templateConfig = BuiltOutConfiguration("./PixelWorldPro/template/$template/template.yml")
     private val templateFile = File("./PixelWorldPro/template/$template")
     private val log = com.mcyzj.pixelworldpro.v2.core.PixelWorldPro.instance.log
@@ -25,25 +25,23 @@ class PixelWorldProWorldTemplate(template: String, val type: String? = "local") 
     /**
      * 世界生成器
      */
-    var worldCreator: String
+    private var worldCreator: String = templateConfig.getString("creator") ?: "auto"
 
     /**
      * 世界规则
      */
-    val gameRule: HashMap<String, String>
+    private val gameRule: HashMap<String, String> = HashMap()
 
     /**
      * 世界出生点
      */
-    var location: LocationData?
+    private var location: LocationData?
 
     /**
      * 世界种子
      */
     var seed: Long? = null
     init {
-        worldCreator = templateConfig.getString("creator") ?: "auto"
-        gameRule = HashMap()
         val ruleConfig = templateConfig.getConfigurationSection("gameRule")
         if (ruleConfig != null) {
             for (key in ruleConfig.getKeys(false)){
@@ -68,7 +66,8 @@ class PixelWorldProWorldTemplate(template: String, val type: String? = "local") 
     fun createWorld(owner: UUID): PixelWorldProWorld {
         log.info(lang.getString("world.load")!!.replace("[0]", Thread.currentThread().name))
         val offlinePlayer = Bukkit.getOfflinePlayer(owner)
-        val name = (worldConfig.getString("create.name") ?: "[uuid]的世界").replacePlaceholder(offlinePlayer).colored()
+        val name =
+            (worldConfig.getString("create.name") ?: "[uuid]的世界").replacePlaceholder(offlinePlayer).colored()
         val worldData = com.mcyzj.pixelworldpro.v2.core.PixelWorldPro.databaseApi.createWorldData(
             WorldCreateData(
                 owner = owner,

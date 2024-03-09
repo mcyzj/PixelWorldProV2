@@ -22,6 +22,10 @@ check:
   template:
     empty: "没有模板"
     notFind: "没有找到模板"
+  world:
+    alreadyLoad: "世界被已加载，请不要重复加载"
+    bungeeLock: "世界被已Bungee保护锁定"
+    noServer: "没有可供世界加载的服务器"
 teleport:
   successful: "传送中"
   notLoad: "世界还未加载"

@@ -1,9 +1,10 @@
 @file:Suppress("SameParameterValue")
-package com.mcyzj.pixelworldpro.v2.core.bungee
+package com.mcyzj.pixelworldpro.v2.core.bungee.redis
 
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.mcyzj.pixelworldpro.v2.core.PixelWorldPro
+import com.mcyzj.pixelworldpro.v2.core.bungee.BungeeWorldImpl
 import com.xbaimiao.easylib.module.utils.submit
 import org.bukkit.entity.Player
 import org.json.simple.JSONObject
@@ -24,13 +25,15 @@ object Communicate : JedisPubSub() {
         }
         val g = Gson()
         val back: JsonObject = g.fromJson(message, JsonObject::class.java)
-        if (back["server"].asString != BungeeWorld.getBungeeData().server) {
-            return
+        if (back["server"].asString != "all") {
+            if (back["server"].asString != BungeeWorldImpl.getBungeeData().server) {
+                return
+            }
         }
         receive(back["plugin"].asString, back)
     }
 
-    fun send(player: Player?, server: String, type: String, msg: JSONObject) {
+    fun send(player: Player?, server: String? = "all", type: String, msg: JSONObject) {
         msg["server"] = server
         msg["plugin"] = type
         push(msg.toString())

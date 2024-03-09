@@ -3,10 +3,9 @@ package com.mcyzj.pixelworldpro.v2.core.command
 import com.mcyzj.lib.plugin.PlayerFound
 import com.mcyzj.pixelworldpro.v2.core.api.PixelWorldProApi
 import com.mcyzj.pixelworldpro.v2.core.util.Config
-import com.mcyzj.pixelworldpro.v2.core.world.LocalWorld
+import com.mcyzj.pixelworldpro.v2.core.world.WorldImpl
 import com.xbaimiao.easylib.module.command.command
 import org.bukkit.command.CommandSender
-import org.bukkit.entity.Player
 
 class AdminCommand {
     private val lang = Config.getLang()
@@ -16,12 +15,12 @@ class AdminCommand {
             when (args.size) {
                 1 -> {
                     val player = PlayerFound.getOfflinePlayer(args[0])
-                    LocalWorld.createWorldLocal(player.uniqueId, null, null)
+                    WorldImpl.createWorldLocal(player.uniqueId, null, null)
                 }
 
                 2 -> {
                     val player = PlayerFound.getOfflinePlayer(args[0])
-                    LocalWorld.createWorldLocal(player.uniqueId, args[1], null)
+                    WorldImpl.createWorldLocal(player.uniqueId, args[1], null)
                 }
 
                 3 -> {
@@ -37,7 +36,7 @@ class AdminCommand {
                         sender.sendMessage(lang.getString("check.notEnough.seed") ?: "种子不合法")
                         return@exec
                     }
-                    LocalWorld.createWorldLocal(player.uniqueId, template, seed)
+                    WorldImpl.createWorldLocal(player.uniqueId, template, seed)
                 }
             }
         }

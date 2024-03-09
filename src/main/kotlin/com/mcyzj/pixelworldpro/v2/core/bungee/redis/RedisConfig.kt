@@ -1,4 +1,4 @@
-package com.mcyzj.pixelworldpro.v2.core.bungee
+package com.mcyzj.pixelworldpro.v2.core.bungee.redis
 
 import org.bukkit.configuration.Configuration
 import redis.clients.jedis.JedisPoolConfig

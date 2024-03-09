@@ -23,7 +23,7 @@ class WorldListener : Listener {
             log.info("改变对象为op，监听结束", true)
             return
         }
-        val worldID = LocalWorld.getWorldID(e.player.world.name)
+        val worldID = WorldImpl.getWorldID(e.player.world.name)
         if (worldID == null){
             log.info("世界数据获取为空，监听结束", true)
             return
@@ -121,7 +121,7 @@ class WorldListener : Listener {
             }
             return
         }
-        val toWorldId = LocalWorld.getWorldID(e.player.world.name)
+        val toWorldId = WorldImpl.getWorldID(e.player.world.name)
         if (toWorldId == null){
             if (PixelWorldPro.instance.config.getBoolean("debug")){
                 Bukkit.getConsoleSender().sendMessage("§aPixelWorldPro 世界数据获取为空，监听结束")
@@ -137,12 +137,12 @@ class WorldListener : Listener {
         }
         Thread {
             sleep(10*1000)
-            LocalWorld.updateWorldPlayer(PixelWorldProWorld(worldData))
-            val fromWorldId = LocalWorld.getWorldID(e.from.world.name)
+            WorldImpl.updateWorldPlayer(PixelWorldProWorld(worldData))
+            val fromWorldId = WorldImpl.getWorldID(e.from.world.name)
             if (fromWorldId != null) {
                 val fromWorldData = PixelWorldProApi().getWorld(fromWorldId)
                 if (fromWorldData != null) {
-                    LocalWorld.updateWorldPlayer(fromWorldData)
+                    WorldImpl.updateWorldPlayer(fromWorldData)
                 }
             }
         }.start()
@@ -190,7 +190,7 @@ class WorldListener : Listener {
             }
             return
         }
-        val worldName = LocalWorld.getWorldID(e.player.world.name)
+        val worldName = WorldImpl.getWorldID(e.player.world.name)
         if (worldName == null){
             if (PixelWorldPro.instance.config.getBoolean("debug")){
                 Bukkit.getConsoleSender().sendMessage("§aPixelWorldPro 世界数据获取为空，监听结束")
@@ -245,7 +245,7 @@ class WorldListener : Listener {
             }
             return
         }
-        val worldName = LocalWorld.getWorldID(e.player.world.name)
+        val worldName = WorldImpl.getWorldID(e.player.world.name)
         if (worldName == null){
             if (PixelWorldPro.instance.config.getBoolean("debug")){
                 Bukkit.getConsoleSender().sendMessage("§aPixelWorldPro 世界数据获取为空，监听结束")
@@ -299,7 +299,7 @@ class WorldListener : Listener {
             }
             return
         }
-        val worldName = LocalWorld.getWorldID(e.player.world.name)
+        val worldName = WorldImpl.getWorldID(e.player.world.name)
         if (worldName == null){
             if (PixelWorldPro.instance.config.getBoolean("debug")){
                 Bukkit.getConsoleSender().sendMessage("§aPixelWorldPro 世界数据获取为空，监听结束")
@@ -354,7 +354,7 @@ class WorldListener : Listener {
                 }
                 return
             }
-            val worldName = LocalWorld.getWorldID(e.damager.world.name)
+            val worldName = WorldImpl.getWorldID(e.damager.world.name)
             if (worldName == null) {
                 if (PixelWorldPro.instance.config.getBoolean("debug")) {
                     Bukkit.getConsoleSender().sendMessage("§aPixelWorldPro 世界数据获取为空，监听结束")
@@ -403,7 +403,7 @@ class WorldListener : Listener {
                 }
                 return
             }
-            val worldName = LocalWorld.getWorldID(e.entity.world.name)
+            val worldName = WorldImpl.getWorldID(e.entity.world.name)
             if (worldName == null) {
                 if (PixelWorldPro.instance.config.getBoolean("debug")) {
                     Bukkit.getConsoleSender().sendMessage("§aPixelWorldPro 世界数据获取为空，监听结束")
@@ -453,7 +453,7 @@ class WorldListener : Listener {
                 }
                 return
             }
-            val worldName = LocalWorld.getWorldID(e.damager.world.name)
+            val worldName = WorldImpl.getWorldID(e.damager.world.name)
             if (worldName == null) {
                 if (PixelWorldPro.instance.config.getBoolean("debug")) {
                     Bukkit.getConsoleSender().sendMessage("§aPixelWorldPro 世界数据获取为空，监听结束")

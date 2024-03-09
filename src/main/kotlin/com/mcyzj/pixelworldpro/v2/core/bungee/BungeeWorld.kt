@@ -2,69 +2,23 @@ package com.mcyzj.pixelworldpro.v2.core.bungee
 
 import com.mcyzj.lib.plugin.file.BuiltOutConfiguration
 import com.mcyzj.pixelworldpro.v2.core.PixelWorldPro
+import com.mcyzj.pixelworldpro.v2.core.bungee.redis.Communicate
+import com.mcyzj.pixelworldpro.v2.core.permission.dataclass.ResultData
 import com.mcyzj.pixelworldpro.v2.core.util.Config
-import com.mcyzj.pixelworldpro.v2.core.world.LocalWorld
 import com.mcyzj.pixelworldpro.v2.core.world.PixelWorldProWorld
+import com.mcyzj.pixelworldpro.v2.core.world.PixelWorldProWorldAPI
 import com.xbaimiao.easylib.module.chat.BuiltInConfiguration
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.json.simple.JSONObject
 import java.io.File
-import java.lang.Thread.sleep
 import java.util.*
 import java.util.concurrent.CompletableFuture
 
-object BungeeWorld {
-    private val bungeeConfig = Config.bungee
+class BungeeWorld(): PixelWorldProWorldAPI {
+    private val lang = Config.getLang()
     private val publicBungeeConfig = getPublicBungeeConfig()
     private val log = PixelWorldPro.instance.log
-
-    fun getBungeeData(): BungeeData {
-        val name = bungeeConfig.getString("name")!!
-        val server = bungeeConfig.getString("server")!!
-        val mode = bungeeConfig.getString("mode")!!
-        var load = (mode != "lobby")
-        val tickets = LocalWorld.serverTickets
-        val maxTickets = bungeeConfig.getDouble("maxTickets")
-        if ((load).and(maxTickets > 0.0)) {
-            load = (tickets < maxTickets)
-        }
-        val worlds = LocalWorld.loadWorld.size
-        val maxWorlds = bungeeConfig.getInt("maxWorld")
-        if ((load).and(maxWorlds > 0)) {
-            load = (worlds < maxWorlds)
-        }
-        return BungeeData(
-            name, server, mode, tickets, maxTickets, worlds, maxWorlds, load
-        )
-    }
-
-    fun saveServerData() {
-        val data = getBungeeData()
-        val config = BuiltOutConfiguration("./PixelWorldPro/cache/bungee.yml")
-        config.set("server.${data.server}.name", data.name)
-        config.set("server.${data.server}.mode", data.mode)
-        config.set("server.${data.server}.tickets", data.tickets)
-        config.set("server.${data.server}.maxTickets", data.maxTickets)
-        config.set("server.${data.server}.world", data.worlds)
-        config.set("server.${data.server}.maxWorld", data.maxWorlds)
-        config.set("server.${data.server}.load", data.load)
-        config.saveToFile()
-    }
-
-    fun getServerData(server: String): BungeeData? {
-        val config = BuiltOutConfiguration("./PixelWorldPro/cache/bungee.yml").getConfigurationSection("server.$server") ?: return null
-        val name = config.getString("name")!!
-        val mode = config.getString("mode")!!
-        val tickets = config.getDouble("tickets")
-        val maxTickets = config.getDouble("maxTickets")
-        val worlds = config.getInt("world")
-        val maxWorlds = config.getInt("maxWorld")
-        val load = config.getBoolean("load")
-        return BungeeData(
-            name, server, mode, tickets, maxTickets, worlds, maxWorlds, load
-        )
-    }
 
     private fun getPublicBungeeConfig(): BuiltOutConfiguration {
         val config = BuiltOutConfiguration("./PixelWorldPro/bungee.yml")
@@ -75,7 +29,62 @@ object BungeeWorld {
         return BuiltOutConfiguration("./PixelWorldPro/bungee.yml")
     }
 
-    fun getServer(uuid: UUID) : BungeeData? {
+    private fun getResponseId(): Int {
+        var time = 0
+        var checkId = Random().nextInt(900000000) + 100000000
+        while (true) {
+            if (!File("./PixelWorldPro/cache/bungee/response/$checkId.yml").exists()) {
+                break
+            }
+            time ++
+            checkId = Random().nextInt(900000000) + 100000000
+            if (time > 60) {
+                return 0
+            }
+        }
+        return checkId
+    }
+
+    private fun getServerResponse(checkId: Int, maxTime:Int = 10): CompletableFuture<Boolean> {
+        val future = CompletableFuture<Boolean>()
+        Thread {
+            if (checkId == 0) {
+                future.complete(false)
+                return@Thread
+            }
+            var time = 0
+            while (true) {
+                val serverReturn = BuiltOutConfiguration("./PixelWorldPro/cache/bungee/response/$checkId.yml").getString("return")
+                if (serverReturn == "true") {
+                    File("./PixelWorldPro/cache/bungee/response/$checkId.yml").delete()
+                    future.complete(true)
+                    return@Thread
+                }
+                Thread.sleep(1000)
+                time ++
+                if ((time > maxTime).or(serverReturn == "false")) {
+                    File("./PixelWorldPro/cache/bungee/response/$checkId.yml").delete()
+                    future.complete(false)
+                    return@Thread
+                }
+            }
+        }.start()
+        return future
+    }
+
+    private fun isLock(world: PixelWorldProWorld): Boolean {
+        val bungeeData = world.getDataConfig("bungee")
+        return bungeeData.getBoolean("lock")
+    }
+
+    private fun setLock(world: PixelWorldProWorld, value: Boolean) {
+        val bungeeData = world.getDataConfig("bungee")
+        bungeeData.set("lock", value)
+        bungeeData.saveToFile()
+    }
+
+    private fun getServer(world: PixelWorldProWorld) : BungeeData? {
+        val uuid = world.worldData.owner
         val player = Bukkit.getPlayer(uuid)
         var group = "default"
         if (player != null) {
@@ -91,61 +100,38 @@ object BungeeWorld {
                 }
             }
         }
-        val serverList = publicBungeeConfig.getStringList("group.$group.server")
-        var serverData: BungeeData? = null
-        log.info(serverList.toString(), true)
-        for (server in serverList) {
-            val bungeeData = getServerData(server) ?: continue
-            log.info(bungeeData.toString(), true)
-            if (!bungeeData.load) {
-                continue
-            }
-            if (serverData != null) {
-                if (serverData.tickets < bungeeData.tickets) {
+        var time = 0
+        while (true) {
+            val serverList = publicBungeeConfig.getStringList("group.$group.server")
+            var serverData: BungeeData? = null
+            log.info(serverList.toString(), true)
+            for (server in serverList) {
+                val bungeeData = BungeeWorldImpl.getServerData(server) ?: continue
+                log.info(bungeeData.toString(), true)
+                if (!bungeeData.load) {
                     continue
                 }
+                if (serverData != null) {
+                    if (serverData.tickets < bungeeData.tickets) {
+                        continue
+                    }
+                }
+                serverData = bungeeData
             }
-            serverData = bungeeData
+            log.info(serverData?.toString(), true)
+            if (serverData != null) {
+                if (checkServer(serverData.server).get()) {
+                    return serverData
+                }
+            }
+            time ++
+            if (time > 10) {
+                return null
+            }
         }
-        log.info(serverData?.toString(), true)
-        return serverData
     }
 
-    fun checkServer(server: String): CompletableFuture<Boolean> {
-        val future = CompletableFuture<Boolean>()
-        val config = BuiltOutConfiguration("./PixelWorldPro/cache/bungee.yml")
-        config.set("server.$server", null)
-        config.saveToFile()
-        Thread {
-            var id = Random().nextInt(900000000) + 100000000
-            if (File("./PixelWorldPro/cache/bungee/server/$id.yml").exists()) {
-                id = Random().nextInt(900000000) + 100000000
-            }
-            val data = JSONObject()
-            data["type"] = "UpdateServer"
-            data["id"] = id
-            Communicate.send(null, server, "local", data)
-            var time = 0
-            while (true) {
-                val serverReturn = BuiltOutConfiguration("./PixelWorldPro/cache/bungee/server/$id.yml").getBoolean("return")
-                if (serverReturn) {
-                    File("./PixelWorldPro/cache/bungee/server/$id.yml").delete()
-                    future.complete(true)
-                    return@Thread
-                }
-                sleep(1000)
-                time ++
-                if (time > 10) {
-                    File("./PixelWorldPro/cache/bungee/server/$id.yml").delete()
-                    future.complete(false)
-                    break
-                }
-            }
-        }.start()
-        return future
-    }
-
-    fun checkWorld(world: PixelWorldProWorld): CompletableFuture<Boolean> {
+    override fun isLoad(world: PixelWorldProWorld): CompletableFuture<Boolean> {
         val future = CompletableFuture<Boolean>()
         Thread {
             val bungeeData = world.getDataConfig("bungee")
@@ -154,124 +140,104 @@ object BungeeWorld {
                 future.complete(false)
                 return@Thread
             }
-            if (server == getBungeeData().server) {
+            if (server == BungeeWorldImpl.getBungeeData().server) {
                 val worlds = Bukkit.getWorld("PixelWorldPro/cache/world/${world.worldData.type}/${world.worldData.id}/world")
                 future.complete(worlds != null)
                 return@Thread
             }
-            var checkId = Random().nextInt(900000000) + 100000000
-            if (File("./PixelWorldPro/cache/bungee/world/$checkId.yml").exists()) {
-                checkId = Random().nextInt(900000000) + 100000000
-            }
+            val checkId = getResponseId()
             val data = JSONObject()
             data["type"] = "WorldCheck"
             data["id"] = world.worldData.id
             data["checkId"] = checkId
             Communicate.send(null, server, "local", data)
-            var time = 0
-            while (true) {
-                val serverReturn = BuiltOutConfiguration("./PixelWorldPro/cache/bungee/world/$checkId.yml").getString("return")
-                if (serverReturn == "true") {
-                    File("./PixelWorldPro/cache/bungee/world/$checkId.yml").delete()
-                    future.complete(true)
-                    return@Thread
-                }
-                sleep(1000)
-                time ++
-                if ((time > 10).or(serverReturn == "false")) {
-                    File("./PixelWorldPro/cache/bungee/world/$checkId.yml").delete()
-                    future.complete(false)
-                    break
-                }
-            }
+            future.complete(getServerResponse(checkId).get())
         }.start()
         return future
     }
 
-    fun createWorld(owner: UUID, template: String?, seed: Long?) {
-        var time = 0
-        var server: BungeeData? = null
-        while (time < 5) {
-            server = getServer(owner)
-            if (server == null) {
-                time++
-                sleep(1000)
-                continue
-            }
-            if (server.server == getBungeeData().server) {
-                break
-            }
-            val future = checkServer(server.name)
-            val back = future.get()
-            if (back) {
-                time = 5
-            } else {
-                server = null
-                time++
-            }
-        }
-        if (server == null) {
-            return
-        }
-        val data = JSONObject()
-        data["type"] = "WorldCreate"
-        data["owner"] = owner
-        data["template"] = template
-        data["seed"] = seed
-        Communicate.send(null, server.server, "local", data)
+    override fun teleport(player: Player, world: PixelWorldProWorld) {
+        TODO("Not yet implemented")
     }
 
-    fun loadWorld(world: PixelWorldProWorld) {
-        if (!world.isLoad()) {
-            var time = 0
-            var server: BungeeData? = null
-            while (time < 5) {
-                server = getServer(world.worldData.owner)
-                if (server == null) {
-                    time ++
-                    sleep(1000)
-                    continue
-                }
-                if (server.server == getBungeeData().server) {
-                    break
-                }
-                val future = checkServer(server.name)
-                future.thenApply {
-                    if (it) {
-                        time = 5
-                    } else {
-                        server = null
-                        time ++
-                    }
-                }
-            }
-            if (server == null) {
-                return
-            }
+    private fun checkServer(server: String): CompletableFuture<Boolean> {
+        val future = CompletableFuture<Boolean>()
+        val config = BuiltOutConfiguration("./PixelWorldPro/cache/bungee.yml")
+        config.set("server.$server", null)
+        config.saveToFile()
+        Thread {
+            val id = getResponseId()
             val data = JSONObject()
-            data["type"] = "WorldLoad"
-            data["id"] = world.worldData.id
-            Communicate.send(null, server!!.server, "local", data)
-        }
+            data["type"] = "UpdateServer"
+            data["id"] = id
+            Communicate.send(null, server, "local", data)
+            future.complete(getServerResponse(id).get())
+        }.start()
+        return future
     }
 
-    fun unloadWorld(world: PixelWorldProWorld) {
-        val bungeeData = world.getDataConfig("bungee")
-        val server = bungeeData.getString("load.server") ?: return
-        val data = JSONObject()
-        data["type"] = "WorldUnload"
-        data["id"] = world.worldData.id
-        Communicate.send(null, server, "local", data)
+    override fun load(world: PixelWorldProWorld): CompletableFuture<ResultData> {
+        val future = CompletableFuture<ResultData>()
+        Thread {
+            if (isLock(world)) {
+                val result = ResultData(
+                    false,
+                    lang.getString("check.world.bungeeLock") ?: "世界被已Bungee保护锁定"
+                )
+                future.complete(result)
+                return@Thread
+            }
+            try {
+                if (isLoad(world).get()) {
+                    val result = ResultData(
+                        false,
+                        lang.getString("check.world.alreadyLoad") ?: "世界被已加载，请不要重复加载"
+                    )
+                    future.complete(result)
+                    return@Thread
+                }
+                val server = getServer(world)
+                if (server == null) {
+                    val result = ResultData(
+                        false,
+                        lang.getString("check.world.noServer") ?: "没有可供世界加载的服务器"
+                    )
+                    future.complete(result)
+                    return@Thread
+                }
+                val bungeeData = world.getDataConfig("bungee")
+                bungeeData.set("load.server", server.server)
+                bungeeData.saveToFile()
+                setLock(world, true)
+                val data = JSONObject()
+                data["type"] = "WorldLoad"
+                data["id"] = world.worldData.id
+                val response = getResponseId()
+                data["response"] = response
+                Communicate.send(null, server.server, "local", data)
+                future.complete(ResultData(
+                    getServerResponse(response, 120).get(),
+                    ""
+                ))
+                setLock(world, false)
+                return@Thread
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+            setLock(world, false)
+            future.complete(ResultData(
+                false,
+                "内部错误[internal error]"
+            ))
+        }.start()
+        return future
     }
 
-    fun teleport(world: PixelWorldProWorld, player: Player) {
-        val bungeeData = world.getDataConfig("bungee")
-        val server = bungeeData.getString("load.server") ?: return
-        val data = JSONObject()
-        data["type"] = "WorldTeleport"
-        data["id"] = world.worldData.id
-        data["player"] = player.uniqueId
-        Communicate.send(null, server, "local", data)
-        Communicate.connect(player, server)
+    override fun unload(world: PixelWorldProWorld): CompletableFuture<ResultData> {
+        val future = CompletableFuture<ResultData>()
+        Thread {
+
+        }.start()
+        return future
     }
 }
