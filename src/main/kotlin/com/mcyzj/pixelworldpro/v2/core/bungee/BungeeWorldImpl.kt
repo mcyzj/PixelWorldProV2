@@ -65,4 +65,26 @@ object BungeeWorldImpl {
             name, server, mode, tickets, maxTickets, worlds, maxWorlds, load
         )
     }
+
+    fun createWorld(owner: UUID, template: String?, seed: Long?):CompletableFuture<Boolean> {
+        val future = CompletableFuture<Boolean>()
+        Thread {
+            val server = BungeeWorld().getServer(owner)
+            if (server == null) {
+                future.complete(false)
+                return@Thread
+            }
+            val response = BungeeWorld().getResponseId()
+            val data = JSONObject()
+            data["type"] = "WorldCreate"
+            data["owner"] = owner
+            data["template"] = template
+            data["seed"] = seed
+            data["response"] = response
+            Communicate.send(null, server.server, "local", data)
+            future.complete(BungeeWorld().getServerResponse(response, 120).get())
+            return@Thread
+        }.start()
+        return future
+    }
 }

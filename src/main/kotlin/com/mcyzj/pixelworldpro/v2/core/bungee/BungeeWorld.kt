@@ -15,7 +15,7 @@ import java.io.File
 import java.util.*
 import java.util.concurrent.CompletableFuture
 
-class BungeeWorld(): PixelWorldProWorldAPI {
+class BungeeWorld : PixelWorldProWorldAPI {
     private val lang = Config.getLang()
     private val publicBungeeConfig = getPublicBungeeConfig()
     private val log = PixelWorldPro.instance.log
@@ -29,7 +29,7 @@ class BungeeWorld(): PixelWorldProWorldAPI {
         return BuiltOutConfiguration("./PixelWorldPro/bungee.yml")
     }
 
-    private fun getResponseId(): Int {
+    fun getResponseId(): Int {
         var time = 0
         var checkId = Random().nextInt(900000000) + 100000000
         while (true) {
@@ -45,7 +45,7 @@ class BungeeWorld(): PixelWorldProWorldAPI {
         return checkId
     }
 
-    private fun getServerResponse(checkId: Int, maxTime:Int = 10): CompletableFuture<Boolean> {
+    fun getServerResponse(checkId: Int, maxTime:Int = 10): CompletableFuture<Boolean> {
         val future = CompletableFuture<Boolean>()
         Thread {
             if (checkId == 0) {
@@ -83,9 +83,8 @@ class BungeeWorld(): PixelWorldProWorldAPI {
         bungeeData.saveToFile()
     }
 
-    private fun getServer(world: PixelWorldProWorld) : BungeeData? {
-        val uuid = world.worldData.owner
-        val player = Bukkit.getPlayer(uuid)
+    fun getServer(owner: UUID) : BungeeData? {
+        val player = Bukkit.getPlayer(owner)
         var group = "default"
         if (player != null) {
             val groupConfig = publicBungeeConfig.getConfigurationSection("group")!!
@@ -196,7 +195,7 @@ class BungeeWorld(): PixelWorldProWorldAPI {
                     future.complete(result)
                     return@Thread
                 }
-                val server = getServer(world)
+                val server = getServer(world.worldData.owner)
                 if (server == null) {
                     val result = ResultData(
                         false,

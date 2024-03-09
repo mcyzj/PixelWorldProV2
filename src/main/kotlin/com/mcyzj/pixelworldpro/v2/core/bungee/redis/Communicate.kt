@@ -19,18 +19,20 @@ object Communicate : JedisPubSub() {
     val listener = HashMap<String, DataProcessingAPI>()
     val log = PixelWorldPro.instance.log
     override fun onMessage(channel: String?, message: String?) {
-        log.info(channel + message.toString(), true)
-        if (channel != PixelWorldPro.redisConfig.channel) {
-            return
-        }
-        val g = Gson()
-        val back: JsonObject = g.fromJson(message, JsonObject::class.java)
-        if (back["server"].asString != "all") {
-            if (back["server"].asString != BungeeWorldImpl.getBungeeData().server) {
-                return
+        Thread {
+            log.info(channel + message.toString(), true)
+            if (channel != PixelWorldPro.redisConfig.channel) {
+                return@Thread
             }
-        }
-        receive(back["plugin"].asString, back)
+            val g = Gson()
+            val back: JsonObject = g.fromJson(message, JsonObject::class.java)
+            if (back["server"].asString != "all") {
+                if (back["server"].asString != BungeeWorldImpl.getBungeeData().server) {
+                    return@Thread
+                }
+            }
+            receive(back["plugin"].asString, back)
+        }.start()
     }
 
     fun send(player: Player?, server: String? = "all", type: String, msg: JSONObject) {

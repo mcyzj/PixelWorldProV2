@@ -36,7 +36,7 @@ object DataProcessing : DataProcessingAPI {
                 } catch (_:Exception) {
                     null
                 }
-                WorldImpl.createWorldLocal(owner, template, seed)
+                WorldImpl.createWorldLocal(owner, template, seed, false)
                 return
             }
             "WorldLoad" -> {

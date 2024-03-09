@@ -63,7 +63,7 @@ class TemplateWorld(template: String, val type: String? = "local") {
         }
     }
 
-    fun createWorld(owner: UUID, bungeeExecution: Boolean = Config.bungee.getBoolean("enable")): PixelWorldProWorld {
+    fun createWorld(owner: UUID): PixelWorldProWorld {
         log.info(lang.getString("world.load")!!.replace("[0]", Thread.currentThread().name))
         val offlinePlayer = Bukkit.getOfflinePlayer(owner)
         val name =

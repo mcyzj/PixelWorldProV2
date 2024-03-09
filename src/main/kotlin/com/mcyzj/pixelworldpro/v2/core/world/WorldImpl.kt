@@ -2,6 +2,7 @@ package com.mcyzj.pixelworldpro.v2.core.world
 
 import com.mcyzj.lib.plugin.PlayerFound
 import com.mcyzj.pixelworldpro.v2.core.bungee.BungeeWorldImpl
+import com.mcyzj.pixelworldpro.v2.core.bungee.redis.Communicate
 import com.mcyzj.pixelworldpro.v2.core.permission.dataclass.ResultData
 import com.mcyzj.pixelworldpro.v2.core.util.Config
 import com.xbaimiao.easylib.bridge.economy.PlayerPoints
@@ -13,9 +14,11 @@ import org.bukkit.Material
 import org.bukkit.configuration.ConfigurationSection
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
+import org.json.simple.JSONObject
 import java.io.File
 import java.lang.Thread.sleep
 import java.util.*
+import java.util.concurrent.CompletableFuture
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
@@ -154,21 +157,30 @@ object WorldImpl {
         return config.getConfigurationSection("default")!!
     }
 
-    fun createWorldLocal(owner: UUID, template: String?, seed: Long?) {
-        val templates = if (template == null) {
-            val templateFileList = File("./PixelWorldPro/template").listFiles()!!
-            templateFileList[(Math.random() * templateFileList.size).toInt()].name
+    fun createWorldLocal(owner: UUID, template: String?, seed: Long?, bungeeExecution: Boolean = Config.bungee.getBoolean("enable")): CompletableFuture<Boolean> {
+        val future = CompletableFuture<Boolean>()
+        if (bungeeExecution) {
+            Thread {
+                future.complete(BungeeWorldImpl.createWorld(owner, template, seed).get())
+            }.start()
         } else {
-            template
+            val templates = if (template == null) {
+                val templateFileList = File("./PixelWorldPro/template").listFiles()!!
+                templateFileList[(Math.random() * templateFileList.size).toInt()].name
+            } else {
+                template
+            }
+            val templateData = TemplateWorld(templates)
+            templateData.seed = seed
+            val world = templateData.createWorld(owner)
+            world.load()
+            val player = Bukkit.getPlayer(owner)
+            if (player != null) {
+                world.teleport(player)
+            }
+            future.complete(true)
         }
-        val templateData = TemplateWorld(templates)
-        templateData.seed = seed
-        val world = templateData.createWorld(owner)
-        world.load()
-        val player = Bukkit.getPlayer(owner)
-        if (player != null) {
-            world.teleport(player)
-        }
+        return future
     }
 
     fun teleport(value: String, player: Player): ResultData {
