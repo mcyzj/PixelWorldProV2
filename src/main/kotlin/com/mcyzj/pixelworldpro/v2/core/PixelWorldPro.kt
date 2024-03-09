@@ -32,7 +32,6 @@ class PixelWorldPro: EasyPlugin() {
         lateinit var redisConfig: RedisConfig
         lateinit var redisThread: Thread
     }
-
     private val lang = Config.getLang()
     val log = Logger
     override fun enable() {
