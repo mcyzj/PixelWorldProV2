@@ -36,6 +36,7 @@ class PixelWorldPro: EasyPlugin() {
     private val lang = Config.getLang()
     val log = Logger
     override fun enable() {
+
         JiangLib.loadLibs()
         instance = this
         Icon.pixelWorldPro()
