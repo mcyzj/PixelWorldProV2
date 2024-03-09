@@ -22,7 +22,6 @@ import kotlin.collections.HashMap
 object WorldImpl {
     private val worldConfig = Config.world
     private val lang = Config.getLang()
-    private val bungeeConfig = Config.bungee
 
     private val createList = ArrayList<UUID>()
 

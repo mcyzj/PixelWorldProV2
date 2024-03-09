@@ -13,10 +13,11 @@ import org.bukkit.entity.Player
 import java.io.File
 import java.util.concurrent.CompletableFuture
 
-class PixelWorldProWorld(val worldData: WorldData, val bungeeExecution: Boolean = Config.bungee.getBoolean("enable")){
+class PixelWorldProWorld(val worldData: WorldData, bungeeExecution: Boolean = Config.bungee.getBoolean("enable")){
     private val log = PixelWorldPro.instance.log
     private val lang = Config.getLang()
     private val worldConfig = Config.world
+    private val worldDriver = WorldCache.getWorldDriver(worldData.type, bungeeExecution)
 
     /**
      * 获取世界压缩锁
@@ -126,19 +127,19 @@ class PixelWorldProWorld(val worldData: WorldData, val bungeeExecution: Boolean 
     }
 
     fun load(): CompletableFuture<ResultData> {
-        TODO("Not yet implemented")
+        return worldDriver.load(this)
     }
 
     fun unload(): CompletableFuture<ResultData> {
-        TODO("Not yet implemented")
+        return worldDriver.unload(this)
     }
 
     fun isLoad(): CompletableFuture<Boolean> {
-        TODO("Not yet implemented")
+        return worldDriver.isLoad(this)
     }
 
     fun teleport(player: Player) {
-        TODO("Not yet implemented")
+        worldDriver.teleport(player, this)
     }
 
     fun getWorlds(): HashMap<String, World>? {

@@ -2,6 +2,7 @@ package com.mcyzj.pixelworldpro.v2.core.world
 
 import com.mcyzj.lib.plugin.file.BuiltOutConfiguration
 import com.mcyzj.pixelworldpro.v2.core.api.PixelWorldProApi
+import com.mcyzj.pixelworldpro.v2.core.bungee.BungeeWorld
 import com.mcyzj.pixelworldpro.v2.core.util.Config
 import java.io.File
 import java.lang.Thread.sleep
@@ -16,8 +17,12 @@ object WorldCache {
         worldDriver[name] = driver
     }
 
-    fun getWorldDriver(name: String): PixelWorldProWorldAPI? {
-        return worldDriver[name]
+    fun getWorldDriver(name: String, bungeeExecution: Boolean = Config.bungee.getBoolean("enable")): PixelWorldProWorldAPI {
+        return if (bungeeExecution) {
+            worldDriver[name + "_bungee"] ?: BungeeWorld()
+        } else {
+            worldDriver[name] ?: LocalWorld()
+        }
     }
 
     fun getCacheConfig(file: String): BuiltOutConfiguration {
