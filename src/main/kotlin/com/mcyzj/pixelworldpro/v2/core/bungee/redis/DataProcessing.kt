@@ -4,12 +4,15 @@ import com.google.gson.JsonObject
 import com.mcyzj.lib.plugin.file.BuiltOutConfiguration
 import com.mcyzj.pixelworldpro.v2.core.PixelWorldPro
 import com.mcyzj.pixelworldpro.v2.core.api.PixelWorldProApi
+import com.mcyzj.pixelworldpro.v2.core.bungee.BungeeWorld
 import com.mcyzj.pixelworldpro.v2.core.bungee.BungeeWorldImpl
+import com.mcyzj.pixelworldpro.v2.core.bungee.ResponseData
+import com.mcyzj.pixelworldpro.v2.core.permission.dataclass.ResultData
 import com.mcyzj.pixelworldpro.v2.core.world.WorldImpl
 import com.xbaimiao.easylib.module.utils.submit
 import org.bukkit.Bukkit
-import org.json.simple.JSONObject
 import java.util.*
+import kotlin.collections.HashMap
 
 object DataProcessing : DataProcessingAPI {
     val log = PixelWorldPro.instance.log
@@ -24,6 +27,21 @@ object DataProcessing : DataProcessingAPI {
                 BungeeWorldImpl.saveServerData()
                 return
             }
+            "ServerCheck" -> {
+                Communicate.setResponse(ResponseData(true, JsonObject()), data)
+            }
+            "Response" -> {
+                val responseID = data["id"].asInt
+                val result = data["result"].asBoolean
+                val responseData = data["data"].asJsonObject
+                if (responseID in BungeeWorldImpl.inResponse) {
+                    BungeeWorldImpl.inResponse.remove(responseID)
+                    BungeeWorldImpl.response[responseID] = ResponseData(
+                        result,
+                        responseData
+                    )
+                }
+            }
             "WorldCreate" -> {
                 val owner = UUID.fromString(data["owner"].asString)
                 val template = try {
@@ -36,17 +54,23 @@ object DataProcessing : DataProcessingAPI {
                 } catch (_:Exception) {
                     null
                 }
-                WorldImpl.createWorldLocal(owner, template, seed, false)
+                WorldImpl.createWorldLocal(owner, template, seed, false).thenApply {
+                    Communicate.setResponse(ResponseData(it, JsonObject()), data)
+                }
                 return
             }
             "WorldLoad" -> {
                 val id = data["id"].asInt
-                PixelWorldProApi().getWorld(id, false)!!.load()
+                PixelWorldProApi().getWorld(id, false)!!.load().thenApply {
+                    Communicate.setResponse(ResponseData(it.result, JsonObject()), data)
+                }
                 return
             }
             "WorldUnload" -> {
                 val id = data["id"].asInt
-                PixelWorldProApi().getWorld(id, false)!!.unload()
+                PixelWorldProApi().getWorld(id, false)!!.unload().thenApply {
+                    Communicate.setResponse(ResponseData(it.result, JsonObject()), data)
+                }
                 return
             }
             "WorldTeleport" -> {

@@ -23,16 +23,12 @@ class WorldListener : Listener {
             log.info("改变对象为op，监听结束", true)
             return
         }
-        val worldID = WorldImpl.getWorldID(e.player.world.name)
-        if (worldID == null){
+        val world = PixelWorldProApi().getWorld(e.player.world.name)
+        if (world == null){
             log.info("世界数据获取为空，监听结束", true)
             return
         }
-        val worldData = PixelWorldPro.databaseApi.getWorldData(worldID)
-        if (worldData == null){
-            log.info("世界数据获取为空，监听结束", true)
-            return
-        }
+        val worldData = world.worldData
         //获取世界权限
         val permission = worldData.permission
         if (e.player.uniqueId == worldData.owner){
@@ -121,29 +117,20 @@ class WorldListener : Listener {
             }
             return
         }
-        val toWorldId = WorldImpl.getWorldID(e.player.world.name)
-        if (toWorldId == null){
+        val world = PixelWorldProApi().getWorld(e.to.world.name)
+        if (world == null){
             if (PixelWorldPro.instance.config.getBoolean("debug")){
                 Bukkit.getConsoleSender().sendMessage("§aPixelWorldPro 世界数据获取为空，监听结束")
             }
             return
         }
-        val worldData = PixelWorldPro.databaseApi.getWorldData(toWorldId)
-        if (worldData == null){
-            if (PixelWorldPro.instance.config.getBoolean("debug")){
-                Bukkit.getConsoleSender().sendMessage("§aPixelWorldPro 世界数据获取为空，监听结束")
-            }
-            return
-        }
+        val worldData = world.worldData
         Thread {
-            sleep(10*1000)
+            sleep(10 * 1000)
             WorldImpl.updateWorldPlayer(PixelWorldProWorld(worldData))
-            val fromWorldId = WorldImpl.getWorldID(e.from.world.name)
-            if (fromWorldId != null) {
-                val fromWorldData = PixelWorldProApi().getWorld(fromWorldId)
-                if (fromWorldData != null) {
-                    WorldImpl.updateWorldPlayer(fromWorldData)
-                }
+            val fromWorldData = PixelWorldProApi().getWorld(e.from.world.name)
+            if (fromWorldData != null) {
+                WorldImpl.updateWorldPlayer(fromWorldData)
             }
         }.start()
         //获取世界权限
@@ -190,20 +177,14 @@ class WorldListener : Listener {
             }
             return
         }
-        val worldName = WorldImpl.getWorldID(e.player.world.name)
-        if (worldName == null){
+        val world = PixelWorldProApi().getWorld(e.player.world.name)
+        if (world == null){
             if (PixelWorldPro.instance.config.getBoolean("debug")){
                 Bukkit.getConsoleSender().sendMessage("§aPixelWorldPro 世界数据获取为空，监听结束")
             }
             return
         }
-        val worldData = PixelWorldPro.databaseApi.getWorldData(worldName)
-        if (worldData == null){
-            if (PixelWorldPro.instance.config.getBoolean("debug")){
-                Bukkit.getConsoleSender().sendMessage("§aPixelWorldPro 世界数据获取为空，监听结束")
-            }
-            return
-        }
+        val worldData = world.worldData
         //获取世界权限
         val permission = worldData.permission
         Bukkit.getConsoleSender().sendMessage(permission.toString())
@@ -245,20 +226,14 @@ class WorldListener : Listener {
             }
             return
         }
-        val worldName = WorldImpl.getWorldID(e.player.world.name)
-        if (worldName == null){
+        val world = PixelWorldProApi().getWorld(e.player.world.name)
+        if (world == null){
             if (PixelWorldPro.instance.config.getBoolean("debug")){
                 Bukkit.getConsoleSender().sendMessage("§aPixelWorldPro 世界数据获取为空，监听结束")
             }
             return
         }
-        val worldData = PixelWorldPro.databaseApi.getWorldData(worldName)
-        if (worldData == null){
-            if (PixelWorldPro.instance.config.getBoolean("debug")){
-                Bukkit.getConsoleSender().sendMessage("§aPixelWorldPro 世界数据获取为空，监听结束")
-            }
-            return
-        }
+        val worldData = world.worldData
         //获取世界权限
         val permission = worldData.permission
         if (e.player.uniqueId == worldData.owner){
@@ -299,20 +274,14 @@ class WorldListener : Listener {
             }
             return
         }
-        val worldName = WorldImpl.getWorldID(e.player.world.name)
-        if (worldName == null){
+        val world = PixelWorldProApi().getWorld(e.player.world.name)
+        if (world == null){
             if (PixelWorldPro.instance.config.getBoolean("debug")){
                 Bukkit.getConsoleSender().sendMessage("§aPixelWorldPro 世界数据获取为空，监听结束")
             }
             return
         }
-        val worldData = PixelWorldPro.databaseApi.getWorldData(worldName)
-        if (worldData == null){
-            if (PixelWorldPro.instance.config.getBoolean("debug")){
-                Bukkit.getConsoleSender().sendMessage("§aPixelWorldPro 世界数据获取为空，监听结束")
-            }
-            return
-        }
+        val worldData = world.worldData
         //获取世界权限
         val permission = worldData.permission
         if (e.player.uniqueId == worldData.owner){
@@ -354,20 +323,14 @@ class WorldListener : Listener {
                 }
                 return
             }
-            val worldName = WorldImpl.getWorldID(e.damager.world.name)
-            if (worldName == null) {
-                if (PixelWorldPro.instance.config.getBoolean("debug")) {
+            val world = PixelWorldProApi().getWorld(e.damager.world.name)
+            if (world == null){
+                if (PixelWorldPro.instance.config.getBoolean("debug")){
                     Bukkit.getConsoleSender().sendMessage("§aPixelWorldPro 世界数据获取为空，监听结束")
                 }
                 return
             }
-            val worldData = PixelWorldPro.databaseApi.getWorldData(worldName)
-            if (worldData == null) {
-                if (PixelWorldPro.instance.config.getBoolean("debug")) {
-                    Bukkit.getConsoleSender().sendMessage("§aPixelWorldPro 世界数据获取为空，监听结束")
-                }
-                return
-            }
+            val worldData = world.worldData
             //获取世界权限
             val permission = worldData.permission
             if (e.damager.uniqueId == worldData.owner) {
@@ -403,20 +366,14 @@ class WorldListener : Listener {
                 }
                 return
             }
-            val worldName = WorldImpl.getWorldID(e.entity.world.name)
-            if (worldName == null) {
-                if (PixelWorldPro.instance.config.getBoolean("debug")) {
+            val world = PixelWorldProApi().getWorld(e.entity.world.name)
+            if (world == null){
+                if (PixelWorldPro.instance.config.getBoolean("debug")){
                     Bukkit.getConsoleSender().sendMessage("§aPixelWorldPro 世界数据获取为空，监听结束")
                 }
                 return
             }
-            val worldData = PixelWorldPro.databaseApi.getWorldData(worldName)
-            if (worldData == null) {
-                if (PixelWorldPro.instance.config.getBoolean("debug")) {
-                    Bukkit.getConsoleSender().sendMessage("§aPixelWorldPro 世界数据获取为空，监听结束")
-                }
-                return
-            }
+            val worldData = world.worldData
             //获取世界权限
             val permission = worldData.permission
             if (e.entity.uniqueId == worldData.owner) {
@@ -453,20 +410,14 @@ class WorldListener : Listener {
                 }
                 return
             }
-            val worldName = WorldImpl.getWorldID(e.damager.world.name)
-            if (worldName == null) {
-                if (PixelWorldPro.instance.config.getBoolean("debug")) {
+            val world = PixelWorldProApi().getWorld(e.damager.world.name)
+            if (world == null){
+                if (PixelWorldPro.instance.config.getBoolean("debug")){
                     Bukkit.getConsoleSender().sendMessage("§aPixelWorldPro 世界数据获取为空，监听结束")
                 }
                 return
             }
-            val worldData = PixelWorldPro.databaseApi.getWorldData(worldName)
-            if (worldData == null) {
-                if (PixelWorldPro.instance.config.getBoolean("debug")) {
-                    Bukkit.getConsoleSender().sendMessage("§aPixelWorldPro 世界数据获取为空，监听结束")
-                }
-                return
-            }
+            val worldData = world.worldData
             //获取世界权限
             val permission = worldData.permission
             var damage = "true"

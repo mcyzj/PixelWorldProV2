@@ -3,6 +3,7 @@ package com.mcyzj.pixelworldpro.v2.core.database
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.j256.ormlite.dao.Dao
+import com.mcyzj.pixelworldpro.v2.core.PixelWorldPro
 import com.mcyzj.pixelworldpro.v2.core.database.dao.WorldDao
 import com.mcyzj.pixelworldpro.v2.core.util.Config
 import com.mcyzj.pixelworldpro.v2.core.world.dataclass.WorldCreateData
@@ -13,9 +14,12 @@ import org.json.simple.JSONObject
 import java.util.*
 
 
-abstract class DatabaseImpl(ormlite: Ormlite) : DatabaseAPI {
+class DatabaseImpl : DatabaseAPI {
+
+    final override var ormlite: Ormlite = DataBase.getOrmlite()
+
     private val worldDaoTable: Dao<WorldDao, Int> = ormlite.createDao(WorldDao::class.java)
-    private val logger = com.mcyzj.pixelworldpro.v2.core.PixelWorldPro.instance.logger
+    private val logger = PixelWorldPro.instance.logger
     private val lang = Config.getLang()
     private val config = Config.config
 
@@ -39,7 +43,7 @@ abstract class DatabaseImpl(ormlite: Ormlite) : DatabaseAPI {
     }
     override fun setWorldData(worldData: WorldData) {
         submit(async = asyncWrite) {
-            val json = joinToJson(worldData)
+            val json = joinToData(worldData)
             val queryBuilder = worldDaoTable.queryBuilder()
             queryBuilder.where().eq("id", worldData.id)
             var worldDao = queryBuilder.queryForFirst()
@@ -137,7 +141,7 @@ abstract class DatabaseImpl(ormlite: Ormlite) : DatabaseAPI {
         }
         return list.subList(start, start + number)
     }
-    override fun joinToJson(worldData: WorldData): JSONObject {
+    override fun joinToData(worldData: WorldData): JSONObject {
         val json = JSONObject()
         json["name"] = worldData.name
         val permissionData = JSONObject()
@@ -175,6 +179,7 @@ abstract class DatabaseImpl(ormlite: Ormlite) : DatabaseAPI {
         json["permission"] = permissionData
         val player = JSONObject(worldData.player)
         json["player"] = player
+        json["type"] = worldData.type
         val dimension = JSONObject()
         //for (key in worldData.dimension.keys){
         //    val dimensionData = worldData.dimension[key]!!

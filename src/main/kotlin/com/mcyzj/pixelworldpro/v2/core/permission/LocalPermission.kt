@@ -1,5 +1,6 @@
 package com.mcyzj.pixelworldpro.v2.core.permission
 
+import com.mcyzj.pixelworldpro.v2.core.database.DataBase
 import com.mcyzj.pixelworldpro.v2.core.permission.dataclass.*
 import com.mcyzj.pixelworldpro.v2.core.util.Config
 import com.mcyzj.pixelworldpro.v2.core.world.LocalWorld
@@ -19,7 +20,6 @@ import java.util.*
 
 object LocalPermission {
     private var config = Config.permission
-    private val database = com.mcyzj.pixelworldpro.v2.core.PixelWorldPro.databaseApi
     private var worldConfig = Config.world
     private var lang = Config.getLang()
     private fun buildPermission(): HashMap<String, PermissionData> {
@@ -138,6 +138,7 @@ object LocalPermission {
             )
         }
         worldData.player[player.uniqueId] = permission
+        val database = DataBase.getDataDriver(worldData.type)
         database.setWorldData(worldData)
         if (player.isOnline) {
             checkPlayerPermission(player as Player, worldPermissionData, worldData)
@@ -183,6 +184,7 @@ object LocalPermission {
         }
     }
 
+    @Suppress("DEPRECATION")
     fun upPermission(world: PixelWorldProWorld, permission: String): ResultData {
         val worldData = world.worldData
         //检查操作是否合法

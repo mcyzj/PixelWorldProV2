@@ -1,6 +1,7 @@
 package com.mcyzj.pixelworldpro.v2.core.world
 
 import com.mcyzj.lib.plugin.file.BuiltOutConfiguration
+import com.mcyzj.pixelworldpro.v2.core.database.DataBase
 import com.mcyzj.pixelworldpro.v2.core.permission.PermissionImpl
 import com.mcyzj.pixelworldpro.v2.core.util.Config
 import com.mcyzj.pixelworldpro.v2.core.world.dataclass.LocationData
@@ -63,17 +64,18 @@ class TemplateWorld(template: String, val type: String? = "local") {
         }
     }
 
-    fun createWorld(owner: UUID): PixelWorldProWorld {
+    fun createWorld(owner: UUID, type: String = "local"): PixelWorldProWorld {
         log.info(lang.getString("world.load")!!.replace("[0]", Thread.currentThread().name))
         val offlinePlayer = Bukkit.getOfflinePlayer(owner)
         val name =
             (worldConfig.getString("create.name") ?: "[uuid]的世界").replacePlaceholder(offlinePlayer).colored()
-        val worldData = com.mcyzj.pixelworldpro.v2.core.PixelWorldPro.databaseApi.createWorldData(
+        val worldData = DataBase.getDataDriver(type).createWorldData(
             WorldCreateData(
                 owner = owner,
                 name = name,
                 permission = PermissionImpl.getConfigWorldPermission(),
-                player = HashMap()
+                player = HashMap(),
+                type
             )
         )
         val worldDataFile = File("./PixelWorldPro/world/$type/${worldData.id}")

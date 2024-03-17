@@ -1,8 +1,9 @@
 package com.mcyzj.pixelworldpro.v2.core.world
 
 import com.mcyzj.lib.plugin.PlayerFound
+import com.mcyzj.pixelworldpro.v2.core.PixelWorldPro
+import com.mcyzj.pixelworldpro.v2.core.api.PixelWorldProApi
 import com.mcyzj.pixelworldpro.v2.core.bungee.BungeeWorldImpl
-import com.mcyzj.pixelworldpro.v2.core.bungee.redis.Communicate
 import com.mcyzj.pixelworldpro.v2.core.permission.dataclass.ResultData
 import com.mcyzj.pixelworldpro.v2.core.util.Config
 import com.xbaimiao.easylib.bridge.economy.PlayerPoints
@@ -14,13 +15,10 @@ import org.bukkit.Material
 import org.bukkit.configuration.ConfigurationSection
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
-import org.json.simple.JSONObject
 import java.io.File
 import java.lang.Thread.sleep
 import java.util.*
 import java.util.concurrent.CompletableFuture
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 
 object WorldImpl {
     private val worldConfig = Config.world
@@ -157,7 +155,7 @@ object WorldImpl {
         return config.getConfigurationSection("default")!!
     }
 
-    fun createWorldLocal(owner: UUID, template: String?, seed: Long?, bungeeExecution: Boolean = Config.bungee.getBoolean("enable")): CompletableFuture<Boolean> {
+    fun createWorldLocal(owner: UUID, template: String?, seed: Long?, bungeeExecution: Boolean = PixelWorldPro.bungeeEnable): CompletableFuture<Boolean> {
         val future = CompletableFuture<Boolean>()
         if (bungeeExecution) {
             Thread {
@@ -188,7 +186,7 @@ object WorldImpl {
             value.toInt()
         } catch (_:Exception) {
             val owner = PlayerFound.getOfflinePlayer(value)
-            val worldData = com.mcyzj.pixelworldpro.v2.core.PixelWorldPro.databaseApi.getWorldData(owner.uniqueId)
+            val worldData = PixelWorldProApi().getWorld(owner.uniqueId)
             if (worldData == null) {
                 val msg = lang.getString("teleport.notFound") ?: "没有找到世界"
                 return ResultData(
@@ -196,13 +194,13 @@ object WorldImpl {
                     msg
                 )
             }
-            return teleport(PixelWorldProWorld(worldData), player)
+            return teleport(worldData, player)
         }
         return teleport(value.toInt(), player)
     }
 
     fun teleport(id: Int, player: Player): ResultData {
-        val worldData = com.mcyzj.pixelworldpro.v2.core.PixelWorldPro.databaseApi.getWorldData(id)
+        val worldData = PixelWorldProApi().getWorld(id)
         if (worldData == null) {
             val msg = lang.getString("teleport.notFound") ?: "没有找到世界"
             return ResultData(
@@ -210,7 +208,7 @@ object WorldImpl {
                 msg
             )
         }
-        return teleport(PixelWorldProWorld(worldData), player)
+        return teleport(worldData, player)
     }
 
     fun teleport(world: PixelWorldProWorld, player: Player): ResultData {
@@ -237,22 +235,6 @@ object WorldImpl {
             false,
             msg
         )
-    }
-
-    fun getWorldID(worldName: String): Int? {
-        if (!worldName.startsWith("PixelWorldPro")) {
-            return null
-        }
-        val realNameList = worldName.split("/").size
-        if (realNameList < 2) {
-            return null
-        }
-        val realName = worldName.split("/")[realNameList - 2]
-        return try{
-            realName.toInt()
-        }catch (_:Exception){
-            null
-        }
     }
 
     @Suppress("DEPRECATION")

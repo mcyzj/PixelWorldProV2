@@ -12,6 +12,8 @@ data class WorldCreateData(
     var permission: HashMap<String, HashMap<String, String>>,
     //玩家权限表
     var player: HashMap<UUID, String>,
+    //世界类型
+    val type: String
     //世界维度表
     //var dimension: HashMap<String, WorldDimensionData>
 )

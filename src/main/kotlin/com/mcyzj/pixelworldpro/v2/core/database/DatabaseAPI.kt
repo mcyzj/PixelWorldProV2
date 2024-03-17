@@ -2,11 +2,14 @@ package com.mcyzj.pixelworldpro.v2.core.database
 
 import com.mcyzj.pixelworldpro.v2.core.world.dataclass.WorldData
 import com.mcyzj.pixelworldpro.v2.core.world.dataclass.WorldCreateData
+import com.xbaimiao.easylib.module.database.Ormlite
 import org.json.simple.JSONObject
 import java.util.*
 import kotlin.collections.HashMap
 
 interface DatabaseAPI {
+
+    var ormlite: Ormlite
     /**
      * 创建一个世界记录
      */
@@ -53,7 +56,7 @@ interface DatabaseAPI {
      */
     fun getWorldUUIDList(start:Int,number: Int): List<UUID>
 
-    fun joinToJson(worldData: WorldData): JSONObject
+    fun joinToData(worldData: WorldData): JSONObject
 
 
 }

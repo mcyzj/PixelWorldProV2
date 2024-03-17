@@ -1,8 +1,10 @@
 package com.mcyzj.pixelworldpro.v2.core.bungee
 
+import com.google.gson.JsonObject
 import com.mcyzj.lib.plugin.file.BuiltOutConfiguration
 import com.mcyzj.pixelworldpro.v2.core.PixelWorldPro
 import com.mcyzj.pixelworldpro.v2.core.bungee.redis.Communicate
+import com.mcyzj.pixelworldpro.v2.core.bungee.redis.DataProcessing
 import com.mcyzj.pixelworldpro.v2.core.permission.dataclass.ResultData
 import com.mcyzj.pixelworldpro.v2.core.util.Config
 import com.mcyzj.pixelworldpro.v2.core.world.PixelWorldProWorld
@@ -45,26 +47,28 @@ class BungeeWorld : PixelWorldProWorldAPI {
         return checkId
     }
 
-    fun getServerResponse(checkId: Int, maxTime:Int = 10): CompletableFuture<Boolean> {
-        val future = CompletableFuture<Boolean>()
+    fun getServerResponse(checkId: Int, maxTime:Int = 10): CompletableFuture<ResponseData> {
+        val future = CompletableFuture<ResponseData>()
         Thread {
             if (checkId == 0) {
-                future.complete(false)
+                future.complete(ResponseData(false, JsonObject()))
                 return@Thread
             }
+            BungeeWorldImpl.inResponse.add(checkId)
             var time = 0
             while (true) {
-                val serverReturn = BuiltOutConfiguration("./PixelWorldPro/cache/bungee/response/$checkId.yml").getString("return")
-                if (serverReturn == "true") {
+                val response = BungeeWorldImpl.response[checkId]
+                if (response != null) {
                     File("./PixelWorldPro/cache/bungee/response/$checkId.yml").delete()
-                    future.complete(true)
+                    future.complete(response)
                     return@Thread
                 }
                 Thread.sleep(1000)
                 time ++
-                if ((time > maxTime).or(serverReturn == "false")) {
+                if (time > maxTime) {
                     File("./PixelWorldPro/cache/bungee/response/$checkId.yml").delete()
-                    future.complete(false)
+                    future.complete(ResponseData(false, JsonObject()))
+                    BungeeWorldImpl.inResponse.remove(checkId)
                     return@Thread
                 }
             }
@@ -150,27 +154,39 @@ class BungeeWorld : PixelWorldProWorldAPI {
             data["id"] = world.worldData.id
             data["checkId"] = checkId
             Communicate.send(null, server, "local", data)
-            future.complete(getServerResponse(checkId).get())
+            future.complete(getServerResponse(checkId).get().result)
         }.start()
         return future
     }
 
     override fun teleport(player: Player, world: PixelWorldProWorld) {
-        TODO("Not yet implemented")
+        Thread {
+            if (!world.isLoad().get()) {
+                val value = world.load().get()
+                if (!value.result) {
+                    return@Thread
+                }
+            }
+            val bungeeData = world.getDataConfig("bungee")
+            val server = bungeeData.getString("load.server") ?: return@Thread
+            val data = JSONObject()
+            data["type"] = "WorldTeleport"
+            data["id"] = world.worldData.id
+            data["player"] = player.uniqueId
+            Communicate.send(null, server, "local", data)
+            Communicate.connect(player, server)
+        }.start()
     }
 
     private fun checkServer(server: String): CompletableFuture<Boolean> {
         val future = CompletableFuture<Boolean>()
-        val config = BuiltOutConfiguration("./PixelWorldPro/cache/bungee.yml")
-        config.set("server.$server", null)
-        config.saveToFile()
         Thread {
             val id = getResponseId()
             val data = JSONObject()
-            data["type"] = "UpdateServer"
-            data["id"] = id
+            data["type"] = "ServerCheck"
+            data["response"] = id
             Communicate.send(null, server, "local", data)
-            future.complete(getServerResponse(id).get())
+            future.complete(getServerResponse(id).get().result)
         }.start()
         return future
     }
@@ -186,6 +202,7 @@ class BungeeWorld : PixelWorldProWorldAPI {
                 future.complete(result)
                 return@Thread
             }
+            setLock(world, true)
             try {
                 if (isLoad(world).get()) {
                     val result = ResultData(
@@ -193,6 +210,7 @@ class BungeeWorld : PixelWorldProWorldAPI {
                         lang.getString("check.world.alreadyLoad") ?: "世界被已加载，请不要重复加载"
                     )
                     future.complete(result)
+                    setLock(world, false)
                     return@Thread
                 }
                 val server = getServer(world.worldData.owner)
@@ -202,12 +220,12 @@ class BungeeWorld : PixelWorldProWorldAPI {
                         lang.getString("check.world.noServer") ?: "没有可供世界加载的服务器"
                     )
                     future.complete(result)
+                    setLock(world, false)
                     return@Thread
                 }
                 val bungeeData = world.getDataConfig("bungee")
                 bungeeData.set("load.server", server.server)
                 bungeeData.saveToFile()
-                setLock(world, true)
                 val data = JSONObject()
                 data["type"] = "WorldLoad"
                 data["id"] = world.worldData.id
@@ -215,7 +233,7 @@ class BungeeWorld : PixelWorldProWorldAPI {
                 data["response"] = response
                 Communicate.send(null, server.server, "local", data)
                 future.complete(ResultData(
-                    getServerResponse(response, 120).get(),
+                    getServerResponse(response, 120).get().result,
                     ""
                 ))
                 setLock(world, false)
@@ -235,7 +253,13 @@ class BungeeWorld : PixelWorldProWorldAPI {
     override fun unload(world: PixelWorldProWorld): CompletableFuture<ResultData> {
         val future = CompletableFuture<ResultData>()
         Thread {
-
+            if (!isLoad(world).get()) {
+                val result = ResultData(
+                    false,
+                    lang.getString("check.world.notLoad") ?: "世界未加载"
+                )
+                future.complete(result)
+            }
         }.start()
         return future
     }

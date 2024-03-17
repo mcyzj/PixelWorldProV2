@@ -4,7 +4,9 @@ package com.mcyzj.pixelworldpro.v2.core.bungee.redis
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.mcyzj.pixelworldpro.v2.core.PixelWorldPro
+import com.mcyzj.pixelworldpro.v2.core.bungee.BungeeWorld
 import com.mcyzj.pixelworldpro.v2.core.bungee.BungeeWorldImpl
+import com.mcyzj.pixelworldpro.v2.core.bungee.ResponseData
 import com.xbaimiao.easylib.module.utils.submit
 import org.bukkit.entity.Player
 import org.json.simple.JSONObject
@@ -36,6 +38,7 @@ object Communicate : JedisPubSub() {
     }
 
     fun send(player: Player?, server: String? = "all", type: String, msg: JSONObject) {
+        msg["sendServer"] = BungeeWorldImpl.getBungeeData().server
         msg["server"] = server
         msg["plugin"] = type
         push(msg.toString())
@@ -67,5 +70,14 @@ object Communicate : JedisPubSub() {
             throw RuntimeException(e)
         }
         player.sendPluginMessage(PixelWorldPro.instance, "BungeeCord", byteArray.toByteArray())
+    }
+
+    fun setResponse(response: ResponseData, localData: JsonObject) {
+        val data = JSONObject()
+        data["id"] = localData["response"].asInt
+        data["result"] = response.result
+        data["data"] = response.data
+        val server = localData["sendServer"].asString
+        send(null, server, "Response", data)
     }
 }

@@ -1,6 +1,7 @@
 package com.mcyzj.pixelworldpro.v2.core.permission
 
 import com.mcyzj.pixelworldpro.v2.core.PixelWorldPro
+import com.mcyzj.pixelworldpro.v2.core.database.DataBase
 import com.mcyzj.pixelworldpro.v2.core.util.Config
 import com.mcyzj.pixelworldpro.v2.core.world.dataclass.WorldData
 import org.bukkit.OfflinePlayer
@@ -28,6 +29,6 @@ object PermissionImpl{
         }
         playerMap[player.uniqueId] = permission
         world.player = playerMap
-        com.mcyzj.pixelworldpro.v2.core.PixelWorldPro.databaseApi.setWorldData(world)
+        DataBase.getDataDriver(world.type).setWorldData(world)
     }
 }

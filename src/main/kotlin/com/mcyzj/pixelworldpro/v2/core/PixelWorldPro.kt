@@ -2,13 +2,13 @@ package com.mcyzj.pixelworldpro.v2.core
 
 import com.mcyzj.lib.plugin.JiangLib
 import com.mcyzj.lib.plugin.Logger
+import com.mcyzj.pixelworldpro.v2.core.bungee.BungeeWorld
 import com.mcyzj.pixelworldpro.v2.core.bungee.redis.Communicate
 import com.mcyzj.pixelworldpro.v2.core.bungee.redis.DataProcessing
 import com.mcyzj.pixelworldpro.v2.core.bungee.redis.RedisConfig
 import com.mcyzj.pixelworldpro.v2.core.command.CommandCore
-import com.mcyzj.pixelworldpro.v2.core.database.DatabaseAPI
-import com.mcyzj.pixelworldpro.v2.core.database.MysqlDatabaseAPI
-import com.mcyzj.pixelworldpro.v2.core.database.SQLiteDatabaseAPI
+import com.mcyzj.pixelworldpro.v2.core.database.DataBase
+import com.mcyzj.pixelworldpro.v2.core.database.DatabaseImpl
 import com.mcyzj.pixelworldpro.v2.core.expansion.ExpansionManager
 import com.mcyzj.pixelworldpro.v2.core.util.Config
 import com.mcyzj.pixelworldpro.v2.core.util.Icon
@@ -26,16 +26,15 @@ import redis.clients.jedis.JedisPool
 @Suppress("unused")
 class PixelWorldPro: EasyPlugin() {
     companion object {
-        lateinit var databaseApi: DatabaseAPI
         lateinit var instance: PixelWorldPro
         lateinit var jedisPool: JedisPool
         lateinit var redisConfig: RedisConfig
         lateinit var redisThread: Thread
+        var bungeeEnable: Boolean = false
     }
     private val lang = Config.getLang()
     val log = Logger
     override fun enable() {
-
         JiangLib.loadLibs()
         instance = this
         Icon.pixelWorldPro()
@@ -45,17 +44,11 @@ class PixelWorldPro: EasyPlugin() {
         if (Config.config.getBoolean("install")) {
             Install.start()
         }
-        log.info("加载数据", true)
-        if (config.getString("database").equals("db", true)) {
-            log.info("加载sqlite数据库", true)
-            databaseApi = SQLiteDatabaseAPI()
-        }
-        if (config.getString("database").equals("mysql", true)) {
-            log.info("加载MySQL数据库", true)
-            databaseApi = MysqlDatabaseAPI()
-        }
+        //注册数据驱动
+        DataBase.regDataDriver("local", DatabaseImpl())
         //注册世界驱动
         WorldCache.regWorldDriver("local", LocalWorld())
+        WorldCache.regWorldDriver("local_bungee", BungeeWorld())
         //注册扩展
         ExpansionManager.loadAllExpansion()
         //注册指令
@@ -64,7 +57,9 @@ class PixelWorldPro: EasyPlugin() {
         cleanWorldCache()
         //注册监听
         Bukkit.getPluginManager().registerEvents(WorldListener(), this)
-        if (Config.bungee.getBoolean("enable")) {
+        //Bungee处理
+        bungeeEnable = Config.bungee.getBoolean("enable")
+        if (bungeeEnable) {
             //链接redis
             redisConfig = RedisConfig(Config.bungee)
             jedisPool = if (redisConfig.password != null) {

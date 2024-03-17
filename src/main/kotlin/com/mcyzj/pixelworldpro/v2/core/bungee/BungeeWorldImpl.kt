@@ -1,23 +1,19 @@
 package com.mcyzj.pixelworldpro.v2.core.bungee
 
 import com.mcyzj.lib.plugin.file.BuiltOutConfiguration
-import com.mcyzj.pixelworldpro.v2.core.PixelWorldPro
 import com.mcyzj.pixelworldpro.v2.core.bungee.redis.Communicate
 import com.mcyzj.pixelworldpro.v2.core.util.Config
 import com.mcyzj.pixelworldpro.v2.core.world.WorldImpl
-import com.mcyzj.pixelworldpro.v2.core.world.LocalWorld
-import com.xbaimiao.easylib.module.chat.BuiltInConfiguration
-import org.bukkit.Bukkit
-import org.bukkit.entity.Player
 import org.json.simple.JSONObject
-import java.io.File
-import java.lang.Thread.sleep
 import java.util.*
 import java.util.concurrent.CompletableFuture
+import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
 object BungeeWorldImpl {
     private val bungeeConfig = Config.bungee
+    val inResponse = ArrayList<Int>()
+    val response = HashMap<Int, ResponseData>()
 
     fun getBungeeData(): BungeeData {
         val name = bungeeConfig.getString("name")!!
@@ -82,7 +78,7 @@ object BungeeWorldImpl {
             data["seed"] = seed
             data["response"] = response
             Communicate.send(null, server.server, "local", data)
-            future.complete(BungeeWorld().getServerResponse(response, 120).get())
+            future.complete(BungeeWorld().getServerResponse(response, 120).get().result)
             return@Thread
         }.start()
         return future
