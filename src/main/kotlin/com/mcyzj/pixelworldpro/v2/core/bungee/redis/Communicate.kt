@@ -3,11 +3,11 @@ package com.mcyzj.pixelworldpro.v2.core.bungee.redis
 
 import com.google.gson.Gson
 import com.google.gson.JsonObject
+import com.mcyzj.lib.bukkit.submit
+import com.mcyzj.pixelworldpro.v2.core.Main
 import com.mcyzj.pixelworldpro.v2.core.PixelWorldPro
-import com.mcyzj.pixelworldpro.v2.core.bungee.BungeeWorld
 import com.mcyzj.pixelworldpro.v2.core.bungee.BungeeWorldImpl
 import com.mcyzj.pixelworldpro.v2.core.bungee.ResponseData
-import com.xbaimiao.easylib.module.utils.submit
 import org.bukkit.entity.Player
 import org.json.simple.JSONObject
 import redis.clients.jedis.JedisPubSub
@@ -69,7 +69,7 @@ object Communicate : JedisPubSub() {
         } catch (e: IOException) {
             throw RuntimeException(e)
         }
-        player.sendPluginMessage(PixelWorldPro.instance, "BungeeCord", byteArray.toByteArray())
+        player.sendPluginMessage(Main.instance, "BungeeCord", byteArray.toByteArray())
     }
 
     fun setResponse(response: ResponseData, localData: JsonObject) {

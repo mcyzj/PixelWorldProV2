@@ -1,6 +1,7 @@
 package com.mcyzj.pixelworldpro.v2.core.bungee
 
 import com.google.gson.JsonObject
+import com.mcyzj.lib.plugin.file.BuiltInConfiguration
 import com.mcyzj.lib.plugin.file.BuiltOutConfiguration
 import com.mcyzj.pixelworldpro.v2.core.PixelWorldPro
 import com.mcyzj.pixelworldpro.v2.core.bungee.redis.Communicate
@@ -9,7 +10,6 @@ import com.mcyzj.pixelworldpro.v2.core.permission.dataclass.ResultData
 import com.mcyzj.pixelworldpro.v2.core.util.Config
 import com.mcyzj.pixelworldpro.v2.core.world.PixelWorldProWorld
 import com.mcyzj.pixelworldpro.v2.core.world.PixelWorldProWorldAPI
-import com.xbaimiao.easylib.module.chat.BuiltInConfiguration
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.json.simple.JSONObject

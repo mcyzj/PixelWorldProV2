@@ -8,8 +8,8 @@ import com.mcyzj.pixelworldpro.v2.core.database.dao.WorldDao
 import com.mcyzj.pixelworldpro.v2.core.util.Config
 import com.mcyzj.pixelworldpro.v2.core.world.dataclass.WorldCreateData
 import com.mcyzj.pixelworldpro.v2.core.world.dataclass.WorldData
-import com.xbaimiao.easylib.module.database.Ormlite
-import com.xbaimiao.easylib.module.utils.submit
+import com.mcyzj.lib.core.database.Ormlite
+import com.mcyzj.lib.bukkit.submit
 import org.json.simple.JSONObject
 import java.util.*
 

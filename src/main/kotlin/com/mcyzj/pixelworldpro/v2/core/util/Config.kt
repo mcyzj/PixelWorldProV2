@@ -1,7 +1,7 @@
 package com.mcyzj.pixelworldpro.v2.core.util
 
 import com.mcyzj.pixelworldpro.v2.core.permission.dataclass.ItemData
-import com.xbaimiao.easylib.module.chat.BuiltInConfiguration
+import com.mcyzj.lib.plugin.file.BuiltInConfiguration
 import org.bukkit.configuration.ConfigurationSection
 
 object Config {

@@ -1,6 +1,5 @@
 package com.mcyzj.pixelworldpro.v2.core
 
-import com.mcyzj.lib.plugin.JiangLib
 import com.mcyzj.lib.plugin.Logger
 import com.mcyzj.pixelworldpro.v2.core.bungee.BungeeWorld
 import com.mcyzj.pixelworldpro.v2.core.bungee.redis.Communicate
@@ -18,13 +17,12 @@ import com.mcyzj.pixelworldpro.v2.core.world.WorldCache
 import com.mcyzj.pixelworldpro.v2.core.world.WorldImpl
 import com.mcyzj.pixelworldpro.v2.core.world.WorldCache.cleanWorldCache
 import com.mcyzj.pixelworldpro.v2.core.world.WorldListener
-import com.xbaimiao.easylib.EasyPlugin
 import org.bukkit.Bukkit
 import redis.clients.jedis.JedisPool
 
 
 @Suppress("unused")
-class PixelWorldPro: EasyPlugin() {
+class PixelWorldPro{
     companion object {
         lateinit var instance: PixelWorldPro
         lateinit var jedisPool: JedisPool
@@ -32,10 +30,12 @@ class PixelWorldPro: EasyPlugin() {
         lateinit var redisThread: Thread
         var bungeeEnable: Boolean = false
     }
+    val logger = Logger
     private val lang = Config.getLang()
     val log = Logger
-    override fun enable() {
-        JiangLib.loadLibs()
+    val config = Config.config
+    fun enable() {
+        //JiangLib.loadLibs()
         instance = this
         Icon.pixelWorldPro()
         Icon.v2()
@@ -56,7 +56,7 @@ class PixelWorldPro: EasyPlugin() {
         //启动回收线程
         cleanWorldCache()
         //注册监听
-        Bukkit.getPluginManager().registerEvents(WorldListener(), this)
+        Bukkit.getPluginManager().registerEvents(WorldListener(), Main.instance)
         //Bungee处理
         bungeeEnable = Config.bungee.getBoolean("enable")
         if (bungeeEnable) {
@@ -74,7 +74,7 @@ class PixelWorldPro: EasyPlugin() {
             }
             redisThread.start()
             //注册信道
-            this.server.messenger.registerOutgoingPluginChannel(this, "BungeeCord")
+            Main.instance.server.messenger.registerOutgoingPluginChannel(Main.instance, "BungeeCord")
             //注册监听
             Communicate.listener["local"] = DataProcessing
             //注册世界tickets计算
@@ -82,7 +82,7 @@ class PixelWorldPro: EasyPlugin() {
         }
     }
 
-    override fun disable() {
+    fun disable() {
         logger.info(lang.getString("plugin.disable"))
         redisThread.stop()
     }

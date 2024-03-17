@@ -1,10 +1,10 @@
 package com.mcyzj.pixelworldpro.v2.core.command
 
+import com.mcyzj.lib.bukkit.command.command
 import com.mcyzj.lib.plugin.PlayerFound
 import com.mcyzj.pixelworldpro.v2.core.api.PixelWorldProApi
 import com.mcyzj.pixelworldpro.v2.core.util.Config
 import com.mcyzj.pixelworldpro.v2.core.world.WorldImpl
-import com.xbaimiao.easylib.module.command.command
 import org.bukkit.command.CommandSender
 
 class AdminCommand {

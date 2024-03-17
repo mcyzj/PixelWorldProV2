@@ -2,7 +2,7 @@ package com.mcyzj.pixelworldpro.v2.core.database
 
 import com.mcyzj.pixelworldpro.v2.core.world.dataclass.WorldData
 import com.mcyzj.pixelworldpro.v2.core.world.dataclass.WorldCreateData
-import com.xbaimiao.easylib.module.database.Ormlite
+import com.mcyzj.lib.core.database.Ormlite
 import org.json.simple.JSONObject
 import java.util.*
 import kotlin.collections.HashMap

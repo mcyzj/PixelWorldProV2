@@ -1,5 +1,5 @@
 name: PixelWorldProV2
-main: "com.mcyzj.pixelworldpro.v2.core.PixelWorldPro"
+main: "com.mcyzj.pixelworldpro.v2.core.Main"
 version: '${version}'
 author: dong&mcyzj
 softdepend: [ Vault, PlaceholderAPI, PlayerPoints, PixelPlayerWorld, ShadowLevels, RealisticSeasons, WorldGuard, WorldEdit]
@@ -9,6 +9,16 @@ folia-supported: true
 runtime-libraries:
   libraries-folder: '@Server:libraries'  # 存放依赖的位置
   libraries:
+    kotlin:
+      groupId: org.jetbrains.kotlin
+      artifactId: kotlin-stdlib
+      version: "1.9.20"
+      repository: "https://maven.mcyzj.cn:445/repository/maven-public/"
+    JiangLib_Bukkit:
+      groupId: com.mcyzj.lib
+      artifactId: jianglib-bukkit
+      version: "1.0.0"
+      repository: "https://maven.mcyzj.cn:445/repository/maven-public/"
     gson:
       groupId: com.google.code.gson
       artifactId: gson

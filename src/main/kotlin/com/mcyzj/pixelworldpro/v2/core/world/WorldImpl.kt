@@ -6,10 +6,10 @@ import com.mcyzj.pixelworldpro.v2.core.api.PixelWorldProApi
 import com.mcyzj.pixelworldpro.v2.core.bungee.BungeeWorldImpl
 import com.mcyzj.pixelworldpro.v2.core.permission.dataclass.ResultData
 import com.mcyzj.pixelworldpro.v2.core.util.Config
-import com.xbaimiao.easylib.bridge.economy.PlayerPoints
-import com.xbaimiao.easylib.bridge.economy.Vault
-import com.xbaimiao.easylib.module.item.hasItem
-import com.xbaimiao.easylib.module.item.takeItem
+import com.mcyzj.lib.bukkit.bridge.economy.PlayerPoints
+import com.mcyzj.lib.bukkit.bridge.economy.Vault
+import com.mcyzj.lib.bukkit.item.hasItem
+import com.mcyzj.lib.bukkit.item.takeItem
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.configuration.ConfigurationSection

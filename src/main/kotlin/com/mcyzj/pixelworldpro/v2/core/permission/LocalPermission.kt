@@ -3,13 +3,12 @@ package com.mcyzj.pixelworldpro.v2.core.permission
 import com.mcyzj.pixelworldpro.v2.core.database.DataBase
 import com.mcyzj.pixelworldpro.v2.core.permission.dataclass.*
 import com.mcyzj.pixelworldpro.v2.core.util.Config
-import com.mcyzj.pixelworldpro.v2.core.world.LocalWorld
 import com.mcyzj.pixelworldpro.v2.core.world.PixelWorldProWorld
 import com.mcyzj.pixelworldpro.v2.core.world.dataclass.WorldData
-import com.xbaimiao.easylib.bridge.economy.PlayerPoints
-import com.xbaimiao.easylib.bridge.economy.Vault
-import com.xbaimiao.easylib.module.item.hasItem
-import com.xbaimiao.easylib.module.item.takeItem
+import com.mcyzj.lib.bukkit.bridge.economy.PlayerPoints
+import com.mcyzj.lib.bukkit.bridge.economy.Vault
+import com.mcyzj.lib.bukkit.item.hasItem
+import com.mcyzj.lib.bukkit.item.takeItem
 import org.bukkit.Bukkit
 import org.bukkit.GameMode
 import org.bukkit.Material

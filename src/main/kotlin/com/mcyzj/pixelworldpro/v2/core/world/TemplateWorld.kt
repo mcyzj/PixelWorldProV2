@@ -1,13 +1,13 @@
 package com.mcyzj.pixelworldpro.v2.core.world
 
+import com.mcyzj.lib.bukkit.bridge.replacePlaceholder
+import com.mcyzj.lib.bukkit.utils.Color.colored
 import com.mcyzj.lib.plugin.file.BuiltOutConfiguration
 import com.mcyzj.pixelworldpro.v2.core.database.DataBase
 import com.mcyzj.pixelworldpro.v2.core.permission.PermissionImpl
 import com.mcyzj.pixelworldpro.v2.core.util.Config
 import com.mcyzj.pixelworldpro.v2.core.world.dataclass.LocationData
 import com.mcyzj.pixelworldpro.v2.core.world.dataclass.WorldCreateData
-import com.xbaimiao.easylib.bridge.replacePlaceholder
-import com.xbaimiao.easylib.module.chat.colored
 import org.bukkit.Bukkit
 import java.io.File
 import java.util.*

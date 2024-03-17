@@ -17,6 +17,8 @@ repositories {
     maven("https://repo.papermc.io/repository/maven-public/")
     maven("https://maven.mcyzj.cn:445/repository/maven-public/")
     maven("https://oss.sonatype.org/content/groups/public/")
+    maven("https://repo.rosewooddev.io/repository/public/")
+    maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
     mavenCentral()
 }
 
@@ -25,13 +27,14 @@ dependencies {
     compileOnly("com.zaxxer:HikariCP:4.0.3")
     compileOnly("com.j256.ormlite:ormlite-core:6.1")
     compileOnly("com.j256.ormlite:ormlite-jdbc:6.1")
-    implementation(kotlin("stdlib-jdk8"))
+    compileOnly(kotlin("stdlib-jdk8"))
     compileOnly("redis.clients:jedis:3.7.0")
     compileOnly("com.google.code.gson:gson:2.10")
     compileOnly("org.bouncycastle:bcprov-lts8on:2.73.3")
-    implementation(fileTree("shadowLibs"))
+    compileOnly(fileTree("shadowLibs"))
     compileOnly(fileTree("libs"))
     compileOnly("com.googlecode.json-simple:json-simple:1.1")
+    compileOnly("com.mcyzj.lib:jianglib-bukkit:1.0.0")
 }
 
 fun releaseTime() = LocalDate.now().format(DateTimeFormatter.ofPattern("y.M.d"))
@@ -49,7 +52,6 @@ tasks {
         arrayListOf(
             "io.papermc.lib=papermc.lib",
             "com.xbaimiao.easylib=easylib",
-            "kotlin=kotlin"
         ).forEach {
             val args = it.split("=")
             relocate(args[0], "${project.group}.shadow.${args[1]}")
