@@ -109,8 +109,8 @@ object LocalPermission {
                 number++
             }
         }
-        val permissionData = permissionMap[permission] ?: permissionMap["Default"]!!
-        var playerPermission = worldPermissionConfig.getString("Permission")?:"Default"
+        val permissionData = permissionMap[permission] ?: permissionMap["default"]!!
+        var playerPermission = worldPermissionConfig.getString("permission")?:"default"
         val owner = Bukkit.getPlayer(worldData.owner)
         if (owner != null) {
             for (key in permissionData.group.keys) {
@@ -119,7 +119,7 @@ object LocalPermission {
                 }
             }
         }
-        worldPermissionConfig.set("Permission", playerPermission)
+        worldPermissionConfig.set("permission", playerPermission)
         var max = worldPermissionConfig.getInt("$permission.Max")
         if (max <= 1) {
             max = permissionData.group[playerPermission]!!.least
@@ -192,27 +192,27 @@ object LocalPermission {
                 (lang.getString("world.warning.permission.add.noGroup") ?: "无法找到对应世界内权限组名：") + permission)
         val worldPermissionConfig = world.getDataConfig("permission")
         val permissionMap = buildPermission()
-        val permissionData = permissionMap[permission] ?: permissionMap["Default"]!!
-        var playerPermission = worldPermissionConfig.getString("Permission")?:"Default"
+        val permissionData = permissionMap[permission] ?: permissionMap["default"]!!
+        var playerPermission = worldPermissionConfig.getString("permission")?:"Default"
         val owner = Bukkit.getPlayer(worldData.owner)!!
         for (key in permissionData.group.keys) {
             if (owner.hasPermission(key)) {
                 playerPermission = key
             }
         }
-        worldPermissionConfig.set("Permission", playerPermission)
+        worldPermissionConfig.set("permission", playerPermission)
         var max = worldPermissionConfig.getInt("$permission.Max")
         if (max <= 1) {
             max = permissionData.group[playerPermission]!!.least
             if (max + 1 > permissionData.group[playerPermission]!!.max){
-                worldPermissionConfig.set("$permission.Max", max)
+                worldPermissionConfig.set("$permission.max", max)
                 worldPermissionConfig.saveToFile()
                 return ResultData(
                     false,
                     lang.getString("world.warning.permission.add.max") ?: "已达到该权限组最大人数上限"
                 )
             }
-            worldPermissionConfig.set("$permission.Max", max + 1)
+            worldPermissionConfig.set("$permission.max", max + 1)
         }
         if (max < permissionData.group[playerPermission]!!.least){
             max = permissionData.group[playerPermission]!!.least
@@ -282,7 +282,7 @@ object LocalPermission {
             Vault().take(owner, upData.money)
         }
         //进行升级操作
-        worldPermissionConfig.set("$permission.Max", max + 1)
+        worldPermissionConfig.set("$permission.max", max + 1)
         worldPermissionConfig.saveToFile()
         return ResultData(
             true,
@@ -291,8 +291,8 @@ object LocalPermission {
     }
 
     private fun getItemData(name: String): ItemData {
-        val material = config.getString("Item.$name.Material")!!.uppercase(Locale.getDefault())
-        val lore = config.getStringList("Item.$name.Lore")
+        val material = config.getString("item.$name.material")!!.uppercase(Locale.getDefault())
+        val lore = config.getStringList("item.$name.lore")
         return ItemData(
             material,
             lore

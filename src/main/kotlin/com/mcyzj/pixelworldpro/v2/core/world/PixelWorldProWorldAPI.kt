@@ -12,5 +12,5 @@ interface PixelWorldProWorldAPI {
 
     fun unload(world: PixelWorldProWorld): CompletableFuture<ResultData>
     fun isLoad(world: PixelWorldProWorld): CompletableFuture<Boolean>
-    fun teleport(player: Player, world: PixelWorldProWorld)
+    fun teleport(player: Player, world: PixelWorldProWorld): CompletableFuture<ResultData>
 }

@@ -11,7 +11,7 @@ class WorldCommand {
     private val lang = Config.getLang()
 
     private val create = command<CommandSender>("create") {
-        permission = "pixelworldpro.create"
+        permission = "pixelworldpro.world.create"
         exec {
             if (sender !is Player) {
                 sender.sendMessage(lang.getString("plugin.needPlayer") ?: "需要玩家操作")
@@ -44,7 +44,7 @@ class WorldCommand {
     }
 
     private val tp = command<CommandSender>("tp") {
-        permission = "pixelworldpro.tp"
+        permission = "pixelworldpro.world.tp"
         exec {
             if (sender !is Player) {
                 sender.sendMessage(lang.getString("plugin.needPlayer") ?: "需要玩家操作")
@@ -54,7 +54,11 @@ class WorldCommand {
             when (args.size) {
                 0 -> {
                     val world = PixelWorldProApi().getWorld(player.uniqueId) ?: return@exec
-                    world.teleport(player)
+                    world.teleport(player).thenApply {
+                        try {
+                            sender.sendMessage(it.reason)
+                        } catch (_: Exception) {}
+                    }
                 }
                 1 -> {
                     sender.sendMessage(WorldImpl.teleport(args[0], player).reason)
@@ -63,8 +67,7 @@ class WorldCommand {
         }
     }
 
-    private val unload = command<CommandSender>("unload") {
-        permission = "pixelworldpro.unload"
+    private val load = command<CommandSender>("load") {
         exec {
             if (sender !is Player) {
                 sender.sendMessage(lang.getString("plugin.needPlayer") ?: "需要玩家操作")
@@ -72,7 +75,28 @@ class WorldCommand {
             }
             val player = sender as Player
             val world = PixelWorldProApi().getWorld(player.uniqueId) ?: return@exec
-            world.unload()
+            world.load().thenApply {
+                try {
+                    sender.sendMessage(it.reason)
+                } catch (_: Exception) {}
+            }
+        }
+    }
+
+    private val unload = command<CommandSender>("unload") {
+        permission = "pixelworldpro.world.unload"
+        exec {
+            if (sender !is Player) {
+                sender.sendMessage(lang.getString("plugin.needPlayer") ?: "需要玩家操作")
+                return@exec
+            }
+            val player = sender as Player
+            val world = PixelWorldProApi().getWorld(player.uniqueId) ?: return@exec
+            world.unload().thenApply {
+                try {
+                    sender.sendMessage(it.reason)
+                } catch (_: Exception) {}
+            }
         }
     }
 
@@ -80,6 +104,7 @@ class WorldCommand {
         permission = "pixelworldpro.use"
         sub(create)
         sub(tp)
+        sub(load)
         sub(unload)
     }
 }

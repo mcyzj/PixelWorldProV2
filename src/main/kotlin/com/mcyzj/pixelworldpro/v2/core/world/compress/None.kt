@@ -14,6 +14,7 @@ object None {
             worldFile.mkdirs()
             val cacheFile = File("./PixelWorldPro/cache/world/${worldData.type}", worldData.id.toString())
             cacheFile.copyRecursively(worldFile)
+            cacheFile.deleteRecursively()
         } catch (e: IOException) {
             e.printStackTrace()
         }

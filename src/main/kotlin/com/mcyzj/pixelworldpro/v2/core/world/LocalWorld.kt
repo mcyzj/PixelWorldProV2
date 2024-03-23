@@ -1,5 +1,6 @@
 package com.mcyzj.pixelworldpro.v2.core.world
 
+import com.mcyzj.lib.bukkit.submit
 import com.mcyzj.pixelworldpro.v2.core.PixelWorldPro
 import com.mcyzj.pixelworldpro.v2.core.permission.dataclass.ResultData
 import com.mcyzj.pixelworldpro.v2.core.util.Config
@@ -40,55 +41,59 @@ class LocalWorld : PixelWorldProWorldAPI {
     override fun load(world: PixelWorldProWorld): CompletableFuture<ResultData> {
         val worldData = world.worldData
         val future = CompletableFuture<ResultData>()
-        if (WorldCache.isInUnUse(world)){
-            future.complete(
-                ResultData(
-                false,
-                ""
-                )
-            )
-        }
-        if (!isLoad(world).get()) {
-            world.decompression()
-            log.info(lang.getString("world.load") + "${worldData.name}[${worldData.id}]")
-            val worldCreator = WorldCreator("PixelWorldPro/cache/world/${worldData.type}/${worldData.id}/world")
-            val worldDataConfig = world.getDataConfig("world")
-            when (worldDataConfig.getString("worldCreator")) {
-                "auto" -> {}
-                else -> {
-                    worldCreator.generator(worldDataConfig.getString("worldCreator"))
-                }
-            }
-            val seed = worldDataConfig.getString("seed")
-            if (seed != null) {
-                worldCreator.seed(seed.toLong())
-            }
-            val localWorld = Bukkit.createWorld(worldCreator)
-            if (localWorld == null) {
+        Thread {
+            if (WorldCache.isInUnUse(world)) {
                 future.complete(
                     ResultData(
-                    false,
-                    ""
+                        false,
+                        ""
+                    )
                 )
-                )
-                return future
             }
-            localWorld.keepSpawnInMemory = false
-            WorldImpl.loadWorld[worldData.id] = world
-            future.complete(
-                ResultData(
-                true,
-                ""
-            )
-            )
-        } else {
-            future.complete(
-                ResultData(
-                    false,
-                    ""
+            if (!isLoad(world).get()) {
+                world.decompression()
+                log.info(lang.getString("world.load") + "${worldData.name}[${worldData.id}]")
+                val worldCreator = WorldCreator("PixelWorldPro/cache/world/${worldData.type}/${worldData.id}/world")
+                val worldDataConfig = world.getDataConfig("world")
+                when (worldDataConfig.getString("worldCreator")) {
+                    "auto" -> {}
+                    else -> {
+                        worldCreator.generator(worldDataConfig.getString("worldCreator"))
+                    }
+                }
+                val seed = worldDataConfig.getString("seed")
+                if (seed != null) {
+                    worldCreator.seed(seed.toLong())
+                }
+                submit {
+                    val localWorld = Bukkit.createWorld(worldCreator)
+                    if (localWorld == null) {
+                        future.complete(
+                            ResultData(
+                                false,
+                                ""
+                            )
+                        )
+                        return@submit
+                    }
+                    localWorld.keepSpawnInMemory = false
+                    WorldImpl.loadWorld[worldData.id] = world
+                    future.complete(
+                        ResultData(
+                            true,
+                            ""
+                        )
+                    )
+                }
+            } else {
+                future.complete(
+                    ResultData(
+                        false,
+                        ""
+                    )
                 )
-            )
-        }
+            }
+        }.start()
         return future
     }
 
@@ -98,61 +103,82 @@ class LocalWorld : PixelWorldProWorldAPI {
     override fun unload(world: PixelWorldProWorld): CompletableFuture<ResultData> {
         val worldData = world.worldData
         val future = CompletableFuture<ResultData>()
-        if (isLoad(world).get()) {
-            log.info(lang.getString("world.unload") + "${worldData.name}[${worldData.id}]")
-            val localWorld = Bukkit.getWorld("PixelWorldPro/cache/world/${worldData.type}/${worldData.id}/world")!!
-            val mainWorld = Bukkit.getWorld("world")!!
-            for (player in localWorld.players) {
-                player.teleport(mainWorld.spawnLocation)
+        Thread {
+            if (isLoad(world).get()) {
+                log.info(lang.getString("world.unload") + "${worldData.name}[${worldData.id}]")
+                val localWorld = Bukkit.getWorld("PixelWorldPro/cache/world/${worldData.type}/${worldData.id}/world")!!
+                val mainWorld = Bukkit.getWorld("world")!!
+                for (player in localWorld.players) {
+                    player.teleport(mainWorld.spawnLocation)
+                }
+                submit {
+                    Bukkit.unloadWorld(localWorld, true)
+                }
+                WorldCache.setUnUseWorld(world)
+                WorldImpl.loadWorld.remove(worldData.id)
+                if (bungee) {
+                    val bungeeData = world.getDataConfig("bungee")
+                    bungeeData.set("load.server", null)
+                    bungeeData.saveToFile()
+                }
+                future.complete(
+                    ResultData(
+                        true,
+                        ""
+                    )
+                )
+            } else {
+                future.complete(
+                    ResultData(
+                        false,
+                        ""
+                    )
+                )
             }
-            Bukkit.unloadWorld(localWorld, true)
-            WorldCache.setUnUseWorld(world)
-            WorldImpl.loadWorld.remove(worldData.id)
-            if (bungee) {
-                val bungeeData = world.getDataConfig("bungee")
-                bungeeData.set("load.server", null)
-                bungeeData.saveToFile()
-            }
-            future.complete(ResultData(
-                true,
-                ""
-            ))
-        } else {
-            future.complete(ResultData(
-                false,
-                ""
-            ))
-        }
+        }.start()
         return future
     }
 
     /**
      * 传送
      */
-  override fun teleport(player: Player, world: PixelWorldProWorld) {
-      val worldData = world.worldData
-        if (!isLoad(world).get()) {
-            load(world).get()
-        }
-        val localWorld = Bukkit.getWorld("PixelWorldPro/cache/world/${worldData.type}/${worldData.id}/world")
-        if (localWorld != null) {
-            val worldDataConfig = world.getDataConfig("world")
-            val location = if (worldDataConfig.getConfigurationSection("location") != null) {
-                LocationData(
-                    worldDataConfig.getDouble("location.x"),
-                    worldDataConfig.getDouble("location.y"),
-                    worldDataConfig.getDouble("location.z")
-                )
-            } else {
-                null
+  override fun teleport(player: Player, world: PixelWorldProWorld): CompletableFuture<ResultData> {
+        val future = CompletableFuture<ResultData>()
+        Thread {
+            val worldData = world.worldData
+            if (!isLoad(world).get()) {
+                val result = load(world).get()
+                if (!result.result) {
+                    future.complete(result)
+                    return@Thread
+                }
             }
-            if (location != null) {
-                player.teleport(
-                    Location(localWorld,location.x, location.y, location.z)
-                )
-            } else {
-                player.teleport(localWorld.spawnLocation)
+            val localWorld = Bukkit.getWorld("PixelWorldPro/cache/world/${worldData.type}/${worldData.id}/world")
+            if (localWorld != null) {
+                val worldDataConfig = world.getDataConfig("world")
+                val location = if (worldDataConfig.getConfigurationSection("location") != null) {
+                    LocationData(
+                        worldDataConfig.getDouble("location.x"),
+                        worldDataConfig.getDouble("location.y"),
+                        worldDataConfig.getDouble("location.z")
+                    )
+                } else {
+                    null
+                }
+                if (location != null) {
+                    submit {
+                        player.teleport(
+                            Location(localWorld, location.x, location.y, location.z)
+                        )
+                    }
+                } else {
+                    submit {
+                        player.teleport(localWorld.spawnLocation)
+                    }
+                }
+                future.complete(ResultData(true))
             }
-        }
+        }.start()
+        return future
     }
 }

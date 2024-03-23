@@ -10,6 +10,7 @@ import com.mcyzj.lib.bukkit.bridge.economy.PlayerPoints
 import com.mcyzj.lib.bukkit.bridge.economy.Vault
 import com.mcyzj.lib.bukkit.item.hasItem
 import com.mcyzj.lib.bukkit.item.takeItem
+import com.mcyzj.pixelworldpro.v2.core.bungee.BungeeServer
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.configuration.ConfigurationSection
@@ -253,7 +254,7 @@ object WorldImpl {
                 serverTickets = newServerTickets
                 worldTickets = newWorldTickets
                 if (Config.bungee.getBoolean("enable")) {
-                    BungeeWorldImpl.saveServerData()
+                    BungeeServer.getLocalServer()
                 }
                 sleep(5*60*1000)
             }

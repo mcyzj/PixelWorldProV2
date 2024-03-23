@@ -12,5 +12,6 @@ class CommandCore {
         permission = "pixelworldpro.use"
         sub(WorldCommand().world)
         sub(AdminCommand().admin)
+        sub(GroupCommand().group)
     }
 }

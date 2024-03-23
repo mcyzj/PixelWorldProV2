@@ -10,6 +10,7 @@ world:
   compress: "压缩世界"
   decompression: "解压世界"
   addToUnUse: "添加世界至冷却列表"
+  inUnUse: "世界正在冷却"
   removeUnUse: "世界完成冷却"
   createSuccess: "成功创建世界"
 check:

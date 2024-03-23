@@ -32,8 +32,8 @@ class WorldListener : Listener {
         //获取世界权限
         val permission = worldData.permission
         if (e.player.uniqueId == worldData.owner){
-            val permissionData = permission["Owner"]!!
-            when (permissionData["GameMode"]){
+            val permissionData = permission["owner"]!!
+            when (permissionData["gameMode"]){
                 "ADVENTURE" -> {
                     e.player.gameMode = GameMode.ADVENTURE
                     return
@@ -57,7 +57,7 @@ class WorldListener : Listener {
         }
         if (worldData.player[e.player.uniqueId] != null){
             val permissionData = permission[worldData.player[e.player.uniqueId]]!!
-            when (permissionData["GameMode"]){
+            when (permissionData["gameMode"]){
                 "ADVENTURE" -> {
                     e.player.gameMode = GameMode.ADVENTURE
                     return
@@ -79,8 +79,8 @@ class WorldListener : Listener {
                 }
             }
         }
-        val permissionData = permission["Visitor"]!!
-        when (permissionData["GameMode"]){
+        val permissionData = permission["visitor"]!!
+        when (permissionData["gameMode"]){
             "ADVENTURE" -> {
                 e.player.gameMode = GameMode.ADVENTURE
                 return
@@ -136,8 +136,8 @@ class WorldListener : Listener {
         //获取世界权限
         val permission = worldData.permission
         if (e.player.uniqueId == worldData.owner){
-            val permissionData = permission["Owner"]!!
-            when (permissionData["Fly"]){
+            val permissionData = permission["owner"]!!
+            when (permissionData["fly"]){
                 "true" -> {
                     e.player.allowFlight = true
                 }
@@ -146,20 +146,20 @@ class WorldListener : Listener {
         }
         if (worldData.player[e.player.uniqueId] != null){
             val permissionData = permission[worldData.player[e.player.uniqueId]]!!
-            when (permissionData["Teleport"]){
+            when (permissionData["teleport"]){
                 "false" -> {
                     e.isCancelled = true
                 }
             }
-            when (permissionData["Fly"]){
+            when (permissionData["fly"]){
                 "true" -> {
                     e.player.allowFlight = true
                 }
             }
             return
         }
-        val permissionData = permission["Visitor"]!!
-        when (permissionData["Fly"]){
+        val permissionData = permission["visitor"]!!
+        when (permissionData["fly"]){
             "true" -> {
                 e.player.allowFlight = true
             }
@@ -189,8 +189,8 @@ class WorldListener : Listener {
         val permission = worldData.permission
         Bukkit.getConsoleSender().sendMessage(permission.toString())
         if (e.player.uniqueId == worldData.owner){
-            val permissionData = permission["Owner"]!!
-            when (permissionData["BlockRightClick"]){
+            val permissionData = permission["owner"]!!
+            when (permissionData["blockRightClick"]){
                 "false" -> {
                     e.isCancelled = true
                 }
@@ -199,15 +199,15 @@ class WorldListener : Listener {
         }
         if (worldData.player[e.player.uniqueId] != null){
             val permissionData = permission[worldData.player[e.player.uniqueId]]!!
-            when (permissionData["BlockRightClick"]){
+            when (permissionData["blockRightClick"]){
                 "false" -> {
                     e.isCancelled = true
                 }
             }
             return
         }
-        val permissionData = permission["Visitor"]!!
-        when (permissionData["BlockRightClick"]){
+        val permissionData = permission["visitor"]!!
+        when (permissionData["blockRightClick"]){
             "false" -> {
                 e.isCancelled = true
             }
@@ -237,8 +237,8 @@ class WorldListener : Listener {
         //获取世界权限
         val permission = worldData.permission
         if (e.player.uniqueId == worldData.owner){
-            val permissionData = permission["Owner"]!!
-            when (permissionData["BlockDamage"]){
+            val permissionData = permission["owner"]!!
+            when (permissionData["blockDamage"]){
                 "false" -> {
                     e.isCancelled = true
                 }
@@ -247,15 +247,15 @@ class WorldListener : Listener {
         }
         if (worldData.player[e.player.uniqueId] != null){
             val permissionData = permission[worldData.player[e.player.uniqueId]]!!
-            when (permissionData["BlockDamage"]){
+            when (permissionData["blockDamage"]){
                 "false" -> {
                     e.isCancelled = true
                 }
             }
             return
         }
-        val permissionData = permission["Visitor"]!!
-        when (permissionData["BlockDamage"]){
+        val permissionData = permission["visitor"]!!
+        when (permissionData["blockDamage"]){
             "false" -> {
                 e.isCancelled = true
             }
@@ -285,8 +285,8 @@ class WorldListener : Listener {
         //获取世界权限
         val permission = worldData.permission
         if (e.player.uniqueId == worldData.owner){
-            val permissionData = permission["Owner"]!!
-            when (permissionData["RightClickEntity"]){
+            val permissionData = permission["owner"]!!
+            when (permissionData["rightClickEntity"]){
                 "false" -> {
                     e.isCancelled = true
                 }
@@ -295,15 +295,15 @@ class WorldListener : Listener {
         }
         if (worldData.player[e.player.uniqueId] != null){
             val permissionData = permission[worldData.player[e.player.uniqueId]]!!
-            when (permissionData["RightClickEntity"]){
+            when (permissionData["rightClickEntity"]){
                 "false" -> {
                     e.isCancelled = true
                 }
             }
             return
         }
-        val permissionData = permission["Visitor"]!!
-        when (permissionData["RightClickEntity"]){
+        val permissionData = permission["visitor"]!!
+        when (permissionData["rightClickEntity"]){
             "false" -> {
                 e.isCancelled = true
             }
@@ -334,8 +334,8 @@ class WorldListener : Listener {
             //获取世界权限
             val permission = worldData.permission
             if (e.damager.uniqueId == worldData.owner) {
-                val permissionData = permission["Owner"]!!
-                when (permissionData["AttackEntity"]) {
+                val permissionData = permission["owner"]!!
+                when (permissionData["attackEntity"]) {
                     "false" -> {
                         e.isCancelled = true
                     }
@@ -344,15 +344,15 @@ class WorldListener : Listener {
             }
             if (worldData.player[e.damager.uniqueId] != null) {
                 val permissionData = permission[worldData.player[e.damager.uniqueId]]!!
-                when (permissionData["AttackEntity"]) {
+                when (permissionData["attackEntity"]) {
                     "false" -> {
                         e.isCancelled = true
                     }
                 }
                 return
             }
-            val permissionData = permission["Visitor"]!!
-            when (permissionData["AttackEntity"]) {
+            val permissionData = permission["visitor"]!!
+            when (permissionData["attackEntity"]) {
                 "false" -> {
                     e.isCancelled = true
                 }
@@ -377,8 +377,8 @@ class WorldListener : Listener {
             //获取世界权限
             val permission = worldData.permission
             if (e.entity.uniqueId == worldData.owner) {
-                val permissionData = permission["Owner"]!!
-                when (permissionData["AttackEntity"]) {
+                val permissionData = permission["owner"]!!
+                when (permissionData["attackEntity"]) {
                     "false" -> {
                         e.isCancelled = true
                     }
@@ -387,15 +387,15 @@ class WorldListener : Listener {
             }
             if (worldData.player[e.entity.uniqueId] != null) {
                 val permissionData = permission[worldData.player[e.entity.uniqueId]]!!
-                when (permissionData["AttackEntity"]) {
+                when (permissionData["attackEntity"]) {
                     "false" -> {
                         e.isCancelled = true
                     }
                 }
                 return
             }
-            val permissionData = permission["Visitor"]!!
-            when (permissionData["AttackEntity"]) {
+            val permissionData = permission["visitor"]!!
+            when (permissionData["attackEntity"]) {
                 "false" -> {
                     e.isCancelled = true
                 }
@@ -422,8 +422,8 @@ class WorldListener : Listener {
             val permission = worldData.permission
             var damage = "true"
             if (e.damager.uniqueId == worldData.owner) {
-                val permissionData = permission["Owner"]!!
-                when (permissionData["AttackPlayer"]) {
+                val permissionData = permission["owner"]!!
+                when (permissionData["attackPlayer"]) {
                     "false" -> {
                         damage = "false"
                     }
@@ -431,14 +431,14 @@ class WorldListener : Listener {
             }
             if (worldData.player[e.damager.uniqueId] != null) {
                 val permissionData = permission[worldData.player[e.damager.uniqueId]]!!
-                when (permissionData["AttackPlayer"]) {
+                when (permissionData["attackPlayer"]) {
                     "false" -> {
                         damage = "false"
                     }
                 }
             } else {
-                val permissionData = permission["Visitor"]!!
-                when (permissionData["AttackPlayer"]) {
+                val permissionData = permission["visitor"]!!
+                when (permissionData["attackPlayer"]) {
                     "false" -> {
                         damage = "false"
                     }
@@ -448,8 +448,8 @@ class WorldListener : Listener {
             val permission2 = worldData.permission
             var entity = "true"
             if (e.entity.uniqueId == worldData.owner) {
-                val permissionData2 = permission2["Owner"]!!
-                when (permissionData2["AttackPlayer"]) {
+                val permissionData2 = permission2["owner"]!!
+                when (permissionData2["attackPlayer"]) {
                     "false" -> {
                         entity = "false"
                     }
@@ -457,14 +457,14 @@ class WorldListener : Listener {
             }
             if (worldData.player[e.entity.uniqueId] != null) {
                 val permissionData2 = permission2[worldData.player[e.entity.uniqueId]]!!
-                when (permissionData2["AttackPlayer"]) {
+                when (permissionData2["attackPlayer"]) {
                     "false" -> {
                         entity = "false"
                     }
                 }
             } else {
-                val permissionData2 = permission2["Visitor"]!!
-                when (permissionData2["AttackPlayer"]) {
+                val permissionData2 = permission2["visitor"]!!
+                when (permissionData2["attackPlayer"]) {
                     "false" -> {
                         entity = "false"
                     }

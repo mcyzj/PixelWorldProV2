@@ -2,10 +2,9 @@ package com.mcyzj.pixelworldpro.v2.core.bungee.redis
 
 import com.google.gson.JsonObject
 import com.mcyzj.lib.bukkit.submit
-import com.mcyzj.lib.plugin.file.BuiltOutConfiguration
 import com.mcyzj.pixelworldpro.v2.core.PixelWorldPro
 import com.mcyzj.pixelworldpro.v2.core.api.PixelWorldProApi
-import com.mcyzj.pixelworldpro.v2.core.bungee.BungeeWorldImpl
+import com.mcyzj.pixelworldpro.v2.core.bungee.BungeeServer
 import com.mcyzj.pixelworldpro.v2.core.bungee.ResponseData
 import com.mcyzj.pixelworldpro.v2.core.world.WorldImpl
 import org.bukkit.Bukkit
@@ -14,30 +13,14 @@ import java.util.*
 object DataProcessing : DataProcessingAPI {
     val log = PixelWorldPro.instance.log
     override fun receive(data: JsonObject) {
-        log.info(data.toString(), true)
         when (data["type"].asString) {
-            "UpdateServer" -> {
-                val id = data["id"].asInt
-                val config = BuiltOutConfiguration("./PixelWorldPro/cache/bungee/response/$id.yml")
-                config.set("return", true)
-                config.saveToFile()
-                BungeeWorldImpl.saveServerData()
-                return
-            }
             "ServerCheck" -> {
                 Communicate.setResponse(ResponseData(true, JsonObject()), data)
+                return
             }
             "Response" -> {
-                val responseID = data["id"].asInt
-                val result = data["result"].asBoolean
-                val responseData = data["data"].asJsonObject
-                if (responseID in BungeeWorldImpl.inResponse) {
-                    BungeeWorldImpl.inResponse.remove(responseID)
-                    BungeeWorldImpl.response[responseID] = ResponseData(
-                        result,
-                        responseData
-                    )
-                }
+                BungeeServer.setServerResponse(data)
+                return
             }
             "WorldCreate" -> {
                 val owner = UUID.fromString(data["owner"].asString)
@@ -52,6 +35,13 @@ object DataProcessing : DataProcessingAPI {
                     null
                 }
                 WorldImpl.createWorldLocal(owner, template, seed, false).thenApply {
+                    Communicate.setResponse(ResponseData(it, JsonObject()), data)
+                }
+                return
+            }
+            "WorldCheck" -> {
+                val id = data["id"].asInt
+                PixelWorldProApi().getWorld(id, false)!!.isLoad().thenApply {
                     Communicate.setResponse(ResponseData(it, JsonObject()), data)
                 }
                 return
@@ -79,9 +69,7 @@ object DataProcessing : DataProcessingAPI {
                     while (times < 1000) {
                         val player = Bukkit.getPlayer(uuid)
                         if (player != null) {
-                            submit {
-                                world.teleport(player)
-                            }
+                            world.teleport(player)
                             return@Thread
                         }
                         Thread.sleep(500)

@@ -42,6 +42,18 @@ class AdminCommand {
         }
     }
 
+    private val load = command<CommandSender>("load") {
+        exec {
+            when (args.size) {
+                1 -> {
+                    val player = PlayerFound.getOfflinePlayer(args[0])
+                    val world = PixelWorldProApi().getWorld(player.uniqueId) ?: return@exec
+                    world.load()
+                }
+            }
+        }
+    }
+
     private val unload = command<CommandSender>("unload") {
         exec {
             when (args.size) {
@@ -57,6 +69,7 @@ class AdminCommand {
     val admin = command<CommandSender>("admin") {
         permission = "pixelworldpro.admin"
         sub(create)
+        sub(load)
         sub(unload)
     }
 }

@@ -11,29 +11,29 @@ world:
     #游戏模式
     gameMode: SURVIVAL
     #是否能右击方块[与方块交互]
-    blockRightClick: True
+    blockRightClick: true
     #是否能更改方块状态
-    blockDamage: True
+    blockDamage: true
     #是否能右击实体[与实体交互]
-    rightClickEntity: True
+    rightClickEntity: true
     #是否能攻击实体[包括动物/怪物/矿车等]
-    attackEntity: True
+    attackEntity: true
     #是否能攻击玩家
-    attackPlayer: True
+    attackPlayer: true
     #是否能被实体锁定
-    entityLock: True
+    entityLock: true
     #是否能传送到指定世界[当然这一项对于拥有者肯定没有用]
-    teleport: True
+    teleport: true
     #是否能更改游戏模式
-    changeGameMode: False
+    changeGameMode: false
     #是否能更改世界内玩家的游戏模式
-    changePlayerGameMode: False
+    changePlayerGameMode: false
     #能否飞行
-    fly: False
+    fly: false
     #更改独立世界的设置[当然这一项对于拥有者肯定没有用]
-    changeWorld: True
+    changeWorld: true
     #更改独立世界的权限
-    changePermission: False
+    changePermission: false
   #信任者权限，可删除
   member:
     #权限组名称
@@ -41,29 +41,29 @@ world:
     #游戏模式
     gameMode: SURVIVAL
     #是否能右击方块[与方块交互]
-    blockRightClick: True
+    blockRightClick: true
     #是否能更改方块状态
-    blockDamage: True
+    blockDamage: true
     #是否能右击实体[与实体交互]
-    rightClickEntity: True
+    rightClickEntity: true
     #是否能攻击实体[包括动物/怪物/矿车等]
-    attackEntity: True
+    attackEntity: true
     #是否能攻击玩家
-    attackPlayer: True
+    attackPlayer: true
     #是否能被实体锁定
-    entityLock: True
+    entityLock: true
     #是否能传送到指定世界
-    teleport: True
+    teleport: true
     #是否能更改游戏模式
-    changeGameMode: False
+    changeGameMode: false
     #是否能更改世界内玩家的游戏模式
-    changePlayerGameMode: False
+    changePlayerGameMode: false
     #能否飞行
-    fly: False
+    fly: false
     #更改独立世界的设置
-    changeWorld: False
+    changeWorld: false
     #更改独立世界的权限
-    changePermission: False
+    changePermission: false
   #游客权限，不可删除
   visitor:
     #权限组名称
@@ -71,29 +71,29 @@ world:
     #游戏模式
     gameMode: ADVENTURE
     #是否能右击方块[与方块交互]
-    blockRightClick: False
+    blockRightClick: false
     #是否能更改方块状态
-    blockDamage: False
+    blockDamage: false
     #是否能右击实体[与实体交互]
-    rightClickEntity: False
+    rightClickEntity: false
     #是否能攻击实体[包括动物/怪物/矿车等]
-    attackEntity: False
+    attackEntity: false
     #是否能攻击玩家
-    attackPlayer: False
+    attackPlayer: false
     #是否能被实体锁定
-    entityLock: False
+    entityLock: false
     #是否能传送到指定世界
-    teleport: True
+    teleport: true
     #是否能更改游戏模式
-    changeGameMode: False
+    changeGameMode: false
     #是否能更改世界内玩家的游戏模式
-    changePlayerGameMode: False
+    changePlayerGameMode: false
     #能否飞行
-    fly: False
+    fly: false
     #更改独立世界的设置
-    changeWorld: False
+    changeWorld: false
     #更改独立世界的权限
-    changePermission: False
+    changePermission: false
   #黑名单用户权限，不可删除
   blackList:
     #权限组名称
@@ -101,29 +101,29 @@ world:
     #游戏模式
     gameMode: ADVENTURE
     #是否能右击方块[与方块交互]
-    blockRightClick: False
+    blockRightClick: false
     #是否能更改方块状态
-    blockDamage: False
+    blockDamage: false
     #是否能右击实体[与实体交互]
-    rightClickEntity: False
+    rightClickEntity: false
     #是否能攻击实体[包括动物/怪物/矿车等]
-    attackEntity: False
+    attackEntity: false
     #是否能攻击玩家
-    attackPlayer: False
+    attackPlayer: false
     #是否能被实体锁定
-    entityLock: False
+    entityLock: false
     #是否能传送到指定世界
-    teleport: False
+    teleport: false
     #是否能更改游戏模式
-    changeGameMode: False
+    changeGameMode: false
     #是否能更改世界内玩家的游戏模式
-    changePlayerGameMode: False
+    changePlayerGameMode: false
     #能否飞行
-    fly: False
+    fly: false
     #更改独立世界的设置
-    changeWorld: False
+    changeWorld: false
     #更改独立世界的权限
-    changePermission: False
+    changePermission: false
 #权限组细节设定
 permission:
   #默认，即这里找不到对应权限组名时以此为准

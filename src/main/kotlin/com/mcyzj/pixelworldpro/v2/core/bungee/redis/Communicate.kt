@@ -3,10 +3,9 @@ package com.mcyzj.pixelworldpro.v2.core.bungee.redis
 
 import com.google.gson.Gson
 import com.google.gson.JsonObject
-import com.mcyzj.lib.bukkit.submit
 import com.mcyzj.pixelworldpro.v2.core.Main
 import com.mcyzj.pixelworldpro.v2.core.PixelWorldPro
-import com.mcyzj.pixelworldpro.v2.core.bungee.BungeeWorldImpl
+import com.mcyzj.pixelworldpro.v2.core.bungee.BungeeServer
 import com.mcyzj.pixelworldpro.v2.core.bungee.ResponseData
 import org.bukkit.entity.Player
 import org.json.simple.JSONObject
@@ -22,14 +21,14 @@ object Communicate : JedisPubSub() {
     val log = PixelWorldPro.instance.log
     override fun onMessage(channel: String?, message: String?) {
         Thread {
-            log.info(channel + message.toString(), true)
             if (channel != PixelWorldPro.redisConfig.channel) {
                 return@Thread
             }
+            log.info("监听到Redis消息：$message", true)
             val g = Gson()
             val back: JsonObject = g.fromJson(message, JsonObject::class.java)
             if (back["server"].asString != "all") {
-                if (back["server"].asString != BungeeWorldImpl.getBungeeData().server) {
+                if (back["server"].asString != BungeeServer.getLocalServer().server) {
                     return@Thread
                 }
             }
@@ -37,11 +36,19 @@ object Communicate : JedisPubSub() {
         }.start()
     }
 
-    fun send(player: Player?, server: String? = "all", type: String, msg: JSONObject) {
-        msg["sendServer"] = BungeeWorldImpl.getBungeeData().server
+    fun send(server: String? = "all", type: String, msg: JSONObject) {
+        val localServer = BungeeServer.getLocalServer()
+        if (server == localServer.server) {
+            Thread {
+                val g = Gson()
+                val back: JsonObject = g.fromJson(msg.toJSONString(), JsonObject::class.java)
+                receive(back["plugin"].asString, back)
+            }.start()
+        }
+        msg["sendServer"] = localServer.server
         msg["server"] = server
         msg["plugin"] = type
-        push(msg.toString())
+        push(msg.toJSONString())
     }
 
     private fun push(message: String) {
@@ -50,11 +57,8 @@ object Communicate : JedisPubSub() {
 
     private fun receive(type: String, msg: JsonObject) {
         try {
-            log.info(type + msg.toString(), true)
             val listen = listener[type] ?: return
-            submit {
-                listen.receive(msg)
-            }
+            listen.receive(msg)
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -74,10 +78,16 @@ object Communicate : JedisPubSub() {
 
     fun setResponse(response: ResponseData, localData: JsonObject) {
         val data = JSONObject()
+        data["type"] = "Response"
         data["id"] = localData["response"].asInt
         data["result"] = response.result
         data["data"] = response.data
         val server = localData["sendServer"].asString
-        send(null, server, "Response", data)
+        if (server == BungeeServer.getLocalServer().server) {
+            BungeeServer.setServerResponse(Gson().fromJson(data.toJSONString(), JsonObject::class.java))
+            return
+        }
+        log.info("发送${localData["response"].asInt}的回应信息")
+        send(server, "local", data)
     }
 }

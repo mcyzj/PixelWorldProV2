@@ -120,13 +120,29 @@ class PixelWorldProWorld(val worldData: WorldData, bungeeExecution: Boolean = Co
         val tpsWeight = worldConfig.getDouble("tickets.tps.weight")
         val world = worldConfig.getDouble("tickets.world")
         val player = worldConfig.getDouble("tickets.player")
-        val tpsTickets = (tpsMax - Bukkit.getTPS().first()) * tpsWeight
-        val playerList = WorldImpl.onlinePlayer[worldData.id] ?: ArrayList<Player>()
+        val tpsTickets = try {
+            (tpsMax - Bukkit.getTPS().first()) * tpsWeight
+        } catch (_: Exception) {
+            20.0
+        }
+        val playerList = WorldImpl.onlinePlayer[worldData.id] ?: ArrayList()
         val playerTickets = playerList.size * player
         return initial + tpsTickets + world + playerTickets
     }
 
     fun load(): CompletableFuture<ResultData> {
+        val worldCacheConfig = WorldCache.getCacheConfig("world/${worldData.type}/unUse.yml")
+        val lock = worldCacheConfig.getLong(worldData.id.toString())
+        if (lock > System.currentTimeMillis()) {
+            val future = CompletableFuture<ResultData>()
+            future.complete(
+                ResultData(
+                false,
+                lang.getString("world.inUnUse") ?: "世界正在冷却"
+            )
+            )
+            return future
+        }
         return worldDriver.load(this)
     }
 
@@ -138,8 +154,8 @@ class PixelWorldProWorld(val worldData: WorldData, bungeeExecution: Boolean = Co
         return worldDriver.isLoad(this)
     }
 
-    fun teleport(player: Player) {
-        worldDriver.teleport(player, this)
+    fun teleport(player: Player): CompletableFuture<ResultData> {
+        return worldDriver.teleport(player, this)
     }
 
     fun getWorlds(): HashMap<String, World>? {
