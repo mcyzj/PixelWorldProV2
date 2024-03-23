@@ -9,6 +9,7 @@ import com.mcyzj.pixelworldpro.v2.core.command.CommandCore
 import com.mcyzj.pixelworldpro.v2.core.database.DataBase
 import com.mcyzj.pixelworldpro.v2.core.database.DatabaseImpl
 import com.mcyzj.pixelworldpro.v2.core.expansion.ExpansionManager
+import com.mcyzj.pixelworldpro.v2.core.papi.Papi
 import com.mcyzj.pixelworldpro.v2.core.util.Config
 import com.mcyzj.pixelworldpro.v2.core.util.Icon
 import com.mcyzj.pixelworldpro.v2.core.util.Install
@@ -57,6 +58,8 @@ class PixelWorldPro{
         cleanWorldCache()
         //注册监听
         Bukkit.getPluginManager().registerEvents(WorldListener(), Main.instance)
+        //注册Papi
+        Papi.register()
         //Bungee处理
         bungeeEnable = Config.bungee.getBoolean("enable")
         if (bungeeEnable) {

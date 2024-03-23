@@ -16,7 +16,7 @@ import java.util.*
 
 class DatabaseImpl : DatabaseAPI {
 
-    final override var ormlite: Ormlite = DataBase.getOrmlite()
+    override var ormlite: Ormlite = DataBase.getOrmlite()
 
     private val worldDaoTable: Dao<WorldDao, Int> = ormlite.createDao(WorldDao::class.java)
     private val logger = PixelWorldPro.instance.logger
@@ -42,6 +42,9 @@ class DatabaseImpl : DatabaseAPI {
         return getWorldData(worldData.owner)!!
     }
     override fun setWorldData(worldData: WorldData) {
+        if (worldData.owner == UUID.fromString("00000000-0000-0000-0000-000000000000")) {
+            return
+        }
         submit(async = asyncWrite) {
             val json = joinToData(worldData)
             val queryBuilder = worldDaoTable.queryBuilder()
@@ -64,28 +67,59 @@ class DatabaseImpl : DatabaseAPI {
         val queryBuilder = worldDaoTable.queryBuilder()
         queryBuilder.where().eq("id", id)
         val worldDao = queryBuilder.queryForFirst()?:return null
+        if (worldDao.owner == UUID.fromString("00000000-0000-0000-0000-000000000000")) {
+            return WorldData(
+                //世界ID
+                -1,
+                //世界主人
+                UUID.fromString("00000000-0000-0000-0000-000000000000"),
+                //世界名称
+                "delete",
+                //世界权限表
+                HashMap<String, HashMap<String, String>>(),
+                //玩家权限表
+                HashMap<UUID, String>(),
+                //世界维度表
+                //var dimension: HashMap<String, WorldDimensionData>,
+                //世界模式
+                "close"
+            )
+        }
         return getFromJson(worldDao)
     }
 
     override fun getWorldData(owner: UUID): WorldData? {
+        if (owner == UUID.fromString("00000000-0000-0000-0000-000000000000")) {
+            return WorldData(
+                //世界ID
+                -1,
+                //世界主人
+                UUID.fromString("00000000-0000-0000-0000-000000000000"),
+                //世界名称
+                "delete",
+                //世界权限表
+                HashMap<String, HashMap<String, String>>(),
+                //玩家权限表
+                HashMap<UUID, String>(),
+                //世界维度表
+                //var dimension: HashMap<String, WorldDimensionData>,
+                //世界模式
+                "close"
+            )
+        }
         val queryBuilder = worldDaoTable.queryBuilder()
         queryBuilder.where().eq("owner", owner)
         val worldDao = queryBuilder.queryForFirst()?:return null
         return getFromJson(worldDao)
     }
 
-    override fun deleteWorldData(id: Int) {
+    override fun deleteWorldData(worldData: WorldData) {
         val queryBuilder = worldDaoTable.queryBuilder()
-        queryBuilder.where().eq("id", id)
+        queryBuilder.where().eq("id", worldData.id)
         val worldDao = queryBuilder.queryForFirst()?:return
-        worldDaoTable.delete(worldDao)
-    }
-
-    override fun deleteWorldData(owner: UUID) {
-        val queryBuilder = worldDaoTable.queryBuilder()
-        queryBuilder.where().eq("owner", owner)
-        val worldDao = queryBuilder.queryForFirst()?:return
-        worldDaoTable.delete(worldDao)
+        worldDao.owner = UUID.fromString("00000000-0000-0000-0000-000000000000")
+        worldDao.data = "close"
+        worldDaoTable.update(worldDao)
     }
 
     override fun getWorldIdMap(): HashMap<Int, WorldData> {

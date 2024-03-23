@@ -31,14 +31,9 @@ interface DatabaseAPI {
     fun getWorldData(owner: UUID): WorldData?
     /**
      * 删除一个世界记录
-     * @param id 世界id
+     * @param worldData 世界数据
      */
-    fun deleteWorldData(id: Int)
-    /**
-     * 删除一个世界记录
-     * @param owner 玩家UUID
-     */
-    fun deleteWorldData(owner: UUID)
+    fun deleteWorldData(worldData: WorldData)
     /**
      * 获取所有世界id map
      */
