@@ -8,7 +8,7 @@ slots:
   - 'AAAAAAAAA'
   - 'UNNNXNNND'
 
-Item:
+item:
   B:
     material: GRASS_BLOCK
     name: '&a&l我的世界'

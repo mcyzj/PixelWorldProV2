@@ -1,24 +1,36 @@
 package com.mcyzj.pixelworldpro.v2.core.menu
 
+import com.mcyzj.lib.bukkit.menu.MenuAPI
+import com.mcyzj.lib.bukkit.menu.dataclass.SlotData
 import com.mcyzj.pixelworldpro.v2.core.database.DataBase
 import com.mcyzj.pixelworldpro.v2.core.world.PixelWorldProWorld
+import org.bukkit.Bukkit
 import org.bukkit.OfflinePlayer
 
-class WorldList {
-    val worldMap = HashMap<Int, PixelWorldProWorld>()
+class WorldList : MenuAPI {
+
+    private val worldMap = HashMap<Int, PixelWorldProWorld>()
     //目前获取到的最后一个世界id
-    var worldListLast = 0
-    fun getList(player: OfflinePlayer, type: String, number: Int) {
-        when(type) {
+    private var worldListLast = 0
+
+    override fun getList(player: OfflinePlayer, slotData: SlotData, number: Int): SlotData? {
+        val dataFile = slotData.data
+        when(slotData.value) {
             "world" -> {
                 var emptyTime = 0
                 while (true) {
                     if (emptyTime > 10) {
-                        break
+                        return null
                     }
                     val world = worldMap[number]
                     if (world != null) {
-                        break
+                        dataFile.set("World.Name", world.worldData.name)
+                        dataFile.set("World.ID", world.worldData.id)
+                        val owner = Bukkit.getOfflinePlayer(world.worldData.owner)
+                        dataFile.set("World.Owner.Name", owner.name)
+                        dataFile.set("World.Owner.UUID", owner.uniqueId)
+                        dataFile.set("World.Type", world.worldData.type)
+                        return slotData.copy(data = dataFile)
                     }
                     val worldData = DataBase.getDataDriver("local").getWorldData(worldListLast)
                     worldListLast ++
@@ -33,7 +45,6 @@ class WorldList {
                                     continue
                                 }
                             }
-                            return
                         } else {
                             val permissionData = worldData.permission["visitor"]!!
                             when (permissionData["teleport"]) {
@@ -54,5 +65,6 @@ class WorldList {
                 }
             }
         }
+        return null
     }
 }

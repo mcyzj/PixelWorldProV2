@@ -1,11 +1,15 @@
 package com.mcyzj.pixelworldpro.v2.core.command
 
 import com.mcyzj.lib.bukkit.command.command
+import com.mcyzj.lib.bukkit.menu.Menu
 import com.mcyzj.lib.plugin.PlayerFound
+import com.mcyzj.lib.plugin.file.BuiltInConfiguration
 import com.mcyzj.pixelworldpro.v2.core.api.PixelWorldProApi
 import com.mcyzj.pixelworldpro.v2.core.util.Config
 import com.mcyzj.pixelworldpro.v2.core.world.WorldImpl
 import org.bukkit.command.CommandSender
+import org.bukkit.entity.Player
+import kotlin.experimental.ExperimentalTypeInference
 
 class AdminCommand {
     private val lang = Config.getLang()
@@ -66,10 +70,17 @@ class AdminCommand {
         }
     }
 
+    private val test = command<CommandSender>("test") {
+        exec {
+            Menu(sender as Player, sender as Player, BuiltInConfiguration("menu/WorldList.yml")).build()
+        }
+    }
+
     val admin = command<CommandSender>("admin") {
         permission = "pixelworldpro.admin"
         sub(create)
         sub(load)
         sub(unload)
+        sub(test)
     }
 }
