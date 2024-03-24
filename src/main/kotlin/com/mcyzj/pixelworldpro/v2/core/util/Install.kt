@@ -1,6 +1,7 @@
 package com.mcyzj.pixelworldpro.v2.core.util
 
 import com.mcyzj.lib.plugin.file.Path
+import com.mcyzj.pixelworldpro.v2.core.Main
 import com.mcyzj.pixelworldpro.v2.core.PixelWorldPro
 import java.io.File
 import java.util.*
@@ -67,5 +68,7 @@ object Install {
         PixelWorldPro.instance.log.info(Config.getLang().getString("plugin.install.successful"))
         config.set("install", null)
         config.saveToFile()
+
+        Main.instance.saveResource("menu/WorldList.yml", false)
     }
 }

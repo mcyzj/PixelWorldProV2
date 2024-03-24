@@ -8,10 +8,13 @@ data class SlotData(
     val config: ConfigurationSection,
 
     val lore: ArrayList<String>,
-    val operate: ArrayList<String>,
+    val operate: ArrayList<OperateData>,
     val data: ConfigurationSection,
 
     val name: String?,
     val type: String?,
-    val value: String?
+    val value: String?,
+
+    val skull: String?,
+    val customModelData: String?
 )

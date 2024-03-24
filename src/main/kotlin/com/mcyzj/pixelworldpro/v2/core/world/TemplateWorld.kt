@@ -100,6 +100,7 @@ class TemplateWorld(template: String, val type: String? = "local") {
             }
         }
         worldDataConfig.saveToFile()
+        pwpWorld.setCompress(true)
         val compress = templateConfig.getString("compress.method") ?: "None"
         val compressConfig = pwpWorld.getDataConfig("compress")
         compressConfig.set("method", compress)

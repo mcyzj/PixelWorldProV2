@@ -44,6 +44,7 @@ object Communicate : JedisPubSub() {
                 val back: JsonObject = g.fromJson(msg.toJSONString(), JsonObject::class.java)
                 receive(back["plugin"].asString, back)
             }.start()
+            return
         }
         msg["sendServer"] = localServer.server
         msg["server"] = server

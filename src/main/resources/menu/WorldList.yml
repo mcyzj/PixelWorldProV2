@@ -1,5 +1,7 @@
 type: WorldList
 title: "世界列表"
+command:
+  - list
 
 slots:
   - 'BNNNONNNN'
@@ -15,7 +17,7 @@ item:
     lore:
       - '返回%player_name%的世界'
     operate:
-      - '[player] pwp world tp'
+      - '[all] [command] [player] pwp world tp'
   N:
     material: GLASS_PANE
   X:
@@ -24,7 +26,7 @@ item:
     lore:
       - '&f点击关闭'
     operate:
-      - '[close]'
+      - '[all] [close]'
   O:
     material: GLASS_PANE
     type: ChangeList
@@ -34,23 +36,24 @@ item:
     type: list
     value: world
     material: PLAYER_HEAD
+    skull: "{SlotData.World.Owner.UUID}"
     name: '&a&l{SlotData.World.Name}'
     lore:
       - '&f你在该世界的身份为 %pixelworldpro_id_{SlotData.World.ID}_group%'
       - '&f该世界主人 {SlotData.World.Owner.Name}'
     operate:
-      - '[player] pwp world tp {SlotData.World.ID}'
+      - '[all] [command] [player] pwp world tp {SlotData.World.ID}'
   U:
     type: page
     value: back
     material: GRASS_BLOCK
     name: '&a&l上一页'
     lore:
-      - '第{MenuData.Page.Local}/{MenuData.Page.Max}页'
+      - '第{MenuData.Page.Last}}页'
   D:
     type: page
     value: next
     material: GRASS_BLOCK
     name: '&a&l下一页'
     lore:
-      - '第{MenuData.Page.Local}/{MenuData.Page.Max}页'
+      - '第{MenuData.Page.Next}页'

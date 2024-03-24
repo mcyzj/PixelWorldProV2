@@ -1,6 +1,8 @@
 package com.mcyzj.pixelworldpro.v2.core
 
+import com.mcyzj.lib.bukkit.menu.MenuImpl
 import com.mcyzj.lib.plugin.Logger
+import com.mcyzj.lib.plugin.file.Path
 import com.mcyzj.pixelworldpro.v2.core.bungee.BungeeWorld
 import com.mcyzj.pixelworldpro.v2.core.bungee.redis.Communicate
 import com.mcyzj.pixelworldpro.v2.core.bungee.redis.DataProcessing
@@ -19,7 +21,9 @@ import com.mcyzj.pixelworldpro.v2.core.world.WorldImpl
 import com.mcyzj.pixelworldpro.v2.core.world.WorldCache.cleanWorldCache
 import com.mcyzj.pixelworldpro.v2.core.world.WorldListener
 import org.bukkit.Bukkit
+import org.bukkit.configuration.file.YamlConfiguration
 import redis.clients.jedis.JedisPool
+import java.io.File
 
 
 @Suppress("unused")
@@ -60,6 +64,8 @@ class PixelWorldPro{
         Bukkit.getPluginManager().registerEvents(WorldListener(), Main.instance)
         //注册Papi
         Papi.register()
+        //注册菜单
+        registerMenu()
         //Bungee处理
         bungeeEnable = Config.bungee.getBoolean("enable")
         if (bungeeEnable) {
@@ -82,6 +88,18 @@ class PixelWorldPro{
             Communicate.listener["local"] = DataProcessing
             //注册世界tickets计算
             WorldImpl.updateAllWorlds()
+        }
+    }
+
+    fun registerMenu() {
+        val path = Path().getJarPath(this::class.java)
+        val menuFolder = File("$path/PixelWorldProV2/menu")
+        val fileList = menuFolder.listFiles()
+        if (fileList != null) {
+            for (file in fileList) {
+                val menuConfig = YamlConfiguration.loadConfiguration(file)
+                MenuImpl.registerMenuConfig(menuConfig, Main.instance)
+            }
         }
     }
 

@@ -6,9 +6,6 @@ import org.bukkit.OfflinePlayer
 class PlayerWorld: PapiAPI {
     override fun process(paramsList: List<String>, world: PixelWorldProWorld, player: OfflinePlayer):Any? {
         val worldData = world.worldData
-        if (paramsList.size < 2){
-            return null
-        }
         return when(paramsList[1]){
             "name" -> {
                 worldData.name

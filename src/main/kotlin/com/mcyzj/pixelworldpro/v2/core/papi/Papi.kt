@@ -25,10 +25,10 @@ object Papi: PlaceholderExpansion() {
         } else {
             p
         }
-        when (paramsList[0]) {
+        return when (paramsList[0]) {
             "local" -> {
                 val world = PixelWorldProApi().getWorld(player.uniqueId) ?: return null
-                PlayerWorld().process(paramsList, world, player)
+                PlayerWorld().process(paramsList, world, player).toString()
             }
 
             "now" -> {
@@ -36,7 +36,7 @@ object Papi: PlaceholderExpansion() {
                     return null
                 }
                 val world = PixelWorldProApi().getWorld((player as Player).world.name) ?: return null
-                PlayerWorld().process(paramsList, world, player)
+                PlayerWorld().process(paramsList, world, player).toString()
             }
 
             "id" -> {
@@ -46,17 +46,20 @@ object Papi: PlaceholderExpansion() {
                     return null
                 }
                 val world = PixelWorldProApi().getWorld(id) ?: return null
-                paramsList.remove(paramsList[1])
-                PlayerWorld().process(paramsList, world, player)
+                paramsList.removeAt(1)
+                PlayerWorld().process(paramsList, world, player).toString()
             }
 
             "name" -> {
                 val owner = PlayerFound.getOfflinePlayer(paramsList[1])
                 val world = PixelWorldProApi().getWorld(owner.uniqueId) ?: return null
-                paramsList.remove(paramsList[1])
-                PlayerWorld().process(paramsList, world, player)
+                paramsList.removeAt(1)
+                PlayerWorld().process(paramsList, world, player).toString()
+            }
+
+            else -> {
+                null
             }
         }
-        return null
     }
 }

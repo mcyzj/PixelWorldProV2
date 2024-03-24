@@ -22,11 +22,11 @@ class PixelWorldProWorld(val worldData: WorldData, bungeeExecution: Boolean = Co
     /**
      * 获取世界压缩锁
      */
-    private fun isCompress(): Boolean {
+    fun isCompress(): Boolean {
         val compressConfig = getDataConfig("compress")
         return compressConfig.getBoolean("block")
     }
-    private fun setCompress(value: Boolean) {
+    fun setCompress(value: Boolean) {
         val compressConfig = getDataConfig("compress")
         compressConfig.set("block", value)
         compressConfig.saveToFile()

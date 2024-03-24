@@ -72,7 +72,7 @@ class AdminCommand {
 
     private val test = command<CommandSender>("test") {
         exec {
-            Menu(sender as Player, sender as Player, BuiltInConfiguration("menu/WorldList.yml")).build()
+            Menu(sender as Player, sender as Player, BuiltInConfiguration("menu/WorldList.yml")).open()
         }
     }
 
