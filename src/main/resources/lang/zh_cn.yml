@@ -39,3 +39,11 @@ expansion:
   enable:
     tip: "加载扩展{expansion.name}\n作者：{expansion.auther}\n版本：{expansion.version}"
     crash: "{expansion.name}崩溃了！"
+command:
+  admin:
+    level:
+      noWorld: "对象没有世界"
+      needInt: "输入内容不是一个有效数字"
+      success: "成功设置世界等级"
+  menu:
+    notFound: "没有找到菜单"

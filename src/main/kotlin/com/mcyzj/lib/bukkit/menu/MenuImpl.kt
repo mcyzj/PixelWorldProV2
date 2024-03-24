@@ -16,8 +16,7 @@ object MenuImpl {
     }
 
     fun getMenuDriver(name: String?): MenuAPI {
-        val driver = menuDriver[name]?: WorldList()
-        return driver::class.java.newInstance()
+        return menuDriver[name] ?: WorldList()
     }
 
     fun registerMenuConfig(menu: YamlConfiguration, plugin: JiangPlugin) {
@@ -25,6 +24,7 @@ object MenuImpl {
         for (str in command) {
             val map = menuMap[plugin] ?: HashMap()
             map[str] = menu
+            menuMap[plugin] = map
         }
     }
 
