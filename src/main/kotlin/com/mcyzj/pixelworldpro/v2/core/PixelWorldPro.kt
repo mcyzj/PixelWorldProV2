@@ -40,6 +40,7 @@ class PixelWorldPro{
     val log = Logger
     val config = Config.config
     fun enable() {
+        //JiangLib.loadLibs()
         instance = this
         Icon.pixelWorldPro()
         Icon.v2()
@@ -90,13 +91,14 @@ class PixelWorldPro{
         }
     }
 
-    private fun registerMenu() {
+    fun registerMenu() {
         val path = Path().getJarPath(this::class.java)
         val menuFolder = File("$path/PixelWorldProV2/menu")
         val fileList = menuFolder.listFiles()
         if (fileList != null) {
             for (file in fileList) {
-                MenuImpl.registerMenuConfig(file, Main.instance)
+                val menuConfig = YamlConfiguration.loadConfiguration(file)
+                MenuImpl.registerMenuConfig(menuConfig, Main.instance)
             }
         }
     }
