@@ -9,6 +9,7 @@ object Config {
     var world = BuiltInConfiguration("world.yml")
     var permission = BuiltInConfiguration("permission.yml")
     var bungee = BuiltInConfiguration("bungeeSet.yml")
+    var level = BuiltInConfiguration("level.yml")
 
     fun getLang(): BuiltInConfiguration {
         val lang = config.get("lang") ?: "zh_cn"

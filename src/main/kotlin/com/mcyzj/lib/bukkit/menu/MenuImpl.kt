@@ -4,11 +4,12 @@ import com.mcyzj.lib.plugin.JiangPlugin
 import com.mcyzj.pixelworldpro.v2.core.menu.WorldList
 import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.inventory.Inventory
+import java.io.File
 
 
 object MenuImpl {
     private val menuDriver = HashMap<String, MenuAPI>()
-    private val menuMap = HashMap<JiangPlugin, HashMap<String, YamlConfiguration>>()
+    private val menuMap = HashMap<JiangPlugin, HashMap<String, File>>()
     private val openMenu = HashMap<Inventory, Menu>()
 
     fun registerMenuDriver(name: String, driver: MenuAPI) {
@@ -16,15 +17,17 @@ object MenuImpl {
     }
 
     fun getMenuDriver(name: String?): MenuAPI {
-        val driver = menuDriver[name]?: WorldList()
-        return driver::class.java.newInstance()
+        return menuDriver[name] ?: WorldList()
     }
 
-    fun registerMenuConfig(menu: YamlConfiguration, plugin: JiangPlugin) {
-        val command = (menu.getList("command") ?: ArrayList()).toArrayStringList()
+    fun registerMenuConfig(menu: File, plugin: JiangPlugin) {
+        val cache = YamlConfiguration()
+        cache.load(menu)
+        val command = (cache.getList("command") ?: ArrayList()).toArrayStringList()
         for (str in command) {
             val map = menuMap[plugin] ?: HashMap()
             map[str] = menu
+            menuMap[plugin] = map
         }
     }
 
@@ -34,7 +37,10 @@ object MenuImpl {
 
     fun getMenu(menu: String, plugin: JiangPlugin): YamlConfiguration? {
         val map = menuMap[plugin] ?: return null
-        return map[menu]
+        val cache = map[menu] ?: return null
+        val config = YamlConfiguration()
+        config.load(cache)
+        return config
     }
 
     fun getMenuList(plugin: JiangPlugin, file: Boolean = false): ArrayList<String> {

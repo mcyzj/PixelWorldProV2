@@ -1,0 +1,110 @@
+﻿#配置版本，勿动
+version: 1
+#等级配置
+level:
+  #默认权限组升级
+  default:
+    #示例
+    #1:...
+    #10:...
+    #表示为1-10级升级要求与1级相同
+    1:
+      #是否是最大等级
+      maxLevel: false
+      #升级到下一级所需的物品
+      up:
+        #0为不需要
+        points: 100
+        money: 0
+        #升级所需的物品，在配置文件下方item配置
+        #留空为不需要
+        item:
+          #格式按照 item内名称: 数量 来填写
+          diamond: 1
+
+    10:
+      #是否是最大等级
+      maxLevel: false
+      #升级到下一级所需的物品
+      up:
+        #0为不需要
+        points: 100
+        money: 0
+        #升级所需的物品，在配置文件下方item配置
+        #留空为不需要
+        item:
+          #格式按照 item内名称: 数量 来填写
+          diamond: 1
+    20:
+      #是否是最大等级
+      maxLevel: false
+      #升级到下一级所需的物品
+      up:
+        #当没有权限时，提示的内容
+        noPermission: "已达到非VIP用户的最大等级"
+        #0为不需要
+        points: 100
+        money: 0
+        #升级所需的物品，在配置文件下方item配置
+        #留空为不需要
+        item:
+          #格式按照 item内名称: 数量 来填写
+          diamond: 1
+  #指定权限组升级
+  #优先级从上到下
+  vip:
+    #示例
+    #1:...
+    #10:...
+    #表示为1-10级升级要求与1级相同
+    1:
+      #是否是最大等级
+      maxLevel: false
+      #升级到下一级所需的物品
+      up:
+        #0为不需要
+        points: 100
+        money: 0
+        #升级所需的物品，在配置文件下方item配置
+        #留空为不需要
+        item:
+          #格式按照 item内名称: 数量 来填写
+          diamond: 1
+
+    10:
+      #是否是最大等级
+      maxLevel: false
+      #升级到下一级所需的物品
+      up:
+        #0为不需要
+        points: 100
+        money: 0
+        #升级所需的物品，在配置文件下方item配置
+        #留空为不需要
+        item:
+          #格式按照 item内名称: 数量 来填写
+          diamond: 1
+    20:
+      #是否是最大等级
+      maxLevel: false
+      #升级到下一级所需的物品
+      up:
+        #当没有权限时，提示的内容
+        noPermission: "已达到非VIP用户的最大等级"
+        #0为不需要
+        points: 100
+        money: 0
+        #升级所需的物品，在配置文件下方item配置
+        #留空为不需要
+        item:
+          #格式按照 item内名称: 数量 来填写
+          diamond: 1
+
+#消耗物品配置
+item:
+  diamond:
+    #消耗的物品
+    material: "diamond"
+    #物品的特殊lore，none为关闭
+    lore:
+      - "none"

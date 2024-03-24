@@ -7,6 +7,7 @@ import com.mcyzj.pixelworldpro.v2.core.util.Config
 import com.mcyzj.pixelworldpro.v2.core.world.compress.None
 import com.mcyzj.pixelworldpro.v2.core.world.compress.Zip
 import com.mcyzj.pixelworldpro.v2.core.world.dataclass.WorldData
+import com.mcyzj.pixelworldpro.v2.core.world.event.PixelWorldProWorldLoadEvent
 import org.bukkit.Bukkit
 import org.bukkit.World
 import org.bukkit.entity.Player
@@ -137,9 +138,21 @@ class PixelWorldProWorld(val worldData: WorldData, bungeeExecution: Boolean = Co
             val future = CompletableFuture<ResultData>()
             future.complete(
                 ResultData(
-                false,
-                lang.getString("world.inUnUse") ?: "世界正在冷却"
+                    false,
+                    lang.getString("world.inUnUse") ?: "世界正在冷却"
+                )
             )
+            return future
+        }
+        val event = PixelWorldProWorldLoadEvent(this)
+        Bukkit.getServer().pluginManager.callEvent(event)
+        if (event.isCancelled) {
+            val future = CompletableFuture<ResultData>()
+            future.complete(
+                ResultData(
+                    false,
+                    lang.getString("world.isCancelled") ?: "世界被取消加载"
+                )
             )
             return future
         }
@@ -160,5 +173,15 @@ class PixelWorldProWorld(val worldData: WorldData, bungeeExecution: Boolean = Co
 
     fun getWorlds(): HashMap<String, World>? {
         return null
+    }
+
+    fun setLevel(level: Int){
+        val levelData = getDataConfig("level")
+        levelData.set("level", level)
+    }
+
+    fun getLevel(): Int {
+        val levelData = getDataConfig("level")
+        return levelData.getInt("level")
     }
 }
