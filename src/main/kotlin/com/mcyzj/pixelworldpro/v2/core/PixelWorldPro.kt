@@ -97,8 +97,7 @@ class PixelWorldPro{
         val fileList = menuFolder.listFiles()
         if (fileList != null) {
             for (file in fileList) {
-                val menuConfig = YamlConfiguration.loadConfiguration(file)
-                MenuImpl.registerMenuConfig(menuConfig, Main.instance)
+                MenuImpl.registerMenuConfig(file, Main.instance)
             }
         }
     }
