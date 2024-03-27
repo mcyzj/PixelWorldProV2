@@ -2,12 +2,14 @@ package com.mcyzj.pixelworldpro.v2.core.world
 
 import com.mcyzj.lib.plugin.file.BuiltOutConfiguration
 import com.mcyzj.pixelworldpro.v2.core.PixelWorldPro
+import com.mcyzj.pixelworldpro.v2.core.level.event.PixelWorldProLevelChangeEvent
 import com.mcyzj.pixelworldpro.v2.core.permission.dataclass.ResultData
 import com.mcyzj.pixelworldpro.v2.core.util.Config
 import com.mcyzj.pixelworldpro.v2.core.world.compress.None
 import com.mcyzj.pixelworldpro.v2.core.world.compress.Zip
 import com.mcyzj.pixelworldpro.v2.core.world.dataclass.WorldData
 import com.mcyzj.pixelworldpro.v2.core.world.event.PixelWorldProWorldLoadEvent
+import com.mcyzj.pixelworldpro.v2.core.world.event.PixelWorldProWorldLoadSuccessEvent
 import org.bukkit.Bukkit
 import org.bukkit.World
 import org.bukkit.entity.Player
@@ -156,7 +158,14 @@ class PixelWorldProWorld(val worldData: WorldData, bungeeExecution: Boolean = Co
             )
             return future
         }
-        return worldDriver.load(this)
+        val future = worldDriver.load(this)
+        future.thenApply {
+            if (it.result) {
+                val successEvent = PixelWorldProWorldLoadSuccessEvent(this)
+                Bukkit.getServer().pluginManager.callEvent(successEvent)
+            }
+        }
+        return future
     }
 
     fun unload(): CompletableFuture<ResultData> {
@@ -171,13 +180,23 @@ class PixelWorldProWorld(val worldData: WorldData, bungeeExecution: Boolean = Co
         return worldDriver.teleport(player, this)
     }
 
-    fun getWorlds(): HashMap<String, World>? {
-        return null
+    fun getWorlds(): HashMap<String, World> {
+        val worldMap = HashMap<String, World>()
+        val world = Bukkit.getWorld("PixelWorldPro/cache/world/${worldData.type}/${worldData.id}/world")
+        if (world != null) {
+            worldMap["world"] = world
+        }
+        return worldMap
     }
 
     fun setLevel(level: Int){
         val levelData = getDataConfig("level")
-        levelData.set("level", level)
+        val event = PixelWorldProLevelChangeEvent(this, levelData.getInt("level"), level)
+        Bukkit.getServer().pluginManager.callEvent(event)
+        if (!event.isCancelled) {
+            levelData.set("level", level)
+            levelData.saveToFile()
+        }
     }
 
     fun getLevel(): Int {

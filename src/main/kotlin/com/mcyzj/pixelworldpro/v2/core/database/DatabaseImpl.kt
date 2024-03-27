@@ -10,6 +10,7 @@ import com.mcyzj.pixelworldpro.v2.core.world.dataclass.WorldCreateData
 import com.mcyzj.pixelworldpro.v2.core.world.dataclass.WorldData
 import com.mcyzj.lib.core.database.Ormlite
 import com.mcyzj.lib.bukkit.submit
+import com.mcyzj.pixelworldpro.v2.core.world.WorldDimensionData
 import org.json.simple.JSONObject
 import java.util.*
 
@@ -80,7 +81,7 @@ class DatabaseImpl : DatabaseAPI {
                 //玩家权限表
                 HashMap<UUID, String>(),
                 //世界维度表
-                //var dimension: HashMap<String, WorldDimensionData>,
+                HashMap<String, WorldDimensionData>(),
                 //世界模式
                 "close"
             )
@@ -102,7 +103,7 @@ class DatabaseImpl : DatabaseAPI {
                 //玩家权限表
                 HashMap<UUID, String>(),
                 //世界维度表
-                //var dimension: HashMap<String, WorldDimensionData>,
+                HashMap<String, WorldDimensionData>(),
                 //世界模式
                 "close"
             )
@@ -256,7 +257,6 @@ class DatabaseImpl : DatabaseAPI {
         } catch (_:Exception) {
             "local"
         }
-        /*
         val dimension = HashMap<String, WorldDimensionData>()
         val dimensionJson = gson.fromJson(dataJson["dimension"].asJsonObject, JsonObject::class.java)
         for (key in dimensionJson.entrySet()){
@@ -282,14 +282,13 @@ class DatabaseImpl : DatabaseAPI {
             dimension[key.key] = dimensionData
         }
 
-         */
         return WorldData(
             id,
             owner,
             name,
             permissionMap,
             player as HashMap<UUID, String>,
-            //dimension,
+            dimension,
             type
         )
     }

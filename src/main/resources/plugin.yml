@@ -1,5 +1,5 @@
 name: PixelWorldProV2
-main: "com.mcyzj.pixelworldpro.v2.core.Main"
+main: "com.mcyzj.pixelworldpro.v2.Main"
 version: '${version}'
 author: dong&mcyzj
 softdepend: [ Vault, PlaceholderAPI, PlayerPoints, PixelPlayerWorld, ShadowLevels, RealisticSeasons, WorldGuard, WorldEdit, ProtocolLib]

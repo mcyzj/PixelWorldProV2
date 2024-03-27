@@ -1,7 +1,7 @@
-package com.mcyzj.pixelworldpro.v2.core;
+package com.mcyzj.pixelworldpro.v2;
 
-import com.mcyzj.lib.plugin.JiangLib;
 import com.mcyzj.lib.plugin.JiangPlugin;
+import com.mcyzj.pixelworldpro.v2.core.PixelWorldPro;
 
 public class Main extends JiangPlugin {
 

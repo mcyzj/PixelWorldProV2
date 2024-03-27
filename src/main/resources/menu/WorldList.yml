@@ -34,7 +34,7 @@ item:
     value: public
   A:
     type: list
-    value: world
+    value: pixelworldpro_world
     material: PLAYER_HEAD
     skull: "{SlotData.World.Owner.UUID}"
     name: '&a&l{SlotData.World.Name}'

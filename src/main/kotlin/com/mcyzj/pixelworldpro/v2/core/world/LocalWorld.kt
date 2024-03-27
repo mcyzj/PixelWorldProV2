@@ -111,10 +111,17 @@ class LocalWorld : PixelWorldProWorldAPI {
                 for (player in localWorld.players) {
                     player.teleport(mainWorld.spawnLocation)
                 }
-                submit {
-                    Bukkit.unloadWorld(localWorld, true)
+                if (PixelWorldPro.disable) {
+                    world.compress()
+                } else {
+                    val unloadWorld = CompletableFuture<Boolean>()
+                    submit {
+                        Bukkit.unloadWorld(localWorld, true)
+                        unloadWorld.complete(true)
+                    }
+                    unloadWorld.get()
+                    WorldCache.setUnUseWorld(world)
                 }
-                WorldCache.setUnUseWorld(world)
                 WorldImpl.loadWorld.remove(worldData.id)
                 if (bungee) {
                     val bungeeData = world.getDataConfig("bungee")

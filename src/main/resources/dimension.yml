@@ -1,0 +1,87 @@
+#配置文件版本号,用于更新配置文件，请勿修改
+#Configuration file version number, used to update the configuration file, please do not modify
+version: 1
+#维度设置
+dimension:
+  #地狱
+  nether:
+    #显示名称
+    name: "地狱"
+    #世界类型
+    type: Normal
+    environment: Nether
+    #自定义世界加载器
+    #Creator: World
+    #创建使用
+    use:
+      default:
+        #权限组
+        permission: "pwp.dimension"
+        points: 100
+        #0为不需要
+        money: 0
+        #升级所需的物品，在配置文件下方item配置
+        #留空为不需要
+        item:
+          #格式按照 item内名称: 数量 来填写
+          diamond: 4
+          #当解锁槽位大于20个人时，扩展槽位的花费
+      #拥有指定权限
+      #优先级从上往下
+      vip:
+        #权限组
+        permission: "pwp.vip"
+        points: 100
+        #0为不需要
+        money: 0
+        #升级所需的物品，在配置文件下方item配置
+        #留空为不需要
+        item:
+          #格式按照 item内名称: 数量 来填写
+          diamond: 4
+          #当解锁槽位大于20个人时，扩展槽位的花费
+  #末地
+  the_end:
+    #显示名称
+    name: "末地"
+    #世界类型
+    type: Normal
+    environment: The_End
+    #自定义世界加载器
+    #Creator: World
+    #创建使用
+    use:
+      default:
+        #权限组
+        permission: "pwp.user.dimension"
+        points: 100
+        #0为不需要
+        money: 0
+        #升级所需的物品，在配置文件下方item配置
+        #留空为不需要
+        item:
+          #格式按照 item内名称: 数量 来填写
+          diamond: 4
+          #当解锁槽位大于20个人时，扩展槽位的花费
+      #拥有指定权限
+      #优先级从上往下
+      vip:
+        #权限组
+        permission: "pwp.vip"
+        points: 100
+        #0为不需要
+        money: 0
+        #升级所需的物品，在配置文件下方item配置
+        #留空为不需要
+        item:
+          #格式按照 item内名称: 数量 来填写
+          diamond: 4
+          #当解锁槽位大于20个人时，扩展槽位的花费
+#消耗物品配置
+item:
+  diamond:
+    #消耗的物品
+    material: "diamond"
+    #物品的特殊lore，none为关闭
+    lore:
+      - "none"

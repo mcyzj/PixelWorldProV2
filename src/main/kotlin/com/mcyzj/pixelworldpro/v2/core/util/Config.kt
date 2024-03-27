@@ -10,6 +10,7 @@ object Config {
     var permission = BuiltInConfiguration("permission.yml")
     var bungee = BuiltInConfiguration("bungeeSet.yml")
     var level = BuiltInConfiguration("level.yml")
+    val dimension = BuiltInConfiguration("dimension.yml")
 
     fun getLang(): BuiltInConfiguration {
         val lang = config.get("lang") ?: "zh_cn"

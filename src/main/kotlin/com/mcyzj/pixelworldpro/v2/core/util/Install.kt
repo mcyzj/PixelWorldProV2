@@ -1,7 +1,7 @@
 package com.mcyzj.pixelworldpro.v2.core.util
 
 import com.mcyzj.lib.plugin.file.Path
-import com.mcyzj.pixelworldpro.v2.core.Main
+import com.mcyzj.pixelworldpro.v2.Main
 import com.mcyzj.pixelworldpro.v2.core.PixelWorldPro
 import java.io.File
 import java.util.*

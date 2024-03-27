@@ -5,7 +5,7 @@ import com.mcyzj.lib.bukkit.command.command
 import com.mcyzj.lib.bukkit.menu.Menu
 import com.mcyzj.lib.bukkit.menu.MenuImpl
 import com.mcyzj.lib.bukkit.utils.Color.colored
-import com.mcyzj.pixelworldpro.v2.core.Main
+import com.mcyzj.pixelworldpro.v2.Main
 import com.mcyzj.pixelworldpro.v2.core.command.admin.AdminCommand
 import com.mcyzj.pixelworldpro.v2.core.util.Config
 import org.bukkit.command.CommandSender

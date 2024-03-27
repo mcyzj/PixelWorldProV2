@@ -1,6 +1,7 @@
 package com.mcyzj.pixelworldpro.v2.core.papi
 
 import com.mcyzj.pixelworldpro.v2.core.world.PixelWorldProWorld
+import com.mcyzj.pixelworldpro.v2.core.world.WorldImpl
 import org.bukkit.OfflinePlayer
 
 class PlayerWorld: PapiAPI {
@@ -33,6 +34,9 @@ class PlayerWorld: PapiAPI {
                 val permissionData = worldData.permission[group] ?: return null
                 val key = paramsList[3]
                 permissionData[key]
+            }
+            "online" -> {
+                return WorldImpl.onlinePlayer[worldData.id]
             }
 
             else -> {

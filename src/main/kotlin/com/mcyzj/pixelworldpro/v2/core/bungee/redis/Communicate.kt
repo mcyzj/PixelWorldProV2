@@ -3,7 +3,7 @@ package com.mcyzj.pixelworldpro.v2.core.bungee.redis
 
 import com.google.gson.Gson
 import com.google.gson.JsonObject
-import com.mcyzj.pixelworldpro.v2.core.Main
+import com.mcyzj.pixelworldpro.v2.Main
 import com.mcyzj.pixelworldpro.v2.core.PixelWorldPro
 import com.mcyzj.pixelworldpro.v2.core.bungee.BungeeServer
 import com.mcyzj.pixelworldpro.v2.core.bungee.ResponseData

@@ -3,6 +3,7 @@ package com.mcyzj.pixelworldpro.v2.core
 import com.mcyzj.lib.bukkit.menu.MenuImpl
 import com.mcyzj.lib.plugin.Logger
 import com.mcyzj.lib.plugin.file.Path
+import com.mcyzj.pixelworldpro.v2.Main
 import com.mcyzj.pixelworldpro.v2.core.bungee.BungeeWorld
 import com.mcyzj.pixelworldpro.v2.core.bungee.redis.Communicate
 import com.mcyzj.pixelworldpro.v2.core.bungee.redis.DataProcessing
@@ -15,13 +16,9 @@ import com.mcyzj.pixelworldpro.v2.core.papi.Papi
 import com.mcyzj.pixelworldpro.v2.core.util.Config
 import com.mcyzj.pixelworldpro.v2.core.util.Icon
 import com.mcyzj.pixelworldpro.v2.core.util.Install
-import com.mcyzj.pixelworldpro.v2.core.world.LocalWorld
-import com.mcyzj.pixelworldpro.v2.core.world.WorldCache
-import com.mcyzj.pixelworldpro.v2.core.world.WorldImpl
+import com.mcyzj.pixelworldpro.v2.core.world.*
 import com.mcyzj.pixelworldpro.v2.core.world.WorldCache.cleanWorldCache
-import com.mcyzj.pixelworldpro.v2.core.world.WorldListener
 import org.bukkit.Bukkit
-import org.bukkit.configuration.file.YamlConfiguration
 import redis.clients.jedis.JedisPool
 import java.io.File
 
@@ -33,6 +30,7 @@ class PixelWorldPro{
         lateinit var jedisPool: JedisPool
         lateinit var redisConfig: RedisConfig
         lateinit var redisThread: Thread
+        var disable: Boolean = false
         var bungeeEnable: Boolean = false
     }
     val logger = Logger
@@ -40,6 +38,7 @@ class PixelWorldPro{
     val log = Logger
     val config = Config.config
     fun enable() {
+        disable = false
         //JiangLib.loadLibs()
         instance = this
         Icon.pixelWorldPro()
@@ -56,6 +55,7 @@ class PixelWorldPro{
         WorldCache.regWorldDriver("local_bungee", BungeeWorld())
         //注册扩展
         ExpansionManager.loadAllExpansion()
+        ExpansionManager.enableAllExpansion()
         //注册指令
         CommandCore().commandRoot.register()
         //启动回收线程
@@ -83,7 +83,8 @@ class PixelWorldPro{
             }
             redisThread.start()
             //注册信道
-            Main.instance.server.messenger.registerOutgoingPluginChannel(Main.instance, "BungeeCord")
+            Main.instance.server.messenger.registerOutgoingPluginChannel(
+                Main.instance, "BungeeCord")
             //注册监听
             Communicate.listener["local"] = DataProcessing
             //注册世界tickets计算
@@ -91,7 +92,7 @@ class PixelWorldPro{
         }
     }
 
-    fun registerMenu() {
+    private fun registerMenu() {
         val path = Path().getJarPath(this::class.java)
         val menuFolder = File("$path/PixelWorldProV2/menu")
         val fileList = menuFolder.listFiles()
@@ -104,6 +105,13 @@ class PixelWorldPro{
 
     fun disable() {
         logger.info(lang.getString("plugin.disable"))
-        redisThread.stop()
+        disable = true
+
+        for (world in WorldImpl.loadWorld.values) {
+            val worldData = world.worldData
+            val localWorld = Bukkit.getWorld("PixelWorldPro/cache/world/${worldData.type}/${worldData.id}/world")
+            localWorld?.let { Bukkit.unloadWorld(it, true) }
+            PixelWorldProWorld(worldData, false).unload()
+        }
     }
 }

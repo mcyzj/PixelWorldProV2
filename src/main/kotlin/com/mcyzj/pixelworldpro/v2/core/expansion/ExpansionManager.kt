@@ -47,12 +47,12 @@ object ExpansionManager{
         }
     }
 
-    fun enableExpansion(expansionName: String) {
-        val expansionData = expansionDataMap[expansionName] ?: return
+    private fun enableExpansion(expansionName: String) {
         val expansionFile = expansionFileMap[expansionName] ?: return
-        val enableMsg = lang.getString("expansion.enable.tip") ?: "加载扩展{expansion.name}\n作者：{expansion.auther}\n版本：{expansion.version}"
+        val expansionData = expansionDataMap[expansionFile.nameWithoutExtension] ?: return
+        val enableMsg = lang.getString("expansion.enable.tip") ?: "加载扩展{expansion.name}\n作者：{expansion.author}\n版本：{expansion.version}"
         enableMsg.replace("{expansion.name}", expansionData.name)
-        enableMsg.replace("{expansion.auther}", expansionData.author)
+        enableMsg.replace("{expansion.author}", expansionData.author)
         enableMsg.replace("{expansion.version}", expansionData.version)
         log.info(enableMsg)
         try {
@@ -75,20 +75,20 @@ object ExpansionManager{
             for (file in expansionList) {
                 val expansion = File("${local}/PixelWorldProV2/expansion", file)
                 if (expansion.isFile) {
-                    loadExpansion(expansionFile)
+                    loadExpansion(expansion)
                 }
             }
         }
     }
 
-    fun loadExpansion(file: File) {
+    private fun loadExpansion(file: File) {
         JarFile(file).use { jar ->
             log.info(lang.getString("expansion.load")?.replace("{file}", file.name))
             val data = expansionDescription(jar)
             if (data != null) {
                 val expansionData = buildExpansionData(data)
                 if (expansionData != null) {
-                    expansionDataMap[expansionData.name] = expansionData
+                    expansionDataMap[file.nameWithoutExtension] = expansionData
                     expansionFileMap[expansionData.name] = file
                 } else {
                     log.info(lang.getString("expansion.load.notFoundData")?.replace("{file}", jar.name))
