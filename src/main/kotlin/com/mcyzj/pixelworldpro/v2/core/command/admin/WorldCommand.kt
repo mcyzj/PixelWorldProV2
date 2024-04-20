@@ -66,11 +66,24 @@ class WorldCommand {
         }
     }
 
+    private val delete = command<CommandSender>("delete") {
+        exec {
+            when (args.size) {
+                1 -> {
+                    val player = PlayerFound.getOfflinePlayer(args[0])
+                    val world = PixelWorldProApi().getWorld(player.uniqueId) ?: return@exec
+                    world.delete()
+                }
+            }
+        }
+    }
+
 
     val world = command<CommandSender>("world") {
         permission = "pixelworldpro.admin"
         sub(create)
         sub(load)
         sub(unload)
+        sub(delete)
     }
 }

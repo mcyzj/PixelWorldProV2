@@ -11,11 +11,11 @@ plugins {
 }
 
 group = "com.mcyzj.pixelworldpro.v2"
-version = "2.0.1"
+version = "2.0.3"
 
 repositories {
     maven("https://repo.papermc.io/repository/maven-public/")
-    maven("https://maven.mcyzj.cn:445/repository/maven-public/")
+    maven("https://maven.mcyzj.cn/repository/maven-public/")
     maven("https://oss.sonatype.org/content/groups/public/")
     maven("https://repo.rosewooddev.io/repository/public/")
     maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
@@ -23,18 +23,19 @@ repositories {
 }
 
 dependencies {
+    implementation("com.mcyzj.lib:plugin:1.0.0")
     compileOnly("com.destroystokyo.paper:paper-api:1.16.5-R0.1-20211218.082619-371")
     compileOnly("com.zaxxer:HikariCP:4.0.3")
     compileOnly("com.j256.ormlite:ormlite-core:6.1")
     compileOnly("com.j256.ormlite:ormlite-jdbc:6.1")
     compileOnly(kotlin("stdlib-jdk8"))
     compileOnly("redis.clients:jedis:3.7.0")
-    compileOnly("com.google.code.gson:gson:2.10")
+    compileOnly("com.google.code.gson:gson:2.10.1")
     compileOnly("org.bouncycastle:bcprov-lts8on:2.73.3")
     compileOnly(fileTree("shadowLibs"))
     compileOnly(fileTree("libs"))
     compileOnly("com.googlecode.json-simple:json-simple:1.1")
-    compileOnly("com.mcyzj.lib:jianglib-bukkit:1.0.0")
+    compileOnly("com.mcyzj.lib:bukkit:1.0.1")
 }
 
 fun releaseTime() = LocalDate.now().format(DateTimeFormatter.ofPattern("y.M.d"))

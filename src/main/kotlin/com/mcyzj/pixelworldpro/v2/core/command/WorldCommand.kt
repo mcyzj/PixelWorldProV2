@@ -100,11 +100,29 @@ class WorldCommand {
         }
     }
 
+    private val delete = command<CommandSender>("delete") {
+        permission = "pixelworldpro.world.delete"
+        exec {
+            if (sender !is Player) {
+                sender.sendMessage(lang.getString("plugin.needPlayer") ?: "需要玩家操作")
+                return@exec
+            }
+            val player = sender as Player
+            val world = PixelWorldProApi().getWorld(player.uniqueId) ?: return@exec
+            world.delete().thenApply {
+                try {
+                    sender.sendMessage(it.reason)
+                } catch (_: Exception) {}
+            }
+        }
+    }
+
     val world = command<CommandSender>("world") {
         permission = "pixelworldpro.use"
         sub(create)
         sub(tp)
         sub(load)
         sub(unload)
+        sub(delete)
     }
 }

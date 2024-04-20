@@ -34,7 +34,7 @@ object DataProcessing : DataProcessingAPI {
                 } catch (_:Exception) {
                     null
                 }
-                WorldImpl.createWorldLocal(owner, template, seed, false).thenApply {
+                WorldImpl.createWorldLocal(owner, template, seed, false, data["worldType"].asString).thenApply {
                     Communicate.setResponse(ResponseData(it, JsonObject()), data)
                 }
                 return

@@ -1,10 +1,11 @@
-type: WorldList
 title: "世界列表"
 command:
   - list
+import:
+  - PixelWorldPro_WorldList
 
 slots:
-  - 'BNNNONNNN'
+  - 'BNNNNNNNN'
   - 'AAAAAAAAA'
   - 'AAAAAAAAA'
   - 'AAAAAAAAA'
@@ -27,22 +28,20 @@ item:
       - '&f点击关闭'
     operate:
       - '[all] [close]'
-  O:
-    material: GLASS_PANE
-    type: ChangeList
-    #value: public/trust
-    value: public
   A:
     type: list
-    value: pixelworldpro_world
+    value: PixelWorldPro_WorldList
     material: PLAYER_HEAD
     skull: "{SlotData.World.Owner.UUID}"
     name: '&a&l{SlotData.World.Name}'
     lore:
       - '&f你在该世界的身份为 %pixelworldpro_id_{SlotData.World.ID}_group%'
       - '&f该世界主人 {SlotData.World.Owner.Name}'
+      - '&f左击传送'
+      - '&f右击查看成员列表'
     operate:
-      - '[all] [command] [player] pwp world tp {SlotData.World.ID}'
+      - '[left] [command] [player] pwp world tp {SlotData.World.ID}'
+      - '[right] [menu] [extend] WorldMemberList.yml'
   U:
     type: page
     value: back

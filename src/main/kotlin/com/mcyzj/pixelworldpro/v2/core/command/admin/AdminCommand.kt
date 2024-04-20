@@ -9,5 +9,6 @@ class AdminCommand {
         permission = "pixelworldpro.admin"
         sub(WorldCommand().world)
         sub(LevelCommand().level)
+        sub(UpDataCommand().upData)
     }
 }

@@ -33,7 +33,7 @@ class CommandCore {
                 sender.sendMessage((lang.getString("command.menu.notFound") ?: "没有找到菜单").colored().replacePlaceholder(player))
                 return@exec
             }
-            Menu(player, player, menuData).open()
+            Menu(Main.instance, player, player, menuData).open()
         }
     }
 

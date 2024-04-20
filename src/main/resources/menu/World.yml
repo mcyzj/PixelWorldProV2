@@ -1,0 +1,27 @@
+title: "{MenuData.SlotData.World.Name}"
+
+slots:
+  - 'NNNNNNNNN'
+  - '#########'
+  - '####A####'
+  - '#########'
+  - 'NNNNXNNNN'
+
+item:
+  N:
+    material: GLASS_PANE
+  X:
+    material: BARRIER
+    name: '&c&l关闭'
+    lore:
+      - '&f点击关闭'
+    operate:
+      - '[all] [close]'
+  A:
+    material: Grass_Block
+    name: '&a&l创建世界'
+    lore:
+      - '&f点击创建'
+    operate:
+      - '[all] [command] [player] pwp world create'
+      - '[all] [close]'

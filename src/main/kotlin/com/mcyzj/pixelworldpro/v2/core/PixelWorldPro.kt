@@ -1,5 +1,6 @@
 package com.mcyzj.pixelworldpro.v2.core
 
+import com.mcyzj.lib.Metrics
 import com.mcyzj.lib.bukkit.menu.MenuImpl
 import com.mcyzj.lib.plugin.Logger
 import com.mcyzj.lib.plugin.file.Path
@@ -12,6 +13,8 @@ import com.mcyzj.pixelworldpro.v2.core.command.CommandCore
 import com.mcyzj.pixelworldpro.v2.core.database.DataBase
 import com.mcyzj.pixelworldpro.v2.core.database.DatabaseImpl
 import com.mcyzj.pixelworldpro.v2.core.expansion.ExpansionManager
+import com.mcyzj.pixelworldpro.v2.core.menu.WorldList
+import com.mcyzj.pixelworldpro.v2.core.menu.WorldMemberList
 import com.mcyzj.pixelworldpro.v2.core.papi.Papi
 import com.mcyzj.pixelworldpro.v2.core.util.Config
 import com.mcyzj.pixelworldpro.v2.core.util.Icon
@@ -49,7 +52,7 @@ class PixelWorldPro{
             Install.start()
         }
         //注册数据驱动
-        DataBase.regDataDriver("local", DatabaseImpl())
+        DataBase.regDataDriver("local", DatabaseImpl(DataBase.getOrmlite()))
         //注册世界驱动
         WorldCache.regWorldDriver("local", LocalWorld())
         WorldCache.regWorldDriver("local_bungee", BungeeWorld())
@@ -90,6 +93,12 @@ class PixelWorldPro{
             //注册世界tickets计算
             WorldImpl.updateAllWorlds()
         }
+        MenuImpl.registerMenuDriver("PixelWorldPro_WorldList", WorldList())
+        MenuImpl.registerMenuDriver("PixelWorldPro_WorldMemberList", WorldMemberList())
+
+        val metrics = Metrics(Main.instance, 20038)
+        metrics.addCustomChart(Metrics.SimplePie("language") {com.dongzh1.pixelworldpro.PixelWorldPro.instance.config.getString("lang")})
+        metrics.addCustomChart(Metrics.SimplePie("test_version") {"Official"})
     }
 
     private fun registerMenu() {

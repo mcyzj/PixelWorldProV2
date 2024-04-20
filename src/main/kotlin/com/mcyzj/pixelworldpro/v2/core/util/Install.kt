@@ -51,6 +51,9 @@ object Install {
         }
         //如果不在服务端目录下则映射
         if (path != "./PixelWorldPro") {
+            if (File("./PixelWorldPro").exists()) {
+                File("./PixelWorldPro").delete()
+            }
             val pathList = Path().getJarPath(this::class.java)!!.split("\\") as ArrayList
             pathList.removeLast()
             if(System.getProperty("os.name").lowercase(Locale.getDefault()).contains("win")){

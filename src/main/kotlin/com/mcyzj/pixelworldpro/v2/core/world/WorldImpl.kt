@@ -35,8 +35,7 @@ object WorldImpl {
 
     var worldUpdateThread: Thread? = null
 
-    @Suppress("DEPRECATION")
-    fun createWorld(owner: Player, template: String?, seed: Long?): ResultData {
+    fun createWorld(owner: Player, template: String?, seed: Long?, type: String = "local"): ResultData {
         if (owner.uniqueId in createList) {
             val msg = lang.getString("check.notEnough.request") ?: "短时间内不得多次提交请求"
             return ResultData(
@@ -130,7 +129,7 @@ object WorldImpl {
                     }
                 }
             }
-            createWorldLocal(owner.uniqueId, templates, seed)
+            createWorldLocal(owner.uniqueId, templates, seed, PixelWorldPro.bungeeEnable, type)
             val msg = lang.getString("world.createSuccess") ?: "成功创建世界"
             createList.remove(owner.uniqueId)
             return ResultData(
@@ -156,11 +155,11 @@ object WorldImpl {
         return config.getConfigurationSection("default")!!
     }
 
-    fun createWorldLocal(owner: UUID, template: String?, seed: Long?, bungeeExecution: Boolean = PixelWorldPro.bungeeEnable): CompletableFuture<Boolean> {
+    fun createWorldLocal(owner: UUID, template: String?, seed: Long?, bungeeExecution: Boolean = PixelWorldPro.bungeeEnable, type: String = "local"): CompletableFuture<Boolean> {
         val future = CompletableFuture<Boolean>()
         if (bungeeExecution) {
             Thread {
-                future.complete(BungeeWorldImpl.createWorld(owner, template, seed).get())
+                future.complete(BungeeWorldImpl.createWorld(owner, template, seed, type).get())
             }.start()
         } else {
             val templates = if (template == null) {
@@ -171,7 +170,7 @@ object WorldImpl {
             }
             val templateData = TemplateWorld(templates)
             templateData.seed = seed
-            val world = templateData.createWorld(owner)
+            val world = templateData.createWorld(owner, type)
             world.load()
             val player = Bukkit.getPlayer(owner)
             if (player != null) {
@@ -182,12 +181,12 @@ object WorldImpl {
         return future
     }
 
-    fun teleport(value: String, player: Player): ResultData {
+    fun teleport(value: String, player: Player, type: String = "local"): ResultData {
         try {
             value.toInt()
         } catch (_:Exception) {
             val owner = PlayerFound.getOfflinePlayer(value)
-            val worldData = PixelWorldProApi().getWorld(owner.uniqueId)
+            val worldData = PixelWorldProApi().getWorld(owner.uniqueId, PixelWorldPro.bungeeEnable, type)
             if (worldData == null) {
                 val msg = lang.getString("teleport.notFound") ?: "没有找到世界"
                 return ResultData(

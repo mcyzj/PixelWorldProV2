@@ -13,12 +13,12 @@ runtime-libraries:
       groupId: org.jetbrains.kotlin
       artifactId: kotlin-stdlib
       version: "1.9.20"
-      repository: "https://maven.mcyzj.cn:445/repository/maven-public/"
+      repository: "https://maven.mcyzj.cn/repository/maven-public/"
     JiangLib_Bukkit:
       groupId: com.mcyzj.lib
-      artifactId: jianglib-bukkit
-      version: "1.0.0"
-      repository: "https://maven.mcyzj.cn:445/repository/maven-public/"
+      artifactId: bukkit
+      version: "1.0.1"
+      repository: "https://maven.mcyzj.cn/repository/maven-public/"
     ProtocolLib:
       groupId: com.comphenix.protocol
       artifactId: ProtocolLib
@@ -27,7 +27,7 @@ runtime-libraries:
     gson:
       groupId: com.google.code.gson
       artifactId: gson
-      version: "2.10"
+      version: "2.10.1"
     slf4j-api:
       groupId: org.slf4j
       artifactId: slf4j-api

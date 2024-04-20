@@ -8,8 +8,6 @@ import java.util.*
 import kotlin.collections.HashMap
 
 interface DatabaseAPI {
-
-    var ormlite: Ormlite
     /**
      * 创建一个世界记录
      */

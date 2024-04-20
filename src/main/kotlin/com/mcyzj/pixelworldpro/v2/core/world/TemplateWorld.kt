@@ -11,6 +11,7 @@ import com.mcyzj.pixelworldpro.v2.core.world.dataclass.WorldCreateData
 import org.bukkit.Bukkit
 import java.io.File
 import java.util.*
+import kotlin.collections.HashMap
 
 /**
  * 创建PixelWorldPro世界
@@ -75,7 +76,8 @@ class TemplateWorld(template: String, val type: String? = "local") {
                 name = name,
                 permission = PermissionImpl.getConfigWorldPermission(),
                 player = HashMap(),
-                type
+                type,
+                HashMap()
             )
         )
         val worldDataFile = File("./PixelWorldPro/world/$type/${worldData.id}")

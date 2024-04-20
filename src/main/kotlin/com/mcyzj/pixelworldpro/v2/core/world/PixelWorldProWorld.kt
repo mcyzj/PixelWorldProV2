@@ -2,6 +2,7 @@ package com.mcyzj.pixelworldpro.v2.core.world
 
 import com.mcyzj.lib.plugin.file.BuiltOutConfiguration
 import com.mcyzj.pixelworldpro.v2.core.PixelWorldPro
+import com.mcyzj.pixelworldpro.v2.core.database.DataBase
 import com.mcyzj.pixelworldpro.v2.core.level.event.PixelWorldProLevelChangeEvent
 import com.mcyzj.pixelworldpro.v2.core.permission.dataclass.ResultData
 import com.mcyzj.pixelworldpro.v2.core.util.Config
@@ -11,10 +12,14 @@ import com.mcyzj.pixelworldpro.v2.core.world.dataclass.WorldData
 import com.mcyzj.pixelworldpro.v2.core.world.event.PixelWorldProWorldLoadEvent
 import com.mcyzj.pixelworldpro.v2.core.world.event.PixelWorldProWorldLoadSuccessEvent
 import org.bukkit.Bukkit
+import org.bukkit.OfflinePlayer
 import org.bukkit.World
 import org.bukkit.entity.Player
 import java.io.File
+import java.util.*
 import java.util.concurrent.CompletableFuture
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 class PixelWorldProWorld(val worldData: WorldData, bungeeExecution: Boolean = Config.bungee.getBoolean("enable")){
     private val log = PixelWorldPro.instance.log
@@ -38,12 +43,12 @@ class PixelWorldProWorld(val worldData: WorldData, bungeeExecution: Boolean = Co
     /**
      * 获取世界压缩方式
      */
-    private fun getCompressMethod(): String {
+    fun getCompressMethod(): String {
         val blockConfig = getDataConfig("compress")
         return blockConfig.getString("method") ?: "None"
     }
 
-    private fun setCompressMethod(value: String) {
+    fun setCompressMethod(value: String) {
         val blockConfig = getDataConfig("compress")
         blockConfig.set("method", value)
         blockConfig.saveToFile()
@@ -202,5 +207,103 @@ class PixelWorldProWorld(val worldData: WorldData, bungeeExecution: Boolean = Co
     fun getLevel(): Int {
         val levelData = getDataConfig("level")
         return levelData.getInt("level")
+    }
+
+    fun getMemberList(): ArrayList<OfflinePlayer> {
+        val memberMap = worldData.player
+        memberMap[worldData.owner] = "owner"
+        val permissionPlayerMap = HashMap<Int, ArrayList<OfflinePlayer>>()
+        val cachePermissionPlayerMap = HashMap<String, Int>()
+        for (uuid in memberMap.keys) {
+            val permission = worldData.permission[memberMap[uuid]] ?: continue
+            if (permission["teleport"] == "false") {
+                continue
+            }
+            when (memberMap[uuid]) {
+                "owner" -> {
+                    val list = permissionPlayerMap[0] ?: ArrayList()
+                    list.add(Bukkit.getOfflinePlayer(uuid))
+                    permissionPlayerMap[0] = list
+                }
+
+                "member" -> {
+                    val list = permissionPlayerMap[1] ?: ArrayList()
+                    list.add(Bukkit.getOfflinePlayer(uuid))
+                    permissionPlayerMap[1] = list
+                }
+
+                else -> {
+                    val id = cachePermissionPlayerMap[memberMap[uuid]] ?: (permissionPlayerMap.keys.last() + 1)
+                    cachePermissionPlayerMap[memberMap[uuid]!!] = id
+                    val list = permissionPlayerMap[id] ?: ArrayList()
+                    list.add(Bukkit.getOfflinePlayer(uuid))
+                    permissionPlayerMap[id] = list
+                }
+            }
+        }
+
+        val playerList = ArrayList<OfflinePlayer>()
+        for (key in permissionPlayerMap.keys) {
+            for (player in permissionPlayerMap[key]!!) {
+                playerList.add(player)
+            }
+        }
+
+        return playerList
+    }
+
+    //获取玩家权限组
+    fun getPlayerGroup(player: UUID): String {
+        return worldData.player[player] ?: "none"
+    }
+    //获取玩家权限组具体权限
+    fun getPlayerPermission(player: UUID): HashMap<String, String>? {
+        if (player == worldData.owner) {
+            return worldData.permission["owner"]
+        }
+        return worldData.permission[getPlayerGroup(player)]
+    }
+
+    fun getBlackMemberList(): ArrayList<OfflinePlayer> {
+        val memberMap = worldData.player
+        val playerList = ArrayList<OfflinePlayer>()
+        for (uuid in memberMap.keys) {
+            val permission = worldData.permission[memberMap[uuid]] ?: continue
+            if (permission["teleport"] != "false") {
+                continue
+            }
+            playerList.add(Bukkit.getOfflinePlayer(uuid))
+        }
+        return playerList
+    }
+
+    fun delete(): CompletableFuture<ResultData>  {
+        val future = CompletableFuture<ResultData>()
+        Thread {
+            try {
+                if (isLoad().get()) {
+                    unload().get()
+                }
+                val database = DataBase.getDataDriver(worldData.type)
+                database.deleteWorldData(worldData)
+                Thread.sleep(60 * 1000)
+                File("PixelWorldPro/cache/world/${worldData.type}/${worldData.id}").delete()
+                future.complete(
+                    ResultData(
+                        true,
+                        ""
+                    )
+                )
+            } catch (e: Exception) {
+                e.printStackTrace()
+                future.complete(
+                    ResultData(
+                    false,
+                    e.toString()
+                )
+                )
+            }
+        }.start()
+        return future
     }
 }

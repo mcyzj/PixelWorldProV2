@@ -7,7 +7,7 @@ import java.util.concurrent.CompletableFuture
 
 object BungeeWorldImpl {
 
-    fun createWorld(owner: UUID, template: String?, seed: Long?):CompletableFuture<Boolean> {
+    fun createWorld(owner: UUID, template: String?, seed: Long?, type: String = "local"):CompletableFuture<Boolean> {
         val future = CompletableFuture<Boolean>()
         Thread {
             val server = BungeeServer.getServerData(owner)
@@ -22,6 +22,7 @@ object BungeeWorldImpl {
             data["template"] = template
             data["seed"] = seed
             data["response"] = response
+            data["worldType"] = type
             Communicate.send(server.server, "local", data)
             future.complete(BungeeServer.getServerResponse(response, 120).get().result)
             return@Thread

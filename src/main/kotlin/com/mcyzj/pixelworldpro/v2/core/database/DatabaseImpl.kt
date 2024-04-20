@@ -15,10 +15,7 @@ import org.json.simple.JSONObject
 import java.util.*
 
 
-class DatabaseImpl : DatabaseAPI {
-
-    override var ormlite: Ormlite = DataBase.getOrmlite()
-
+class DatabaseImpl(ormlite: Ormlite) : DatabaseAPI {
     private val worldDaoTable: Dao<WorldDao, Int> = ormlite.createDao(WorldDao::class.java)
     private val logger = PixelWorldPro.instance.logger
     private val lang = Config.getLang()
@@ -243,9 +240,9 @@ class DatabaseImpl : DatabaseAPI {
             return null
         }
         val permissionMap = HashMap<String, HashMap<String, String>>()
-        for (key in permission.asMap().keys){
-            val permissionData = gson.fromJson(permission.asMap()[key], HashMap::class.java)
-            permissionMap[key] = permissionData as HashMap<String, String>
+        for (key in permission.entrySet()){
+            val permissionData = gson.fromJson(permission.get(key.key), HashMap::class.java)
+            permissionMap[key.key] = permissionData as HashMap<String, String>
         }
         val player = gson.fromJson(dataJson["player"].asJsonObject, HashMap::class.java)
         if (player == null){
