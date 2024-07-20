@@ -2,6 +2,7 @@ package com.mcyzj.pixelworldpro.v2;
 
 import com.mcyzj.lib.Metrics;
 import com.mcyzj.lib.bukkit.BukkitPluginManager;
+import com.mcyzj.lib.plugin.JiangLib;
 import com.mcyzj.lib.plugin.JiangPlugin;
 import com.mcyzj.pixelworldpro.v2.core.PixelWorldPro;
 import com.mcyzj.pixelworldpro.v2.core.util.Config;
@@ -15,6 +16,7 @@ public class Main extends JiangPlugin {
     public void enable() {
         instance = this;
         jiangPlugin = this;
+        JiangLib.loadLibs();
         plugin = new PixelWorldPro();
         plugin.enable();
         manager = new BukkitPluginManager(this);

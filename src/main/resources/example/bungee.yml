@@ -1,4 +1,4 @@
-version: 1
+version: 2
 #服务器分组
 group:
   #默认组，不可删除
@@ -13,3 +13,5 @@ group:
     server:
       - vip_load_1
       - vip_load_2
+#是否开启均很负载
+balanced: true

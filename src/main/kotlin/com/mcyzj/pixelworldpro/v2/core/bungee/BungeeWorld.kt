@@ -80,7 +80,7 @@ class BungeeWorld : PixelWorldProWorldAPI {
         return future
     }
 
-    override fun load(world: PixelWorldProWorld): CompletableFuture<ResultData> {
+    override fun load(world: PixelWorldProWorld, serverName: String?): CompletableFuture<ResultData> {
         val future = CompletableFuture<ResultData>()
         Thread {
             if (isLock(world)) {
@@ -102,7 +102,11 @@ class BungeeWorld : PixelWorldProWorldAPI {
                     setLock(world, false)
                     return@Thread
                 }
-                val server = getServerData(world.worldData.owner)
+                val server = if (serverName != null) {
+                    getServerData(serverName)
+                } else {
+                    getServerData(world.worldData.owner)
+                }
                 if (server == null) {
                     val result = ResultData(
                         false,

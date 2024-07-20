@@ -1,0 +1,24 @@
+#世界设置文件
+#版本号，非必要不修改
+version: 1
+#开启服务器时加载的世界列表
+loadWorldList:
+  - world
+#设置世界数据，优先级高于原版低于家园
+worldData:
+  world:
+    #世界默认模式
+    gameMode: SURVIVAL
+    #不起效的权限组，"off"关闭模式切换，"op"仅管理员关闭
+    enableGameMode: "off"
+    # 世界游戏规则,写多少就设置多少，不写就是默认值，限定1.12+
+    GameRule:
+      # 死亡不掉落
+      keepInventory: true
+      # 火焰传播
+      doFireTick: false
+    # 世界难度
+    # EASY[和平模式] HARD[简单模式] NORMAL[困难模式]
+    WorldDifficulty: HARD
+#是否启用WorldGrade保护，需要WorldEdit前置
+WorldGrade: false

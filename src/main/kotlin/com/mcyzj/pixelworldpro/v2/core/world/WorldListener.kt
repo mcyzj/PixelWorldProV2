@@ -1,7 +1,10 @@
 package com.mcyzj.pixelworldpro.v2.core.world
 
+import com.dongzh1.pixelworldpro.api.WorldApi
 import com.mcyzj.pixelworldpro.v2.core.PixelWorldPro
 import com.mcyzj.pixelworldpro.v2.core.api.PixelWorldProApi
+import com.mcyzj.pixelworldpro.v2.core.permission.dataclass.ResultData
+import com.mcyzj.pixelworldpro.v2.core.util.Config
 import org.bukkit.Bukkit
 import org.bukkit.GameMode
 import org.bukkit.event.EventHandler
@@ -12,7 +15,9 @@ import org.bukkit.event.player.PlayerChangedWorldEvent
 import org.bukkit.event.player.PlayerInteractEntityEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerTeleportEvent
+import org.bukkit.event.world.WorldLoadEvent
 import java.lang.Thread.sleep
+import java.util.concurrent.CompletableFuture
 
 class WorldListener : Listener {
     private val log = PixelWorldPro.instance.log
@@ -474,6 +479,62 @@ class WorldListener : Listener {
                 e.isCancelled = true
                 return
             }
+        }
+    }
+
+    @EventHandler
+    fun localWorldTeleport(e: PlayerTeleportEvent) {
+        val worldConfig = Config.localWorld
+        val world = e.player.world
+        val gameMode = worldConfig.getString("worldData.${world.name}.gameMode")
+        if (e.player.isOp)
+            return
+        when(val permission = worldConfig.getString("worldData.${world.name}.enableGameMode")){
+            "off" ->{}
+            "op" ->{}
+            null ->{}
+            else ->{
+                if(e.player.hasPermission(permission)){
+                    when(gameMode){
+                        "ADVENTURE" -> {
+                            e.player.gameMode = GameMode.ADVENTURE
+                            return
+                        }
+
+                        "SURVIVAL" -> {
+                            e.player.gameMode = GameMode.SURVIVAL
+                            return
+                        }
+
+                        "CREATIVE" -> {
+                            e.player.gameMode = GameMode.CREATIVE
+                            return
+                        }
+
+                        "SPECTATOR" -> {
+                            e.player.gameMode = GameMode.SPECTATOR
+                            return
+                        }
+
+                        "AUTO" -> {
+                            return
+                        }
+                    }
+                }else{
+                    e.isCancelled = true
+                }
+            }
+        }
+    }
+
+    @EventHandler
+    fun worldLoad(e: WorldLoadEvent) {
+        val world = PixelWorldProApi().getWorld(e.world.name)?: return
+        val worldCacheConfig = WorldCache.getCacheConfig("world/${world.worldData.type}/unUse.yml")
+        val lock = worldCacheConfig.getLong(world.worldData.id.toString())
+        if (lock > System.currentTimeMillis()) {
+            Bukkit.unloadWorld(e.world, false)
+            return
         }
     }
 }

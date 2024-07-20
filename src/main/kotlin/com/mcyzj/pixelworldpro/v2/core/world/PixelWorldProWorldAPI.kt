@@ -8,7 +8,7 @@ import org.bukkit.entity.Player
 import java.util.concurrent.CompletableFuture
 
 interface PixelWorldProWorldAPI {
-    fun load(world: PixelWorldProWorld): CompletableFuture<ResultData>
+    fun load(world: PixelWorldProWorld, serverName: String? = null): CompletableFuture<ResultData>
 
     fun unload(world: PixelWorldProWorld): CompletableFuture<ResultData>
     fun isLoad(world: PixelWorldProWorld): CompletableFuture<Boolean>

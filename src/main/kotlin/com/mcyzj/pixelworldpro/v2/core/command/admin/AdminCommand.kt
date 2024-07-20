@@ -10,5 +10,6 @@ class AdminCommand {
         sub(WorldCommand().world)
         sub(LevelCommand().level)
         sub(UpDataCommand().upData)
+        sub(LocalWorld().localWorld)
     }
 }

@@ -10,11 +10,22 @@ object Config {
     var permission = BuiltInConfiguration("permission.yml")
     var bungee = BuiltInConfiguration("bungeeSet.yml")
     var level = BuiltInConfiguration("level.yml")
-    val dimension = BuiltInConfiguration("dimension.yml")
+    var dimension = BuiltInConfiguration("dimension.yml")
+    var localWorld = BuiltInConfiguration("localWorld.yml")
 
     fun getLang(): BuiltInConfiguration {
         val lang = config.get("lang") ?: "zh_cn"
         return BuiltInConfiguration("lang/${lang}.yml")
+    }
+
+    fun reload() {
+        config = BuiltInConfiguration("config.yml")
+        world = BuiltInConfiguration("world.yml")
+        permission = BuiltInConfiguration("permission.yml")
+        bungee = BuiltInConfiguration("bungeeSet.yml")
+        level = BuiltInConfiguration("level.yml")
+        dimension = BuiltInConfiguration("dimension.yml")
+        localWorld = BuiltInConfiguration("localWorld.yml")
     }
 
     fun buildItemMap(config: ConfigurationSection): HashMap<String, ItemData> {

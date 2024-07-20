@@ -38,7 +38,7 @@ class LocalWorld : PixelWorldProWorldAPI {
     /**
      * 加载世界
      */
-    override fun load(world: PixelWorldProWorld): CompletableFuture<ResultData> {
+    override fun load(world: PixelWorldProWorld, serverName: String?): CompletableFuture<ResultData> {
         val worldData = world.worldData
         val future = CompletableFuture<ResultData>()
         Thread {

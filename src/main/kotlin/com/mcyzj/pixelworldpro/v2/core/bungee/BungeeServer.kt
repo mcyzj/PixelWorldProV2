@@ -4,6 +4,7 @@ import com.google.gson.JsonObject
 import com.mcyzj.lib.plugin.Logger
 import com.mcyzj.lib.plugin.file.BuiltInConfiguration
 import com.mcyzj.lib.plugin.file.BuiltOutConfiguration
+import com.mcyzj.pixelworldpro.v2.core.api.PixelWorldProApi
 import com.mcyzj.pixelworldpro.v2.core.bungee.redis.Communicate
 import com.mcyzj.pixelworldpro.v2.core.util.Config
 import com.mcyzj.pixelworldpro.v2.core.world.WorldImpl
@@ -105,6 +106,16 @@ object BungeeServer {
      * @return: BungeeData?
      */
     fun getServerData(owner: UUID): BungeeData? {
+        if (publicBungeeConfig.getBoolean("balanced")) {
+            val world = PixelWorldProApi().getWorld(owner)
+            if (world != null) {
+                val worldBungeeConfig = world.getDataConfig("bungee")
+                val createServer = worldBungeeConfig.getString("createServer")
+                if (createServer != null) {
+                    return getServerData(createServer)
+                }
+            }
+        }
         val player = Bukkit.getPlayer(owner)
         var group = "default"
         if (player != null) {
@@ -140,6 +151,14 @@ object BungeeServer {
             Logger.info("成功获取的服务器数据：${serverData?.server}", true)
             if (serverData != null) {
                 if (checkServer(serverData.server).get()) {
+                    if (publicBungeeConfig.getBoolean("balanced")) {
+                        val world = PixelWorldProApi().getWorld(owner)
+                        if (world != null) {
+                            val worldBungeeConfig = world.getDataConfig("bungee")
+                            worldBungeeConfig.set("createServer", serverData.server)
+                            worldBungeeConfig.saveToFile()
+                        }
+                    }
                     return serverData
                 }
             }

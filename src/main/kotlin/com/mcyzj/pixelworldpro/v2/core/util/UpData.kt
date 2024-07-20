@@ -1,8 +1,7 @@
 package com.mcyzj.pixelworldpro.v2.core.util
 
-import com.dongzh1.pixelworldpro.PixelWorldPro
+import com.dongzh1.pixelworldpro.old.PixelWorldPro
 import com.dongzh1.pixelworldpro.world.Dimension
-import com.dongzh1.pixelworldpro.world.WorldImpl
 import com.mcyzj.lib.bukkit.bridge.replacePlaceholder
 import com.mcyzj.lib.plugin.Logger
 import com.mcyzj.pixelworldpro.v2.core.database.DataBase
@@ -17,7 +16,8 @@ import kotlin.collections.HashMap
 
 class UpData {
     fun fromV1() {
-        val oldFile = File("./PixelWorldPro_Old")
+        val oldFile = File("./OldWorlds")
+        oldFile.mkdirs()
         val oldDataList = PixelWorldPro.databaseApi.getWorldList(0, 1000000)
         for (oldDataUUID in oldDataList) {
             try {

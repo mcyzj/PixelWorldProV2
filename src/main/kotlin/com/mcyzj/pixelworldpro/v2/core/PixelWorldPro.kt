@@ -22,8 +22,10 @@ import com.mcyzj.pixelworldpro.v2.core.util.Install
 import com.mcyzj.pixelworldpro.v2.core.world.*
 import com.mcyzj.pixelworldpro.v2.core.world.WorldCache.cleanWorldCache
 import org.bukkit.Bukkit
+import org.bukkit.WorldCreator
 import redis.clients.jedis.JedisPool
 import java.io.File
+import java.sql.SQLException
 
 
 @Suppress("unused")
@@ -41,6 +43,10 @@ class PixelWorldPro{
     val log = Logger
     val config = Config.config
     fun enable() {
+        if (Config.config.getBoolean("old")) {
+            Bukkit.getConsoleSender().sendMessage("§aPixelWorldPro 初始化V1API兼容")
+            com.dongzh1.pixelworldpro.old.PixelWorldPro()
+        }
         disable = false
         //JiangLib.loadLibs()
         instance = this
@@ -52,7 +58,12 @@ class PixelWorldPro{
             Install.start()
         }
         //注册数据驱动
-        DataBase.regDataDriver("local", DatabaseImpl(DataBase.getOrmlite()))
+        try {
+            DataBase.regDataDriver("local", DatabaseImpl(DataBase.getOrmlite()))
+        } catch (e: SQLException) {
+            log.info("如果你还没有完成PixelWorldProV2的安装，出现以下报错是正常的")
+            throw e
+        }
         //注册世界驱动
         WorldCache.regWorldDriver("local", LocalWorld())
         WorldCache.regWorldDriver("local_bungee", BungeeWorld())
@@ -97,8 +108,25 @@ class PixelWorldPro{
         MenuImpl.registerMenuDriver("PixelWorldPro_WorldMemberList", WorldMemberList())
 
         val metrics = Metrics(Main.instance, 20038)
-        metrics.addCustomChart(Metrics.SimplePie("language") {com.dongzh1.pixelworldpro.PixelWorldPro.instance.config.getString("lang")})
+        metrics.addCustomChart(Metrics.SimplePie("language") {instance.config.getString("lang")})
         metrics.addCustomChart(Metrics.SimplePie("test_version") {"Official"})
+
+        //加载世界
+        val worldList = Config.localWorld.getStringList("loadWorldList")
+        for (worldName in worldList) {
+            Bukkit.getConsoleSender().sendMessage("§aPixelWorldPro 加载世界${worldName}")
+            var world = Bukkit.getWorld(worldName)
+            if (world != null) {
+                Bukkit.getConsoleSender().sendMessage("§aPixelWorldPro 世界${worldName}已加载")
+                continue
+            }
+            world = Bukkit.createWorld(WorldCreator(worldName))
+            if (world != null) {
+                Bukkit.getConsoleSender().sendMessage("§aPixelWorldPro 加载世界${worldName}成功")
+                continue
+            }
+            Bukkit.getConsoleSender().sendMessage("§aPixelWorldPro 加载世界${worldName}失败")
+        }
     }
 
     private fun registerMenu() {

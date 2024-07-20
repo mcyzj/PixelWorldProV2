@@ -1,5 +1,6 @@
 package com.mcyzj.pixelworldpro.v2.core.world
 
+import com.mcyzj.lib.bukkit.submit
 import com.mcyzj.lib.plugin.file.BuiltOutConfiguration
 import com.mcyzj.pixelworldpro.v2.core.PixelWorldPro
 import com.mcyzj.pixelworldpro.v2.core.database.DataBase
@@ -138,7 +139,7 @@ class PixelWorldProWorld(val worldData: WorldData, bungeeExecution: Boolean = Co
         return initial + tpsTickets + world + playerTickets
     }
 
-    fun load(): CompletableFuture<ResultData> {
+    fun load(server: String? = null): CompletableFuture<ResultData> {
         val worldCacheConfig = WorldCache.getCacheConfig("world/${worldData.type}/unUse.yml")
         val lock = worldCacheConfig.getLong(worldData.id.toString())
         if (lock > System.currentTimeMillis()) {
@@ -146,24 +147,26 @@ class PixelWorldProWorld(val worldData: WorldData, bungeeExecution: Boolean = Co
             future.complete(
                 ResultData(
                     false,
-                    lang.getString("world.inUnUse") ?: "世界正在冷却"
+                    lang.getString("world.inUnUse") ?: "世界正在冷却[就算是奇犽，也离不开充电，咕咕~]"
                 )
             )
             return future
         }
         val event = PixelWorldProWorldLoadEvent(this)
-        Bukkit.getServer().pluginManager.callEvent(event)
+        submit {
+            Bukkit.getServer().pluginManager.callEvent(event)
+        }
         if (event.isCancelled) {
             val future = CompletableFuture<ResultData>()
             future.complete(
                 ResultData(
                     false,
-                    lang.getString("world.isCancelled") ?: "世界被取消加载"
+                    lang.getString("world.isCancelled") ?: "世界被取消加载[糟了，世界被点燃了！]"
                 )
             )
             return future
         }
-        val future = worldDriver.load(this)
+        val future = worldDriver.load(this, server)
         future.thenApply {
             if (it.result) {
                 val successEvent = PixelWorldProWorldLoadSuccessEvent(this)

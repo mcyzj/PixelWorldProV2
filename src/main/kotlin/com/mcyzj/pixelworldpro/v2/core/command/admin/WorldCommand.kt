@@ -50,6 +50,12 @@ class WorldCommand {
                     val world = PixelWorldProApi().getWorld(player.uniqueId) ?: return@exec
                     world.load()
                 }
+
+                2 -> {
+                    val player = PlayerFound.getOfflinePlayer(args[0])
+                    val world = PixelWorldProApi().getWorld(player.uniqueId) ?: return@exec
+                    world.load(args[1])
+                }
             }
         }
     }

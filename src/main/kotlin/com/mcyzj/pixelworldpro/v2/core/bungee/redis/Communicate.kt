@@ -3,6 +3,7 @@ package com.mcyzj.pixelworldpro.v2.core.bungee.redis
 
 import com.google.gson.Gson
 import com.google.gson.JsonObject
+import com.mcyzj.lib.bukkit.submit
 import com.mcyzj.pixelworldpro.v2.Main
 import com.mcyzj.pixelworldpro.v2.core.PixelWorldPro
 import com.mcyzj.pixelworldpro.v2.core.bungee.BungeeServer
@@ -38,6 +39,9 @@ object Communicate : JedisPubSub() {
 
     fun send(server: String? = "all", type: String, msg: JSONObject) {
         val localServer = BungeeServer.getLocalServer()
+        msg["sendServer"] = localServer.server
+        msg["server"] = server
+        msg["plugin"] = type
         if (server == localServer.server) {
             Thread {
                 val g = Gson()
@@ -46,9 +50,6 @@ object Communicate : JedisPubSub() {
             }.start()
             return
         }
-        msg["sendServer"] = localServer.server
-        msg["server"] = server
-        msg["plugin"] = type
         push(msg.toJSONString())
     }
 
@@ -59,13 +60,18 @@ object Communicate : JedisPubSub() {
     private fun receive(type: String, msg: JsonObject) {
         try {
             val listen = listener[type] ?: return
-            listen.receive(msg)
+            submit {
+                listen.receive(msg)
+            }
         } catch (e: Exception) {
             e.printStackTrace()
         }
     }
 
     fun connect(player: Player, server: String) {
+        if (server == BungeeServer.getLocalServer().server) {
+            return
+        }
         val byteArray = ByteArrayOutputStream()
         val out = DataOutputStream(byteArray)
         try {
